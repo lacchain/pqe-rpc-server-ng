@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQC.IronBridge.Models", "CQ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQC.IronBridge.Extensions", "CQC.IronBridge.Extensions\CQC.IronBridge.Extensions.csproj", "{BD88E5F1-DB64-4603-9030-AEE40B2CC75B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XUnitTestIBCQC_NetCore", "XUnitTestIBCQC_NetCore\XUnitTestIBCQC_NetCore.csproj", "{541ECA6D-193F-4775-9D6A-D2F16E2B6756}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{BD88E5F1-DB64-4603-9030-AEE40B2CC75B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD88E5F1-DB64-4603-9030-AEE40B2CC75B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD88E5F1-DB64-4603-9030-AEE40B2CC75B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{541ECA6D-193F-4775-9D6A-D2F16E2B6756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{541ECA6D-193F-4775-9D6A-D2F16E2B6756}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{541ECA6D-193F-4775-9D6A-D2F16E2B6756}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{541ECA6D-193F-4775-9D6A-D2F16E2B6756}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
