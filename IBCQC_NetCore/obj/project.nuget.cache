@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "F9GrAV5LWX1Tj2AF3DqF9NU2oEb0YEJMzgVXDPzkCOn1nmq0fGt2DnUzxg7FRbPseqFRqnWsDG9lY7KPjT4hiw==",
+  "dgSpecHash": "7ooxyiU4DEt+KNW58gJhHPeqyDHEFAZ4HDGumuVaK3H3aprOXFKvIRPASt9u/FLR+5bO5fdaRub386KswiGCEA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\CQCAdmin\\source\\repos\\IBCQC_NetCore\\IBCQC_NetCore\\IBCQC_NetCore.csproj",
+  "projectFilePath": "C:\\Users\\CQCAdmin\\Documents\\GitHub\\pqe-rpc-server-ng\\IBCQC_NetCore\\IBCQC_NetCore.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\CQCAdmin\\.nuget\\packages\\libphonenumber-csharp\\8.12.9\\libphonenumber-csharp.8.12.9.nupkg.sha512",
     "C:\\Users\\CQCAdmin\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",

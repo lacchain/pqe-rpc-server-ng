@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\CQCAdmin\\source\\repos\\IBCQC_NetCore\\IBCQC_NetCore\\IBCQC_NetCore.csproj": {}
+    "C:\\Users\\CQCAdmin\\Documents\\GitHub\\pqe-rpc-server-ng\\IBCQC_NetCore\\IBCQC_NetCore.csproj": {}
   },
   "projects": {
-    "C:\\Users\\CQCAdmin\\source\\repos\\IBCQC_NetCore\\IBCQC_NetCore\\IBCQC_NetCore.csproj": {
+    "C:\\Users\\CQCAdmin\\Documents\\GitHub\\pqe-rpc-server-ng\\IBCQC_NetCore\\IBCQC_NetCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\CQCAdmin\\source\\repos\\IBCQC_NetCore\\IBCQC_NetCore\\IBCQC_NetCore.csproj",
+        "projectUniqueName": "C:\\Users\\CQCAdmin\\Documents\\GitHub\\pqe-rpc-server-ng\\IBCQC_NetCore\\IBCQC_NetCore.csproj",
         "projectName": "IBCQC_NetCore",
-        "projectPath": "C:\\Users\\CQCAdmin\\source\\repos\\IBCQC_NetCore\\IBCQC_NetCore\\IBCQC_NetCore.csproj",
+        "projectPath": "C:\\Users\\CQCAdmin\\Documents\\GitHub\\pqe-rpc-server-ng\\IBCQC_NetCore\\IBCQC_NetCore.csproj",
         "packagesPath": "C:\\Users\\CQCAdmin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\CQCAdmin\\source\\repos\\IBCQC_NetCore\\IBCQC_NetCore\\obj\\",
+        "outputPath": "C:\\Users\\CQCAdmin\\Documents\\GitHub\\pqe-rpc-server-ng\\IBCQC_NetCore\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

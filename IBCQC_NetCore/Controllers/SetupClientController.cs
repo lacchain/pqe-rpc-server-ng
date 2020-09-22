@@ -9,8 +9,6 @@ using System.Linq;
 using System.Text.Json;
 
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace IBCQC_NetCore.Controllers
 {
     [Route("setupclient")]
@@ -126,10 +124,10 @@ namespace IBCQC_NetCore.Controllers
 
                 //test ensure read write to store is working
 
-                RegistertNodes chkNode = new RegistertNodes();
+                RegisterNodes chkNode = new RegisterNodes();
 
 
-                if (chkNode.nodeExists(postedClientInfo.clientCertSerialNumber))
+                if (chkNode.nodeExists(postedClientInfo.clientCertSerialNumber,"RegisteredUsers.json"))
                     {
                         return "Client Certificate Already Exists";
                     }
@@ -180,20 +178,23 @@ namespace IBCQC_NetCore.Controllers
                 //                .KeyGen();
 
                 // OK - Store client info
+
+                CqcKeyPair cqcKeyPair = RegisterNodes.GetKemKey(postedClientInfo.kemAlgorithm, "TempKeys.json");
+
                 CallerInfo storeClient = new CallerInfo();
 
                 storeClient.kemAlgorithm = postedClientInfo.kemAlgorithm;
-                storeClient.kemPublicKey = "hfgadhgl;adjhsjhh"; //keyPair.PublicKey;
+                storeClient.kemPublicKey = Convert.ToBase64String(cqcKeyPair.PublicKey);
                 storeClient.keyExpiryDate = DateTime.Now.AddYears(2).ToShortDateString();
                 storeClient.clientCertName = postedClientInfo.clientCertName;
                 storeClient.clientCertSerialNumber = postedClientInfo.clientCertSerialNumber;
                 storeClient.isInitialise = "true";
                 storeClient.sharedSecretExpiryDurationInSecs = "7200";
                 storeClient.sharedSecretExpiryTime = DateTime.Now.ToShortTimeString();
-                storeClient.kemPrivateKey = "gjhaergjdrrgjsdljhgstjthsrt"; //keyPair.PrivateKey;
+                storeClient.kemPrivateKey = Convert.ToBase64String(cqcKeyPair.PrivateKey);
 
 
-                var whatamI = chkNode.writeNodes(storeClient);
+                var whatamI = chkNode.writeNodes(storeClient,"RegisteredUsers.json");
 
                 return "you are at setup client";
 
