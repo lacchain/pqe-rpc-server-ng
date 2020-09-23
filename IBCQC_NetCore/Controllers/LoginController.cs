@@ -49,7 +49,7 @@ namespace IBCQC_NetCore.Controllers
         [HttpGet]
    
 
-        public string Login()
+        public IActionResult Login()
         {
             try
             {
@@ -74,7 +74,7 @@ namespace IBCQC_NetCore.Controllers
              c => c.Type == ClaimTypes.SerialNumber)?.Value;
                 if (certSerial == null)
                 {
-                    return "No Serial Number retrieved from Certificate";
+                    return Unauthorized("No Serial Number retrieved from Certificate");
                 }
 
                 //Friendly Certificate Name 
@@ -82,7 +82,7 @@ namespace IBCQC_NetCore.Controllers
              c => c.Type == ClaimTypes.Name)?.Value;
                 if (certFriendlyName == null)
                 {
-                    return "No Friendly Name Associated with this certificate";
+                    return Unauthorized( "No Friendly Name Associated with this certificate");
                 }
 
 
@@ -121,12 +121,12 @@ namespace IBCQC_NetCore.Controllers
 
                 var userJwtTok = JsonSerializer.Serialize(issueToken, options);
 
-                return userJwtTok;
+                return Ok(userJwtTok);
             }
             catch (Exception ex)
             {
                 // APILogging.Log("Login", "ERROR: Login failed with exception: " + ex.Message);
-                return "*401* Login failed. ";
+                return Unauthorized( "*401* Login failed. ");
             }
         }
 

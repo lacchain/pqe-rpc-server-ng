@@ -35,7 +35,7 @@ namespace IBCQC_NetCore.Controllers
 
 
         [HttpPost]
-        public string Post([FromBody] NewClient postedClientInfo)
+        public IActionResult Post([FromBody] NewClient postedClientInfo)
         {
             ////ok if the posted json fails they will get default message on validatio.
             //// Then default is to just set values to nulls 
@@ -45,18 +45,18 @@ namespace IBCQC_NetCore.Controllers
             if (String.IsNullOrEmpty(postedClientInfo.clientCertName))
             {
 
-                return "No Cert Details";
+                return BadRequest( "No Cert Details");
 
             }
             if (String.IsNullOrEmpty(postedClientInfo.clientCertSerialNumber))
             {
 
-                return "No Cert Details";
+                return BadRequest("No Cert Details");
             }
 
             if (String.IsNullOrEmpty(postedClientInfo.countryCode))
             {
-                return "Invalid Country Code";
+                return BadRequest("Invalid Country Code");
 
             }
             if (String.IsNullOrEmpty(postedClientInfo.smsNumber))
@@ -66,19 +66,19 @@ namespace IBCQC_NetCore.Controllers
             }
             if (String.IsNullOrEmpty(postedClientInfo.email))
             {
-                return "No valid Email";
+                return BadRequest("No valid Email");
 
             }
             if (String.IsNullOrEmpty(postedClientInfo.keyparts))
             {
-                return "Invalid keyparts";
+                return BadRequest( "Invalid keyparts");
 
             }
 
             if (String.IsNullOrEmpty(postedClientInfo.kemAlgorithm))
             {
 
-                return "Unknown Algorithm";
+                return BadRequest("Unknown Algorithm");
             }
             else //check the type is supported
             {
@@ -106,7 +106,7 @@ namespace IBCQC_NetCore.Controllers
                 if (!supported)
                 {
 
-                    return "Unsupported Algorithm";
+                    return BadRequest( "Unsupported Algorithm");
                 }
 
                 
@@ -115,7 +115,7 @@ namespace IBCQC_NetCore.Controllers
 
                 if (!validEmail)
                 {
-                    return "Not a valid Email";
+                    return BadRequest("Not a valid Email");
                 }
 
 
@@ -129,7 +129,7 @@ namespace IBCQC_NetCore.Controllers
 
                 if (chkNode.nodeExists(postedClientInfo.clientCertSerialNumber,"RegisteredUsers.json"))
                     {
-                        return "Client Certificate Already Exists";
+                        return BadRequest("Client Certificate Already Exists");
                     }
 
                 //variabels for phone checking
@@ -165,7 +165,7 @@ namespace IBCQC_NetCore.Controllers
                 {
                     isMobile = false;
                     isValidRegion = false;
-                    return "ERROR: Is Valid Mobile: " + isMobile + ": Is Valid Region: " + isValidRegion; //Content(HttpStatusCode.BadRequest /*400*/, "ERROR: Is Valid Mobile: " + isMobile + ": Is Valid Region: " + isValidRegion);
+                    return  BadRequest("ERROR: Is Valid Mobile: " + isMobile + ": Is Valid Region: " + isValidRegion);
                 }
                 //// PhoneNumber is OK
 
@@ -193,10 +193,21 @@ namespace IBCQC_NetCore.Controllers
                 storeClient.sharedSecretExpiryTime = DateTime.Now.ToShortTimeString();
                 storeClient.kemPrivateKey = Convert.ToBase64String(cqcKeyPair.PrivateKey);
 
+                try
+                {
+                    var whatamI = chkNode.writeNodes(storeClient, "RegisteredUsers.json");
 
-                var whatamI = chkNode.writeNodes(storeClient,"RegisteredUsers.json");
+                    //ok now to crteate the key parts
 
-                return "you are at setup client";
+                }
+
+                catch 
+                {
+                    return StatusCode(500);
+                }
+
+
+                return Ok("you are at setup client");
 
             }
 
