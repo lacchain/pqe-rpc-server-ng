@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "7ooxyiU4DEt+KNW58gJhHPeqyDHEFAZ4HDGumuVaK3H3aprOXFKvIRPASt9u/FLR+5bO5fdaRub386KswiGCEA==",
+  "dgSpecHash": "3eTbuSsmGGwLKYvFpYy7aDhWuofbiAMG5A2jRXSj5bQ2YAZ47ko3ayHdQC+vz74v+A9gZa4B77lp6UkmZ1PO8g==",
   "success": true,
   "projectFilePath": "C:\\Users\\CQCAdmin\\Documents\\GitHub\\pqe-rpc-server-ng\\IBCQC_NetCore\\IBCQC_NetCore.csproj",
   "expectedPackageFiles": [
@@ -43,6 +43,7 @@
     "C:\\Users\\CQCAdmin\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.10.9\\microsoft.visualstudio.azure.containers.tools.targets.1.10.9.nupkg.sha512",
     "C:\\Users\\CQCAdmin\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
     "C:\\Users\\CQCAdmin\\.nuget\\packages\\newtonsoft.json\\9.0.1\\newtonsoft.json.9.0.1.nupkg.sha512",
+    "C:\\Users\\CQCAdmin\\.nuget\\packages\\portable.bouncycastle\\1.8.6.7\\portable.bouncycastle.1.8.6.7.nupkg.sha512",
     "C:\\Users\\CQCAdmin\\.nuget\\packages\\runtime.native.system\\4.0.0\\runtime.native.system.4.0.0.nupkg.sha512",
     "C:\\Users\\CQCAdmin\\.nuget\\packages\\system.appcontext\\4.1.0\\system.appcontext.4.1.0.nupkg.sha512",
     "C:\\Users\\CQCAdmin\\.nuget\\packages\\system.buffers\\4.5.0\\system.buffers.4.5.0.nupkg.sha512",

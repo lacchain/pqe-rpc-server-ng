@@ -57,6 +57,10 @@
               "target": "Package",
               "version": "[1.10.9, )"
             },
+            "Portable.BouncyCastle": {
+              "target": "Package",
+              "version": "[1.8.6.7, )"
+            },
             "System.Configuration.ConfigurationManager": {
               "target": "Package",
               "version": "[4.7.0, )"

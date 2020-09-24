@@ -1,4 +1,5 @@
-﻿using IBCQC_NetCore.Models;
+﻿using IBCQC_NetCore.Functions;
+using IBCQC_NetCore.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using PhoneNumbers;
@@ -125,7 +126,12 @@ namespace IBCQC_NetCore.Controllers
                 //test ensure read write to store is working
 
                 RegisterNodes chkNode = new RegisterNodes();
+               
 
+                         if (postedClientInfo.clientCertSerialNumber.Length < 18)
+                    {
+                        postedClientInfo.clientCertSerialNumber = postedClientInfo.clientCertSerialNumber.PadLeft(18, '0');
+                    }
 
                 if (chkNode.nodeExists(postedClientInfo.clientCertSerialNumber,"RegisteredUsers.json"))
                     {
@@ -207,7 +213,13 @@ namespace IBCQC_NetCore.Controllers
                 }
 
 
-                return Ok("you are at setup client");
+                SplitKeyHandler myHandler = new SplitKeyHandler();
+                ReturnKeyFormat debugReturnStr = myHandler.SendKeyParts(Convert.ToInt16(postedClientInfo.keyparts),cqcKeyPair);
+
+
+
+
+                return Ok(debugReturnStr);
 
             }
 

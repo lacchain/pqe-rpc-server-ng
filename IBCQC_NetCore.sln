@@ -5,15 +5,7 @@ VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IBCQC_NetCore", "IBCQC_NetCore\IBCQC_NetCore.csproj", "{091B7F2E-0408-480E-9340-79FFB416E3A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQC.IronBridge.Crypto.Services", "CQC.IronBridge.Crypto\CQC.IronBridge.Crypto.Services.csproj", "{E8E74865-2BED-4EFD-8AED-CECB28DE7A2F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQC.IronBridge.Crypto.Services.Contracts", "CQC.IronBridge.Crypto.Contracts.Services\CQC.IronBridge.Crypto.Services.Contracts.csproj", "{4F5E8964-98CD-4112-B20C-35E5613FD83D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQC.IronBridge.Models", "CQC.IronBridge.Models\CQC.IronBridge.Models.csproj", "{95FD4298-E52B-47B0-8000-0FB05267F193}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQC.IronBridge.Extensions", "CQC.IronBridge.Extensions\CQC.IronBridge.Extensions.csproj", "{BD88E5F1-DB64-4603-9030-AEE40B2CC75B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XUnitTestIBCQC_NetCore", "XUnitTestIBCQC_NetCore\XUnitTestIBCQC_NetCore.csproj", "{541ECA6D-193F-4775-9D6A-D2F16E2B6756}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XUnitTestIBCQC_NetCore", "XUnitTestIBCQC_NetCore\XUnitTestIBCQC_NetCore.csproj", "{541ECA6D-193F-4775-9D6A-D2F16E2B6756}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,22 +17,6 @@ Global
 		{091B7F2E-0408-480E-9340-79FFB416E3A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{091B7F2E-0408-480E-9340-79FFB416E3A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{091B7F2E-0408-480E-9340-79FFB416E3A9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E8E74865-2BED-4EFD-8AED-CECB28DE7A2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E8E74865-2BED-4EFD-8AED-CECB28DE7A2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E8E74865-2BED-4EFD-8AED-CECB28DE7A2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E8E74865-2BED-4EFD-8AED-CECB28DE7A2F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4F5E8964-98CD-4112-B20C-35E5613FD83D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4F5E8964-98CD-4112-B20C-35E5613FD83D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4F5E8964-98CD-4112-B20C-35E5613FD83D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4F5E8964-98CD-4112-B20C-35E5613FD83D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{95FD4298-E52B-47B0-8000-0FB05267F193}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{95FD4298-E52B-47B0-8000-0FB05267F193}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{95FD4298-E52B-47B0-8000-0FB05267F193}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{95FD4298-E52B-47B0-8000-0FB05267F193}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD88E5F1-DB64-4603-9030-AEE40B2CC75B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD88E5F1-DB64-4603-9030-AEE40B2CC75B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD88E5F1-DB64-4603-9030-AEE40B2CC75B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD88E5F1-DB64-4603-9030-AEE40B2CC75B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{541ECA6D-193F-4775-9D6A-D2F16E2B6756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{541ECA6D-193F-4775-9D6A-D2F16E2B6756}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{541ECA6D-193F-4775-9D6A-D2F16E2B6756}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -53,13 +53,23 @@ namespace IBCQC_NetCore.Models
 
 
             }
-
-
-
-
-
-
             return false;
+        }
+
+        internal CallerInfo GetClientNode(string serialNumber, string filename)
+        {
+            var allCallerInfo = readNodes(filename);
+            foreach (var callerInfo in allCallerInfo.CallerInfo)
+            {
+
+                if (callerInfo.clientCertSerialNumber == serialNumber)
+                {
+                    return callerInfo;
+
+                }
+            }
+
+            return new CallerInfo();
         }
 
         internal static CqcKeyPair GetKemKey(string kemAlgorithm, string filename)
@@ -136,6 +146,11 @@ namespace IBCQC_NetCore.Models
             return null;
 
 
+        }
+
+        internal object UpdSharedSecret(string sharedsecret, string filename)
+        {
+            throw new NotImplementedException();
         }
     }
 }
