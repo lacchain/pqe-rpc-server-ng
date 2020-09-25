@@ -5,20 +5,20 @@
   "CallerInfo": [
     {
       "callerID": "101",
-      "kemAlgorithm]": "1",
+      "kemAlgorithm": "222",
       "kemPublicKey": "1",
       "kemPrivateKey": "1",
-      "sharedSecretExpiryDurationInSecs": "1",
+      "sharedSecretExpiryDurationInSecs": "7200",
       "sharedSecretForSession": "1",
-      "sharedSecretExpiryTime": "1",
-      "keyExpiryDate": "1",
-      "clientCertSerialNumber": "1",
+      "sharedSecretExpiryTime": "21-12-2025",
+      "keyExpiryDate": "21-12-2022", 
+      "clientCertSerialNumber": "005EA23D4725755E5A",
       "clientCertName": "placeholder",
       "isInitialise": "true"
     },
     {
       "callerID": "101",
-      "kemAlgorithm]": "1",
+      "kemAlgorithm": "222",
       "kemPublicKey": "1",
       "kemPrivateKey": "1",
       "sharedSecretExpiryDurationInSecs": "1",

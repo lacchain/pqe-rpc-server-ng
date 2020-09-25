@@ -1,6 +1,7 @@
 ﻿using IBCQC_NetCore.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using static IBCQC_NetCore.Models.ApiEnums;
@@ -97,9 +98,14 @@ namespace IBCQC_NetCore.Functions
             // Check if the key that we hold has less than 7 days remaining.
             // So with the default value of 1 year, 7 days is approx 2%.
             DateTime time1 = DateTime.Now.AddDays(7);
-            DateTime time2 = Convert.ToDateTime(caller.keyExpiryDate);
+            DateTime dt;
+            DateTime.TryParseExact(caller.keyExpiryDate,
+                                   "dd-MM-yyyy",
+                                   CultureInfo.InvariantCulture,
+                                   DateTimeStyles.None,
+                                   out dt);
 
-            if (System.DateTime.Compare(time1, time2) < 0)
+            if (System.DateTime.Compare(time1, dt) < 0)
             {
                 return false;
             }
@@ -111,10 +117,18 @@ namespace IBCQC_NetCore.Functions
         {
             // Check if the key that we hold has less than 1 tenth of its life left.
             // So with the default value of 7200 secs (2hours), 10% is 12 mins.
-            DateTime time1 = DateTime.Now.AddSeconds(Convert.ToInt16(caller.sharedSecretExpiryDurationInSecs) / 10);
-            DateTime time2 = Convert.ToDateTime(caller.sharedSecretExpiryTime);
 
-            if (System.DateTime.Compare(time1, time2) < 0)
+            DateTime dt;
+            DateTime.TryParseExact(caller.sharedSecretExpiryTime,
+                                   "dd-MM-yyyy",
+                                   CultureInfo.InvariantCulture,
+                                   DateTimeStyles.None,
+                                   out dt);
+
+            DateTime time1 = DateTime.Now.AddSeconds(Convert.ToInt16(caller.sharedSecretExpiryDurationInSecs) / 10);
+           
+
+            if (System.DateTime.Compare(time1, dt) < 0)
             {
                 return false;
             }
@@ -130,8 +144,15 @@ namespace IBCQC_NetCore.Functions
         private bool ValidateKemPrivateKey(CallerInfo caller)
         {
             // Check if the KemPrivateKey has expired
+            DateTime dt;
+            DateTime.TryParseExact(caller.keyExpiryDate,
+                                   "dd-MM-yyyy",
+                                   CultureInfo.InvariantCulture,
+                                   DateTimeStyles.None,
+                                   out dt);
+           
 
-            if (System.DateTime.Compare(DateTime.Now, Convert.ToDateTime(caller.keyExpiryDate)) < 0)
+            if (System.DateTime.Compare(DateTime.Now, dt) < 0)
             {
                 return true;
             }
@@ -150,7 +171,15 @@ namespace IBCQC_NetCore.Functions
         {
             // Check if the shared secret has expired
 
-            if (System.DateTime.Compare(DateTime.Now, Convert.ToDateTime(caller.sharedSecretExpiryTime)) < 0)
+           
+            DateTime dt;
+            DateTime.TryParseExact(caller.keyExpiryDate,
+                                   "dd-MM-yyyy",
+                                   CultureInfo.InvariantCulture,
+                                   DateTimeStyles.None,
+                                   out dt);
+
+            if (System.DateTime.Compare(DateTime.Now, dt) < 0)
             {
                 return true;
             }

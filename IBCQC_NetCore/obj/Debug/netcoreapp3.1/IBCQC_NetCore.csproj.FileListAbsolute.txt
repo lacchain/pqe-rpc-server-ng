@@ -69,3 +69,4 @@ C:\Users\CQCAdmin\Documents\GitHub\pqe-rpc-server-ng\IBCQC_NetCore\obj\Debug\net
 C:\Users\CQCAdmin\Documents\GitHub\pqe-rpc-server-ng\IBCQC_NetCore\bin\Debug\netcoreapp3.1\BouncyCastle.Crypto.dll
 C:\Users\CQCAdmin\Documents\GitHub\pqe-rpc-server-ng\IBCQC_NetCore\obj\Debug\netcoreapp3.1\IBCQC_NetCore.csproj.CoreCompileInputs.cache
 C:\Users\CQCAdmin\Documents\GitHub\pqe-rpc-server-ng\IBCQC_NetCore\obj\Debug\netcoreapp3.1\IBCQC_NetCore.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\CQCAdmin\Documents\GitHub\pqe-rpc-server-ng\IBCQC_NetCore\obj\Debug\netcoreapp3.1\IBCQC_NetCore.csprojAssemblyReference.cache

@@ -54,7 +54,7 @@ namespace IBCQC_NetCore.Controllers
                 RegisterNodes chkNode = new RegisterNodes();
                 try
                 {
-                   callerInfo = chkNode.GetClientNode(cert.SerialNumber, "RegisteredUsers.json");
+                   callerInfo = chkNode.GetClientNode(certSerial, "RegisteredUsers.json");
 
                     //ok now to crteate the key parts
                     if (string.IsNullOrEmpty(callerInfo.callerID))
@@ -64,7 +64,7 @@ namespace IBCQC_NetCore.Controllers
                     }
                 }
 
-                catch
+                catch(Exception ex)
                 {
                     return StatusCode(500,"Cannot identify caller.");
                 }
@@ -87,7 +87,7 @@ namespace IBCQC_NetCore.Controllers
                     }
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 
                 return Unauthorized("Unable to locate security parameters for client");
