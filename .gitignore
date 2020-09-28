@@ -338,3 +338,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+.vs/IBCQC_NetCore/DesignTimeBuild/.dtbcache.v2
+.vs/IBCQC_NetCore/v16/.suo

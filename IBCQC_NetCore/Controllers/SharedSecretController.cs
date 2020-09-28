@@ -19,6 +19,8 @@ namespace IBCQC_NetCore.Controllers
 
         private CallerValidate valCaller = new CallerValidate();
         private CallerInfo callerInfo = new CallerInfo();
+        private static string certSerial;
+
 
         // GET: api/<SharedSecretController>
         [HttpGet]
@@ -39,7 +41,7 @@ namespace IBCQC_NetCore.Controllers
                 // Get the public key
                 byte[] userPublicKey = cert.GetPublicKey();
 
-                var certSerial = cert.SerialNumber;
+              certSerial = cert.SerialNumber;
 
               
                     if (certSerial.Length < 18)
@@ -145,7 +147,7 @@ namespace IBCQC_NetCore.Controllers
                             //   Change to file method
 
                             RegisterNodes chkNode = new RegisterNodes();
-                            var updSecret = chkNode.UpdSharedSecret(ciphertextB64, Startup.StaticConfig["Config:clientFileStore"]);
+                            var updSecret = chkNode.UpdSharedSecret(ciphertextB64, Startup.StaticConfig["Config:clientFileStore"],certSerial);
 
 
 

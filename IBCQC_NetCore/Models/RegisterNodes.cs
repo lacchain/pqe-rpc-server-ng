@@ -41,6 +41,8 @@ namespace IBCQC_NetCore.Models
 
         public bool nodeExists(string certserial, string filename)
         {
+           
+
             var allCallerInfo = readNodes(filename);
             foreach (var callerInfo in allCallerInfo.CallerInfo)
             {
@@ -148,9 +150,37 @@ namespace IBCQC_NetCore.Models
 
         }
 
-        internal object UpdSharedSecret(string sharedsecret, string filename)
+        internal bool UpdSharedSecret(string sharedsecret, string filename, string serialNumber)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var allCallerInfo = readNodes(filename);
+
+
+                //for writing back 
+
+                var filePath = Path.Combine(System.AppContext.BaseDirectory, filename);
+                foreach (var callerInfo in allCallerInfo.CallerInfo)
+                {
+
+                    if (callerInfo.clientCertSerialNumber == serialNumber)
+                    {
+                        callerInfo.sharedSecretForSession = sharedsecret;
+                        ////serialize the new updated object to a string
+                        string towrite = JsonSerializer.Serialize(callerInfo);
+                        ////overwrite the file and it wil contain the new data
+                        System.IO.File.WriteAllText(filePath, towrite);
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            catch { return false; }
+
+
+
         }
     }
 }
