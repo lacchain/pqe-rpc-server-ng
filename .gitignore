@@ -340,3 +340,6 @@ ASALocalRun/
 healthchecksdb
 .vs/IBCQC_NetCore/DesignTimeBuild/.dtbcache.v2
 .vs/IBCQC_NetCore/v16/.suo
+IBCQC_NetCore/obj/Debug/netcoreapp3.1/IBCQC_NetCore.dll
+IBCQC_NetCore/obj/Debug/netcoreapp3.1/IBCQC_NetCore.dll
+.vs/IBCQC_NetCore/v16/.suo
