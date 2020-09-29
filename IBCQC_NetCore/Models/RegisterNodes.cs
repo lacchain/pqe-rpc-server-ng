@@ -18,7 +18,7 @@ namespace IBCQC_NetCore.Models
             var filePath = Path.Combine(System.AppContext.BaseDirectory, filename);
             string jsonString = System.IO.File.ReadAllText(filePath);
 
-            // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
+           
             AllCallerInfo allCallerInfo = JsonSerializer.Deserialize<AllCallerInfo>(jsonString);
 
             return allCallerInfo;

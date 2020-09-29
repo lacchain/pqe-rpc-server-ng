@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IBCQC_NetCore.Encryption;
 using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
 using IBCQC_NetCore.Rng;
@@ -118,7 +119,7 @@ namespace IBCQC_NetCore.Controllers
                     if (valCaller.kemKeyPairNeedsChanging)
                     {
 
-                        return StatusCode(498, "KemKeyPair Not Valid)");// Content((System.Net.HttpStatusCode)498 /*TokenExpiredOrInvalid*/, "KEM KeyPair not valid");
+                        return StatusCode(498, "KemKeyPair Not Valid)");
                     }
                     else
                     {
@@ -168,37 +169,49 @@ namespace IBCQC_NetCore.Controllers
                     Prng getRandom = new Prng();
                     //so get 256 Byte key for AES 
 
+                    // Set number of iterations for the RFC2898 derivation function
+                    // to a reasonably large number, and let's choose a prime number for fun.
+                    int iterations = Convert.ToInt16(Startup.StaticConfig["Config:DerivationIterations"]);
 
+                    int saltSize = Convert.ToInt16(Startup.StaticConfig["Config:SaltSize"]);
 
-                    var randomBytes = getRandom.GetBytes(256);
+                  
 
-                    // Get some bytes for the shared key
+                    // Get some bytes to send
+
                     byte[] bytes1 = new byte[byteCount];
                     
                     bytes1 = getRandom.GetBytes(byteCount);
                     // Now get QRNG bytes for the salt
                   
-                    byte[] saltBytes = getRandom.GetBytes(16);
+                    byte[] saltBytes = getRandom.GetBytes(saltSize);
                     int saltsize = saltBytes.Length;
 
-                    // Set number of iterations for the RFC2898 derivation function
-                    // to a reasonably large number, and let's choose a prime number for fun.
-                    int iterations = 11113;
+
+
+
+
 
                     //ok implement the AES mcryption
-                    //var encryptedBytes1 = _encryptionManager.Encrypt_UsingKeyBytes(bytes1,
-                    //                                                 Convert.FromBase64String(callerInfo.sharedSecretForSession),
-                    //                                                 saltBytes,
-                    //                                                 iterations);
+                    AESEncrypt encryptAES = new AESEncrypt();
+
+                    var encryptedBytes1 = encryptAES.Encrypt(bytes1,Convert.FromBase64String(callerInfo.sharedSecretForSession),saltBytes,iterations);
                     // Debug check shared secret
-                 
+
                     string b64Shared = callerInfo.sharedSecretForSession;
 
                     // Send as base64
+//#if debug
+                    
+                    string sendBytes = Convert.ToBase64String(encryptedBytes1);
 
-                    //  string sendBytes = Convert.ToBase64String(encryptedBytes1);
+                    AESDecrypt decryptAES = new AESDecrypt();
 
-                    return Ok("");//    sendBytes);
+                    var decryptbytes = decryptAES.AESDecryptBytes(encryptedBytes1, callerInfo.sharedSecretForSession, saltSize, iterations);
+
+//#endif
+
+                    return Ok(Convert.ToBase64String(encryptedBytes1));
                 }
                 catch (Exception ex)
                 {
