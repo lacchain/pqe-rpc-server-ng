@@ -127,7 +127,7 @@ namespace IBCQC_NetCore.Controllers
             catch (Exception ex)
             {
                 // APILogging.Log("Login", "ERROR: Login failed with exception: " + ex.Message);
-                return Unauthorized( "*401* Login failed. ");
+                return Unauthorized( "*401* Login failed.::: " + ex.Message);
             }
         }
 
