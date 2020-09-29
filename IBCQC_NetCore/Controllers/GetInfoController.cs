@@ -23,16 +23,16 @@ namespace IBCQC_NetCore.Controllers
         /// <returns></returns>
         //[Route("{format}")]    // {} = optional
         //[Route("{format:int=0}")]    // {} = optional
-        [Route("getinfo/{format:int=0}")]    // {} = optional
+       // [Route("api/[controller]")]    // {} = optional
         [HttpGet]
-        public IActionResult Get(GetInfoViewModel model)
+        public IActionResult Get() //GetInfoViewModel model)
         {
             
             var myVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            string myVariant = " (IDB)"; 
-                                         // "LT"  = C# Lite - sources reduced to API only
-                                         // "IDB" = C# Lite for IDB
-                                        
+            string myVariant = " (IDB)";
+            // "LT"  = C# Lite - sources reduced to API only
+            // "IDB" = C# Lite for IDB
+            int format = 0;                         
 
             GetInfoResponse response = new GetInfoResponse();
             response.major = myVersion.Major;
@@ -41,7 +41,7 @@ namespace IBCQC_NetCore.Controllers
             response.revision = myVersion.Revision;
             response.variant = myVariant;
 
-            switch (model.Format)
+            switch (format)
             {
                 case 0: // Decimal
                 default:
