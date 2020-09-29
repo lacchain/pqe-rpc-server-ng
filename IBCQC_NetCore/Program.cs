@@ -55,7 +55,7 @@ namespace IBCQC_NetCore
                    {         
                       
                        o.ConfigureHttpsDefaults(o =>
-                                o.ClientCertificateMode =  ClientCertificateMode.RequireCertificate);
+                                o.ClientCertificateMode =  ClientCertificateMode.NoCertificate);
                    });
                }
                
@@ -75,7 +75,7 @@ namespace IBCQC_NetCore
                     {
                         o.ConfigureHttpsDefaults(o =>
                     o.ClientCertificateMode =
-                        ClientCertificateMode.RequireCertificate);
+                        ClientCertificateMode.NoCertificate);
                     });
                 });
         }
