@@ -53,20 +53,7 @@ namespace IBCQC_NetCore.Controllers
         {
             try
             {
-                // Certificate request
-
-              //As the requirement for client cert is baked into server and also through DI 
-              //see program.cs for host builder and  Startup.cs for the certificate fail and success 
-              //actions Success will populate the claimsprincipal in the controller base
-
-                //todo extend the activation to turn off certs if required for testing
-
-                //this will retun a forbidden if no vaid cert is found this can b extended to only allow registered cluent certificate sif required
-
-                ClaimsPrincipal currentUser = this.User;
-                //get the claims from the certificate context
-
-                //we have dual claims at this moment defind in startuop.cs
+             
 
                 //cert Serial Number
 

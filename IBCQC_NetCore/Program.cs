@@ -44,7 +44,7 @@ namespace IBCQC_NetCore
         {
             return Host.CreateDefaultBuilder(args)
               
-            // .ConfigureHostConfiguration(webBuilder => { webBuilder.AddJsonFile($"RegisteredUsers.json", optional: true, reloadOnChange: true); } )
+          
                 
                 .ConfigureWebHostDefaults(webBuilder =>
                {
@@ -55,7 +55,7 @@ namespace IBCQC_NetCore
                    {         
                       
                        o.ConfigureHttpsDefaults(o =>
-                                o.ClientCertificateMode =  ClientCertificateMode.NoCertificate);
+                                o.ClientCertificateMode =  ClientCertificateMode.RequireCertificate);
                    });
                }
                

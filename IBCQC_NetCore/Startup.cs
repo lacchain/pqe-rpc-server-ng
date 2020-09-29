@@ -34,9 +34,7 @@ namespace IBCQC_NetCore
         {
 
             services.AddControllers();
-            // services.Configure<RegisteredNodes>(options => Configuration.GetSection("Registered").Bind(options));
-         //   services.Configure<RegisteredNodes>(Configuration.GetSection("Registered"));
-            // add certificate auth if we want it 
+         // add certificate auth if we want it 
 
             bool certificateRequired = Convert.ToBoolean(Configuration["Config:ignoreClientCertificateErrors"]);
 
