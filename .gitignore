@@ -338,10 +338,12 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
-.vs/IBCQC_NetCore/DesignTimeBuild/.dtbcache.v2
-.vs/IBCQC_NetCore/v16/.suo
-IBCQC_NetCore/obj/Debug/netcoreapp3.1/IBCQC_NetCore.dll
-IBCQC_NetCore/obj/Debug/netcoreapp3.1/IBCQC_NetCore.dll
-.vs/IBCQC_NetCore/v16/.suo
-.vs/IBCQC_NetCore/v16/.suo
-.vs/IBCQC_NetCore/v16/.suo
+obj/
+# Visual Studio Code directory
+.vscode/
+# Visual Studio 2015 cache/options directory
+.vs/
+# Visual Studio cache files files ending in .cache can be ignored
+*.[Cc]ache
+# but keep track of directories ending in .cache
+!*.[Cc]ache/
