@@ -33,7 +33,7 @@ namespace IBCQC_NetCore.Controllers
     [AllowAnonymous]
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class LoginController : ControllerBase
     {
 
