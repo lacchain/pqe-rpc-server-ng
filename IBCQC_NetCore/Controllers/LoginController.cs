@@ -16,20 +16,7 @@ using System.Text.Json;
 
 namespace IBCQC_NetCore.Controllers
 {
-    /// <summary>
-    /// new code
-    /// </summary>
-    /// <returns></returns>
-    /// <summary>
-    /// This is the basic username password login method
-    /// it provides a user token
-    /// TODO override if a user cert is present
-    /// </summary>
-    /// 
-
-
-    //  api/<LoginController>
-
+  
     [AllowAnonymous]
 
     [ApiController]

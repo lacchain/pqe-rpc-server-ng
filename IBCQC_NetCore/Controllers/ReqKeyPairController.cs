@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IBCQC_NetCore.Controllers
 {
-    [Route("reqkeypair")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ReqKeyPairController : ControllerBase
     {

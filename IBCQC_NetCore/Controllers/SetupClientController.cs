@@ -12,7 +12,7 @@ using System.Text.Json;
 
 namespace IBCQC_NetCore.Controllers
 {
-    [Route("setupclient")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SetupClientController : ControllerBase
     {
