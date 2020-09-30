@@ -18,9 +18,9 @@ namespace IBCQC_NetCore
 {
     public class Startup
     {
-        //Load a static private configuration for use elsewhere 
-        
-          public Startup(IConfiguration configuration)
+        //Load a static private configuration for use elsewhere
+
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
             StaticConfig = configuration;
@@ -34,63 +34,58 @@ namespace IBCQC_NetCore
         {
 
             services.AddControllers();
-         // add certificate auth if we want it 
+            //services.Configure<RegisteredNodes>(options => Configuration.GetSection("Registered").Bind(options));
+            //services.Configure<RegisteredNodes>(Configuration.GetSection("Registered"));
+
+            // Add certificate auth if we want it
 
             bool certificateRequired = Convert.ToBoolean(Configuration["Config:ignoreClientCertificateErrors"]);
-
             if (certificateRequired)
             {
                 services.AddAuthentication(
                     CertificateAuthenticationDefaults.AuthenticationScheme)
                     .AddCertificate(options =>
                     {
-
                         services.AddAuthentication(
-                           CertificateAuthenticationDefaults.AuthenticationScheme)
-                           .AddCertificate(options =>
-                           {
-                                       options.Events = new CertificateAuthenticationEvents
-                                       {
+                            CertificateAuthenticationDefaults.AuthenticationScheme)
+                            .AddCertificate(options =>
+                            {
+                                options.Events = new CertificateAuthenticationEvents
+                                {
+                                    //  check the certificate options and return
+                                    OnCertificateValidated = context =>
+                                    {
+                                        var claims = new[]
+                                        {
+                                            new Claim(
+                                                ClaimTypes.SerialNumber,
+                                                context.ClientCertificate.SerialNumber,
+                                                ClaimValueTypes.String,
+                                                context.Options.ClaimsIssuer),
+                                            new Claim(
+                                                ClaimTypes.Name,
+                                                context.ClientCertificate.FriendlyName,
+                                                ClaimValueTypes.String,
+                                                context.Options.ClaimsIssuer)
+                                        };
 
-                                       //  check the certificate options and return
-                                               OnCertificateValidated = context =>
-                                                                        {
+                                        context.Principal = new ClaimsPrincipal(new ClaimsIdentity(claims, context.Scheme.Name));
+                                        context.Success();
 
-                                                                            var claims = new[]
-                                                                            {
-                                                                                                    new Claim(
-                                                                                                        ClaimTypes.SerialNumber,
-                                                                                                        context.ClientCertificate.SerialNumber,
-                                                                                                        ClaimValueTypes.String,
-                                                                                                        context.Options.ClaimsIssuer),
-                                                                                                    new Claim(
-                                                                                                        ClaimTypes.Name,
-                                                                                                        context.ClientCertificate.FriendlyName,
-                                                                                                        ClaimValueTypes.String,
-                                                                                                        context.Options.ClaimsIssuer)
-                                                                                      };
+                                        return Task.CompletedTask;
+                                    },
+                                    OnAuthenticationFailed = context =>
+                                    {
+                                        context.Fail("invalid cert");
+                                        return Task.CompletedTask;
+                                    }
 
-                                                                            context.Principal = new ClaimsPrincipal(
-                                                                                new ClaimsIdentity(claims, context.Scheme.Name));
-                                                                            context.Success();
-
-
-                                                                            return Task.CompletedTask;
-                                                                        },
-                                               OnAuthenticationFailed = context =>
-                                                                       {
-                                                                           context.Fail("invalid cert");
-                                                                           return Task.CompletedTask;
-                                                                       }
-
-                                       };
-                          });
+                                };
+                            });
                     });
             }
-        }   
-            //      //add the controller service
-
-
+        }
+        // Add the controller service
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -101,13 +96,9 @@ namespace IBCQC_NetCore
             }
 
             app.UseAuthentication();
-
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

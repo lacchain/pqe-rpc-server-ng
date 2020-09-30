@@ -35,43 +35,35 @@ namespace IBCQC_NetCore.Controllers
                 {
                     return  /*401*/Unauthorized("WARNING: Not supported while Client Certificate checks are disabled");
                 }
-              
+
                 var cert = Request.HttpContext.Connection.ClientCertificate;
 
                 // Get the public key
                 byte[] userPublicKey = cert.GetPublicKey();
 
-              certSerial = cert.SerialNumber;
-
-              
-                    if (certSerial.Length < 18)
-                    {
-                        certSerial = certSerial.PadLeft(18, '0');
-                    }
-               
+                certSerial = cert.SerialNumber;
+                if (certSerial.Length < 18)
+                {
+                    certSerial = certSerial.PadLeft(18, '0');
+                }
 
                 // TODO: Change to GetCCaller(userPublicKey)
 
-              
                 RegisterNodes chkNode = new RegisterNodes();
                 try
                 {
-                   callerInfo = chkNode.GetClientNode(certSerial, "RegisteredUsers.json");
+                    callerInfo = chkNode.GetClientNode(certSerial, "RegisteredUsers.json");
 
-                    //ok now to crteate the key parts
+                    // OK - Now to crteate the key parts
                     if (string.IsNullOrEmpty(callerInfo.callerID))
                     {
-
                         return Unauthorized("Unknown Certificate");
                     }
                 }
-
                 catch(Exception ex)
                 {
-                    return StatusCode(500,"Cannot identify caller.");
+                    return StatusCode(500,"SharedSecret cannot identify caller. Exception: " + ex.Message);
                 }
-
-
 
                 bool isValidCaller = valCaller.callerValidate(callerInfo, CallerStatus.requireKemValid);
                 // They need a valid KEM key, not a shared secret
@@ -79,20 +71,17 @@ namespace IBCQC_NetCore.Controllers
                 {
                     if (valCaller.kemKeyPairNeedsChanging)
                     {
-                      
                         return StatusCode(498,"KemKeyPair Not Valid)");// Content((System.Net.HttpStatusCode)498 /*TokenExpiredOrInvalid*/, "KEM KeyPair not valid");
                     }
                     else
                     {
-             
                         return Unauthorized( "Client unknown or invalid");
                     }
                 }
             }
             catch(Exception ex)
             {
-                
-                return Unauthorized("Unable to locate security parameters for client");
+                return Unauthorized("Unable to locate security parameters for client. Exception: " + ex.Message);
             }
 
             // Request for a new SharedSecret is all OK so far,
@@ -102,85 +91,49 @@ namespace IBCQC_NetCore.Controllers
                 return StatusCode(405, "KEM key requires renewal before you can proceed");
             }
 
-
-
             // OK. Let's create a shared secret
-
-
-            //as this is standalone we use bouncy castle
+            // as this is standalone we use bouncy castle
 
             Prng getRandom = new Prng();
-            //so get 256 Byte key for AES 
-
-
+            // So get 256 Byte key for AES
 
             var randomBytes = getRandom.GetBytes(256);
-
             try
             {
                 switch (Convert.ToInt16(callerInfo.kemAlgorithm))
                 {
                     case 222: // Frodo Kem640
                               // TODO: Fix magic number
-                        {
-                            // Generate a new shared secret and encapsulate in KEM
+                    {
+                        // Generate a new shared secret and encapsulate in KEM
+                        /* FrodoParams frodoId = FrodoParams.Kem640; */
+                        // Returns the new shared secret in bytes and the encapsulated version
+                        /*   var encapsulatedSecret = _algorithmServiceManager
+                                                        .KeyEncapsulationService<FrodoKemService, FrodoParams>(frodoId)
+                                                        .Encapsulate(callerInfo.kemPublicKey);
+                        */
+                        // Send as base64
+                        //todo encapsulate rather than just send bytes
+                        string ciphertextB64 = Convert.ToBase64String(randomBytes);
 
-                            /*  FrodoParams frodoId = FrodoParams.Kem640;*/
+                        // Update the shared secret in DB
+                        //APILogging.Log("GetSharedSecret", "Storing raw SharedSecret in DB");
+                        //   Change to file method
 
-                            // Returns the new shared secret in bytes and the encapsulated version
+                        RegisterNodes chkNode = new RegisterNodes();
+                        var updSecret = chkNode.UpdSharedSecret(ciphertextB64, Startup.StaticConfig["Config:clientFileStore"],certSerial);
 
-
-                            /*   var encapsulatedSecret = _algorithmServiceManager
-                                                         .KeyEncapsulationService<FrodoKemService, FrodoParams>(frodoId)
-                                                         .Encapsulate(callerInfo.kemPublicKey);
-                            */
-
-
-                            // Send as base64
-
-                            //todo encapsulate rather than just send bytes
-
-                            string ciphertextB64 = Convert.ToBase64String(randomBytes);
-
-                            // Update the shared secret in DB
-                            //APILogging.Log("GetSharedSecret", "Storing raw SharedSecret in DB");
-                            //   Change to file method
-
-                            RegisterNodes chkNode = new RegisterNodes();
-                            var updSecret = chkNode.UpdSharedSecret(ciphertextB64, Startup.StaticConfig["Config:clientFileStore"],certSerial);
-
-
-
-                            return Ok(ciphertextB64);
-                        }
-
-                                 
-
-                                     default:
-                                          
-                                        return BadRequest();
-                                 }
-                           }
-                
+                        return Ok(ciphertextB64);
+                    }
+                    default:
+                        return BadRequest();
+                }
+            }
             catch (Exception ex)
             {
-                
                 return StatusCode(500, "ERROR: GetSharedSecret failed with: " + ex.Message);
             }
-
-
-
-
-
-            
-        
         }
 
-   
-
-
-  
-
-   
     }
 }

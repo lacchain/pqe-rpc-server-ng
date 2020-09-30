@@ -1,14 +1,16 @@
-﻿using IBCQC_NetCore.Functions;
-using IBCQC_NetCore.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using PhoneNumbers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using PhoneNumbers;
+
+using IBCQC_NetCore.Functions;
+using IBCQC_NetCore.Models;
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -18,14 +20,19 @@ namespace IBCQC_NetCore.Controllers
     {
         //// GET: SetupClientController
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="postedClientInfo"></param>
         /// <returns></returns>
 
-      //  private IAlgorithmServiceManager _algorithmServiceManager;
+        //private IAlgorithmServiceManager _algorithmServiceManager;
         private static PhoneNumberUtil _phoneUtil;
-      
+        private readonly ILogger<SetupClientController> _logger;
+
+        public SetupClientController(ILogger<SetupClientController> logger)
+        {
+            _logger = logger;
+        }
 
 
         public SetupClientController()//IAlgorithmServiceManager algorithmServiceManager)
@@ -38,108 +45,83 @@ namespace IBCQC_NetCore.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] NewClient postedClientInfo)
         {
-            ////ok if the posted json fails they will get default message on validatio.
-            //// Then default is to just set values to nulls 
-
-
+            //// OK, if the posted json fails they will get default message on validatio.
+            //// Then default is to just set values to nulls
 
             if (String.IsNullOrEmpty(postedClientInfo.clientCertName))
             {
-
                 return BadRequest( "No Cert Details");
-
             }
             if (String.IsNullOrEmpty(postedClientInfo.clientCertSerialNumber))
             {
-
                 return BadRequest("No Cert Details");
             }
 
             if (String.IsNullOrEmpty(postedClientInfo.countryCode))
             {
                 return BadRequest("Invalid Country Code");
-
             }
             if (String.IsNullOrEmpty(postedClientInfo.smsNumber))
             {
-
-
+                // TODO: Then what?
             }
             if (String.IsNullOrEmpty(postedClientInfo.email))
             {
                 return BadRequest("No valid Email");
-
             }
             if (String.IsNullOrEmpty(postedClientInfo.keyparts))
             {
                 return BadRequest( "Invalid keyparts");
-
             }
 
             if (String.IsNullOrEmpty(postedClientInfo.kemAlgorithm))
             {
-
                 return BadRequest("Unknown Algorithm");
             }
             else //check the type is supported
             {
-
                 bool supported = false;
-
-
-                //get acces to config
+                // Get access to config
                 var Conf = Startup.StaticConfig;
 
                 var allalgos = Conf.GetSection("PQEAlgorithms").GetChildren();
 
-
-                //read the list of algoritjhms 
+                // Read the list of algoritjhms
                 foreach (var algo in allalgos)
                 {
-
                     if (algo.Value == postedClientInfo.kemAlgorithm.Trim())
                     {
                         supported = true;
                     }
-
-
                 }
                 if (!supported)
                 {
-
                     return BadRequest( "Unsupported Algorithm");
                 }
 
-                
-
-                bool validEmail = ValidateEmail.IsValidEmail(postedClientInfo.email);
-
+                ValidateEmail xx = new ValidateEmail(_logger);
+                bool validEmail = xx.IsValidEmail(postedClientInfo.email);
                 if (!validEmail)
                 {
                     return BadRequest("Not a valid Email");
                 }
 
-
-
-                //ok now we need to know if the certificate is in use 
-
-                //test ensure read write to store is working
+                // OK - now we need to know if the certificate is in use
+                // Test ensure read write to store is working
 
                 RegisterNodes chkNode = new RegisterNodes();
-               
 
-                         if (postedClientInfo.clientCertSerialNumber.Length < 18)
-                    {
-                        postedClientInfo.clientCertSerialNumber = postedClientInfo.clientCertSerialNumber.PadLeft(18, '0');
-                    }
+                if (postedClientInfo.clientCertSerialNumber.Length < 18)
+                {
+                    postedClientInfo.clientCertSerialNumber = postedClientInfo.clientCertSerialNumber.PadLeft(18, '0');
+                }
 
                 if (chkNode.nodeExists(postedClientInfo.clientCertSerialNumber,"RegisteredUsers.json"))
-                    {
-                        return BadRequest("Client Certificate Already Exists");
-                    }
+                {
+                    return BadRequest("Client Certificate Already Exists");
+                }
 
-                //variabels for phone checking
-
+                // Variabels for phone checking
                 bool isMobile = false;
                 bool isValidNumber = false;
                 bool isValidRegion = false;
@@ -148,14 +130,11 @@ namespace IBCQC_NetCore.Controllers
                 //// Check the phone number
                 try
                 {
-
-                    
-
                     PhoneNumber phoneNumber = _phoneUtil.Parse(postedClientInfo.smsNumber, postedClientInfo.countryCode);
-                   isValidNumber = _phoneUtil.IsValidNumber(phoneNumber);          // Returns true for valid number
+                    isValidNumber = _phoneUtil.IsValidNumber(phoneNumber);          // Returns true for valid number
 
                     // Returns true or false w.r.t phone number with the specified region
-                  isValidRegion = _phoneUtil.IsValidNumberForRegion(phoneNumber, postedClientInfo.countryCode);
+                    isValidRegion = _phoneUtil.IsValidNumberForRegion(phoneNumber, postedClientInfo.countryCode);
                     string region = _phoneUtil.GetRegionCodeForNumber(phoneNumber); // GB, US , et al
 
                     var numberType = _phoneUtil.GetNumberType(phoneNumber);         // Produces Mobile , FIXED_LINE
@@ -169,9 +148,10 @@ namespace IBCQC_NetCore.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogInformation("ERROR: Failed with exception: " + ex.Message);
                     isMobile = false;
                     isValidRegion = false;
-                    return  BadRequest("ERROR: Is Valid Mobile: " + isMobile + ": Is Valid Region: " + isValidRegion);
+                    return  BadRequest("ERROR: Is Valid Mobile: " + isMobile + ", Is Valid Region: " + isValidRegion);
                 }
                 //// PhoneNumber is OK
 
@@ -202,27 +182,21 @@ namespace IBCQC_NetCore.Controllers
                 try
                 {
                     var whatamI = chkNode.writeNodes(storeClient, "RegisteredUsers.json");
+                    // OK - Now to crteate the key parts
 
-                    //ok now to crteate the key parts
-
+                    // TODO: ???
                 }
-
-                catch 
+                catch
                 {
                     return StatusCode(500);
                 }
 
-
                 SplitKeyHandler myHandler = new SplitKeyHandler();
                 ReturnKeyFormat debugReturnStr = myHandler.SendKeyParts(Convert.ToInt16(postedClientInfo.keyparts),cqcKeyPair);
-
-
-
 
                 return Ok(debugReturnStr);
 
             }
-
 
 
         }

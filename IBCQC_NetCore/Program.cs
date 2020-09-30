@@ -11,76 +11,84 @@ using Microsoft.Extensions.Logging;
 
 namespace IBCQC_NetCore
 {
-
-    //get a configuration class
-  
-
+    // Get a configuration class
 
     public class Program
     {
 
-        //moved to kestrel
+        // Moved to kestrel
         public static void Main(string[] args)
         {
-
-            //have option to remove  certificate auth if we want but need the serail number so for testing that woudl need injecting 
+            // Have option to remove certificate auth if we want, but need the serial number
+            // so for testing that would need injecting
 
             bool certificateRequired = true;
 
             if (certificateRequired)
-            { CreateHostBuilder(args).Build().Run(); }
-
+            {
+                CreateHostBuilder(args).Build().Run();
+            }
             else
             {
                 CreateHostBuilderNonSecure(args).Build().Run();
-
             }
-
-           
         }
 
 
         public static IHostBuilder CreateHostBuilderNonSecure(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-              
-          
-                
+                //.ConfigureHostConfiguration(webBuilder =>
+                //{
+                //    webBuilder.AddJsonFile($"RegisteredUsers.json", optional: true, reloadOnChange: true);
+                //})
+                .ConfigureLogging((hostingContext, logging) =>
+                {
+                    logging.ClearProviders();
+                    // Console Logging Provider
+                    // The Console provider logs output to the console.
+                    // For more information on viewing Console logs in development, see
+                    //     https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-3.1#dnrvs
+                    logging.AddConsole(options => options.IncludeScopes = true);
+
+                    // Debug Logging Provider:
+                    // The Debug provider writes log output by using the System.Diagnostics.Debug class.
+                    // Calls to System.Diagnostics.Debug.WriteLine write to the Debug provider.
+                    // On Linux, the Debug provider log location is distribution-dependent
+                    // and may be one of the following:
+                    //   /var/log/message
+                    //   /var/log/syslog
+                    //logging.AddDebug();
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
-               {
-                   webBuilder.UseStartup<Startup>();
-                  
-                  
-                   webBuilder.ConfigureKestrel(o =>
-                   {         
-                      
-                       o.ConfigureHttpsDefaults(o =>
-                                o.ClientCertificateMode =  ClientCertificateMode.NoCertificate);
-                   });
-               }
-               
-               
-               
-               );
+                {
+                    webBuilder.UseStartup<Startup>();
+
+                    webBuilder.ConfigureKestrel(o =>
+                    {
+                        o.ConfigureHttpsDefaults(o =>
+                            //o.ClientCertificateMode =  ClientCertificateMode.RequireCertificate
+                            o.ClientCertificateMode =  ClientCertificateMode.NoCertificate
+                       );
+                    });
+                });
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                 .ConfigureHostConfiguration(webBuilder => { webBuilder.AddJsonFile($"RegisteredUsers.json", optional: true, reloadOnChange: true); })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                  webBuilder.ConfigureKestrel(o =>
-                    {
-                        o.ConfigureHttpsDefaults(o =>
-                    o.ClientCertificateMode =
-                        ClientCertificateMode.RequireCertificate);
-                    });
-                });
+                   .ConfigureHostConfiguration(webBuilder => { webBuilder.AddJsonFile($"RegisteredUsers.json", optional: true, reloadOnChange: true); })
+                   .ConfigureWebHostDefaults(webBuilder =>
+                   {
+                       webBuilder.UseStartup<Startup>();
+                       webBuilder.ConfigureKestrel(o =>
+                       {
+                           o.ConfigureHttpsDefaults(o =>
+                               o.ClientCertificateMode = ClientCertificateMode.RequireCertificate
+                           );
+                       });
+                   });
         }
-
-
 
     }
 }

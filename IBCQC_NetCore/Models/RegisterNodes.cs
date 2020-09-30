@@ -14,15 +14,24 @@ namespace IBCQC_NetCore.Models
         /// <returns></returns>
         public AllCallerInfo readNodes(string filename)
         {
-
             var filePath = Path.Combine(System.AppContext.BaseDirectory, filename);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                //return null;
+                Console.WriteLine("ERROR: readNodes failed. File not found: " + filePath);
+                throw new FileNotFoundException("ERROR: readNodes failed. File not found: " + filePath);
+            }
             string jsonString = System.IO.File.ReadAllText(filePath);
 
-           
             AllCallerInfo allCallerInfo = JsonSerializer.Deserialize<AllCallerInfo>(jsonString);
-
+            if (allCallerInfo.CallerInfo == null)
+            {
+                //return null;
+                Console.WriteLine("ERROR: readNodes failed to parse: " + filePath);
+                throw new FormatException("ERROR: readNodes failed to parse: " + filePath);
+            }
             return allCallerInfo;
-
         }
 
         public bool writeNodes(CallerInfo newNode, string filename)
@@ -35,25 +44,18 @@ namespace IBCQC_NetCore.Models
             ////overwrite the file and it wil contain the new data
             System.IO.File.WriteAllText(filePath, towrite);
 
-
             return true;
         }
 
         public bool nodeExists(string certserial, string filename)
         {
-           
-
             var allCallerInfo = readNodes(filename);
             foreach (var callerInfo in allCallerInfo.CallerInfo)
             {
-
                 if (callerInfo.clientCertSerialNumber == certserial)
                 {
                     return true;
-
                 }
-
-
             }
             return false;
         }
@@ -63,11 +65,9 @@ namespace IBCQC_NetCore.Models
             var allCallerInfo = readNodes(filename);
             foreach (var callerInfo in allCallerInfo.CallerInfo)
             {
-
                 if (callerInfo.clientCertSerialNumber == serialNumber)
                 {
                     return callerInfo;
-
                 }
             }
 
@@ -83,12 +83,8 @@ namespace IBCQC_NetCore.Models
 
             StoredKemKeys allKemKeys = JsonSerializer.Deserialize<StoredKemKeys>(jsonString);
 
-            //housekeeping keep the file with available keys
-            //we set a key to one if used when we get to 10 we reset
-
-
-
-
+            // Housekeeping: Keep the file with available keys
+            // We set a key to one if used. When we get to 10 we reset
 
             bool availablekeys = false;
 
@@ -99,55 +95,35 @@ namespace IBCQC_NetCore.Models
                     availablekeys = true;
                     break;
                 }
-
             }
 
             if (!availablekeys)
-
             {
                 //reset the keys
                 foreach (var keyValues in allKemKeys.KemKeys)
                 {
                     if (keyValues.keyAlgorithm == kemAlgorithm)
                         keyValues.isUsed = "0";
-
                 }
 
                 string towrite = JsonSerializer.Serialize(allKemKeys);
                 ////overwrite the file and it wil contain the new data
                 System.IO.File.WriteAllText(filePath, towrite);
-
-
             }
 
             //we have updated the file and the object so we have now keys available
 
             foreach (var keyPair in allKemKeys.KemKeys)
             {
-
-
-
-
                 if (keyPair.isUsed == "0" && keyPair.keyAlgorithm == kemAlgorithm)
                 {
                     //looks convoluted but need to stick with what we have to ensure the libraries can slot in when ready
-
-
                     newpair.PrivateKey = Convert.FromBase64String(keyPair.kemPrivateKey);
                     newpair.PublicKey = Convert.FromBase64String(keyPair.kemPublicKey);
-
                     return newpair;
-
                 }
-
-
-
-
             }
-
             return null;
-
-
         }
 
         internal bool UpdSharedSecret(string sharedsecret, string filename, string serialNumber)
@@ -156,13 +132,10 @@ namespace IBCQC_NetCore.Models
             {
                 var allCallerInfo = readNodes(filename);
 
-
-                //for writing back 
-
+                // For writing back
                 var filePath = Path.Combine(System.AppContext.BaseDirectory, filename);
                 foreach (var callerInfo in allCallerInfo.CallerInfo)
                 {
-
                     if (callerInfo.clientCertSerialNumber == serialNumber)
                     {
                         callerInfo.sharedSecretForSession = sharedsecret;
@@ -173,13 +146,12 @@ namespace IBCQC_NetCore.Models
                         return true;
                     }
                 }
-
                 return false;
             }
-
-            catch { return false; }
-
-
+            catch
+            {
+                return false;
+            }
 
         }
     }

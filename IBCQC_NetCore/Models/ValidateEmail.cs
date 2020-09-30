@@ -1,19 +1,30 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.Logging;
+
 namespace IBCQC_NetCore.Models
 {
     public class ValidateEmail
     {
-        public static bool IsValidEmail(string email)
+        private readonly ILogger _logger;
+
+        public ValidateEmail(ILogger logger)
+        {
+            _logger = logger;
+        }
+
+        public bool IsValidEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
+            {
                 return false;
-
+            }
             try
             {
                 // Normalize the domain
@@ -32,12 +43,14 @@ namespace IBCQC_NetCore.Models
                     return match.Groups[1].Value + domainName;
                 }
             }
-            catch (RegexMatchTimeoutException e)
+            catch (RegexMatchTimeoutException ex)
             {
+                _logger.LogInformation("ERROR: Failed with RegexMatchTimeoutException: " + ex.Message);
                 return false;
             }
-            catch (ArgumentException e)
+            catch (ArgumentException ex)
             {
+                _logger.LogInformation("ERROR: Failed with ArgumentException: " + ex.Message);
                 return false;
             }
 
