@@ -1,6 +1,10 @@
 
+#define UNITTESTS_WORK_IN_PROGRESS
+
 using IBCQC_NetCore.xUnitTestEx;
 using System;
+
+#if (!UNITTESTS_WORK_IN_PROGRESS)
 using Xunit;
 
 namespace XUnitTestIBCQC_NetCore
@@ -28,7 +32,7 @@ namespace XUnitTestIBCQC_NetCore
 
         }
 
-        ///example of data driven test  
+        ///example of data driven test
 
 
         [Theory]
@@ -48,3 +52,4 @@ namespace XUnitTestIBCQC_NetCore
     }
     }
 }
+#endif // UNITTESTS_WORK_IN_PROGRESS

@@ -3,6 +3,8 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+##############################################################################
+
 # User-specific files
 *.rsuser
 *.suo
@@ -18,17 +20,20 @@
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
-x64/
-x86/
+[Xx]64/
+[Xx]86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
-bld/
+[Bb]uild/
+[Bb]ld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+[Dd]ist/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
+
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
@@ -339,12 +344,44 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 .vs/
-obj/
+
+##############################################################################
+
+# Personal/Local notes folders
+_*[Ii]gnore[Mm]e/
+_*[Ii]gnore_[Mm]e/
+_*[Mm]y[Nn]otes/
+_*[Mm]y_[Nn]otes/
+_*[Jj][Gg]_[Nn]otes/
+_*[Tt]emp/
+_*[Tt]mp/
+_*[Nn]ot[Uu]sed/
+
+# System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Credentials etc
+ib_password
+ib_password.txt
+ib_password.conf
+ib_password.cfg
+ib_password.cnf
+ib_password.json
+ib_credentials
+ib_credentials.txt
+ib_credentials.conf
+ib_credentials.cfg
+ib_credentials.cnf
+ib_credentials.json
+
 *.v2
 *.v2
 .[Cc]ache
 .[Cc]ache/
-.vscode/
+#.vscode/
+
 .vs/IBCQC_NetCore/v16/.suo
 IBCQC_NetCore/obj/Debug/netcoreapp3.1/IBCQC_NetCore.dll
 IBCQC_NetCore/obj/Debug/netcoreapp3.1/IBCQC_NetCore.pdb
@@ -352,4 +389,13 @@ IBCQC_NetCore/obj/Debug/netcoreapp3.1/IBCQC_NetCore.csproj.FileListAbsolute.txt
 .vs/IBCQC_NetCore/v16/.suo
 .vs/IBCQC_NetCore/DesignTimeBuild/.dtbcache.v2
 *.v2
-.vs/IBCQC_NetCore/v16/.suo
+
+# Visual Studio cache files ending in .cache can be ignored
+*.[Cc]ache
+# but keep track of directories ending in .cache
+!*.[Cc]ache/
+
+IBCQC_NetCore/Lib/
+*.pfx
+Dockerfile.ben
+

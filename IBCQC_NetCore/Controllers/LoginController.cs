@@ -1,70 +1,76 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using System.Text.Json;
+//using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using System.Net;
-using IBCQC_NetCore.ViewModel;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.Certificate;
-using System.Security.Claims;
+
+using IBCQC_NetCore.ViewModel;
 using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
-using System.Text.Json;
 
 
 namespace IBCQC_NetCore.Controllers
 {
-  
-    [AllowAnonymous]
+    /// <summary>
+    /// new code
+    /// </summary>
+    /// <returns></returns>
+    /// <summary>
+    /// This is the basic username password login method
+    /// it provides a user token
+    /// TODO override if a user cert is present
+    /// </summary>
+    ///
 
+
+    //  api/<LoginController>
+    [AllowAnonymous]
     [ApiController]
     [Route("api/[controller]")]
     public class LoginController : ControllerBase
     {
+        private readonly ILogger<LoginController> _logger;
 
-  
+        public LoginController(ILogger<LoginController> logger)
+        {
+            _logger = logger;
+        }
+
         /// <summary>
         /// Provides a token for using this API
         /// </summary>
         /// Login using client certificate
         /// <returns></returns>
-        /// 
-
-       
+        ///
         [HttpGet]
-   
-
         public IActionResult Login()
         {
             try
             {
-                //go get from auth claims
-
+                // Go get from auth claims
                 ClaimsPrincipal currentUser = this.User;
 
-                //as this is the authenticated cert we get a number of claims from the authentication handler
-                //     issuer thumbprint x500distinguisehedname name serial and dns   
-
+                // As this is the authenticated cert we get a number of claims from the authentication handler
+                // issuer thumbprint x500distinguisehedname name serial and dns   
                 string certSerial = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value;
-
                 string friendlyName  = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-
                 string thumbprint = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Thumbprint)?.Value;
 
-
-                //cert Serial Number
-
-
+                // Certificate Serial Number
                 if (certSerial.Length < 18)
                 {
                     certSerial = certSerial.PadLeft(18, '0');
                 }
 
-
-
-              //  string certSerial = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value;
+                //string certSerial = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value;
                 if (certSerial == null)
                 {
                     return Unauthorized("No Serial Number retrieved from Certificate");
@@ -74,15 +80,10 @@ namespace IBCQC_NetCore.Controllers
                 string certFriendlyName = friendlyName;   
                 if (certFriendlyName == null)
                 {
-                    return Unauthorized( "No Friendly Name Associated with this certificate");
+                    return Unauthorized( "No Friendly Name associated with this certificate");
                 }
 
-
-
-
-
                 JwtTokenHandler getToken = new JwtTokenHandler();
-
 
                 var tokenExpiry = Startup.StaticConfig["Config:jwt_lifetime"];
                 var tokenSecret = Startup.StaticConfig["Config:jwt_secret"];
@@ -91,18 +92,12 @@ namespace IBCQC_NetCore.Controllers
 
                 var jwtTok =  getToken.GenerateToken(certSerial,tokenExpiry,tokenSecret,tokenIssuer,tokenAudience);
 
-
-
-
-
-                //send the usual token format
-
+                // Send the usual token format
                 JwtTokenResult issueToken = new JwtTokenResult()
                 {
                     Token = jwtTok,
                     NotBefore = DateTime.UtcNow,
                     NotAfter = DateTime.UtcNow.AddHours( 7)
-
                 };
 
                 var options = new JsonSerializerOptions
@@ -111,9 +106,6 @@ namespace IBCQC_NetCore.Controllers
                     WriteIndented = true
                 };
 
-
-
-
                 var userJwtTok = JsonSerializer.Serialize(issueToken, options);
 
                 return Ok(userJwtTok);
@@ -121,76 +113,47 @@ namespace IBCQC_NetCore.Controllers
             catch (Exception ex)
             {
                 // APILogging.Log("Login", "ERROR: Login failed with exception: " + ex.Message);
-                return Unauthorized( "*401* Login failed.::: " + ex.Message);
+                return Unauthorized( "*401* Login failed with exception: " + ex.Message);
             }
         }
 
 
-
-
-
         [HttpPost]
-
         public IActionResult Login( string posted)
         {
             try
             {
-
                 //cert Serial Number
-
-
                 var cert = Request.HttpContext.Connection.ClientCertificate;
-
                 // Get the public key
                 byte[] userPublicKey = cert.GetPublicKey();
-
                 string certSerial = cert.SerialNumber;
-
-
                 if (certSerial.Length < 18)
                 {
                     certSerial = certSerial.PadLeft(18, '0');
                 }
-
-
-
-           
                 if (certSerial == null)
                 {
                     return Unauthorized("No Serial Number retrieved from Certificate");
                 }
-
-                //Friendly Certificate Name 
-                string certFriendlyName = cert.FriendlyName; 
+                //Friendly Certificate Name
+                string certFriendlyName = cert.FriendlyName;
                 if (certFriendlyName == null)
                 {
                     return Unauthorized("No Friendly Name Associated with this certificate");
                 }
-
-
-
                 JwtTokenHandler getToken = new JwtTokenHandler();
-
-
                 var tokenExpiry = Startup.StaticConfig["Config:jwt_lifetime"];
                 var tokenSecret = Startup.StaticConfig["Config:jwt_secret"];
                 var tokenIssuer = Startup.StaticConfig["Config:jwt_issuer"];
                 var tokenAudience = Startup.StaticConfig["Config:jwt_audience"];
-
                 var jwtTok = getToken.GenerateToken(certSerial, tokenExpiry, tokenSecret, tokenIssuer, tokenAudience);
-
-
-
-
-
                 //send the usual token format
-
                 JwtTokenResult issueToken = new JwtTokenResult()
                 {
                     Token = jwtTok,
                     NotBefore = DateTime.UtcNow,
                     NotAfter = DateTime.UtcNow.AddHours(7)
-
                 };
 
                 var options = new JsonSerializerOptions
@@ -199,22 +162,16 @@ namespace IBCQC_NetCore.Controllers
                     WriteIndented = true
                 };
 
-
-
-
                 var userJwtTok = JsonSerializer.Serialize(issueToken, options);
-
                 return Ok(userJwtTok);
             }
             catch (Exception ex)
             {
-                // APILogging.Log("Login", "ERROR: Login failed with exception: " + ex.Message);
+                _logger.LogInformation("ERROR: Login failed with exception: " + ex.Message);
                 return Unauthorized("*401* Login failed. ");
             }
         }
 
+
     }
 }
-
-
-        
