@@ -56,7 +56,7 @@ namespace IBCQC_NetCore
                                     OnCertificateValidated = context =>
                                     {
                                         // We do not ned to add claims the cert auth does that as the defaulty idetity
-                                        new ClaimsIdentity(claims, context.Scheme.Name));
+                                       
                                         context.Success();
 
                                         return Task.CompletedTask;

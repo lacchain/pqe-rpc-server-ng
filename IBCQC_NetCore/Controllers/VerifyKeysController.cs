@@ -11,6 +11,7 @@ using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
 using IBCQC_NetCore.Rng;
 using static IBCQC_NetCore.Models.ApiEnums;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -45,11 +46,7 @@ namespace IBCQC_NetCore.Controllers
         {
             try
             {
-                //var keyValidate = JsonConvert.DeserializeObject<KeyValidate>(reqData);
-                //string typeOfKey = keyValidate.typeOfKey;
-                //string content = keyValidate.keyToValidate.Replace("\"", string.Empty);
-                //string content3 = content.Trim('"');
-                //string keyToValidate = content3;
+               
 
                 // Is this the request or response
                 string requestType = keyValidate.requestType;
@@ -61,31 +58,53 @@ namespace IBCQC_NetCore.Controllers
                     return StatusCode(401,"WARNING: Not supported while Client Certificate checks are disabled");
                 }
 
-                var cert = Request.HttpContext.Connection.ClientCertificate;
-                byte[] userPublicKey = cert.GetPublicKey();  // Get the public key
-                certSerial = cert.SerialNumber;
+                // Go get from auth claims
+                ClaimsPrincipal currentUser = this.User;
+
+                // As this is the authenticated cert we get a number of claims from the authentication handler
+                // issuer thumbprint x500distinguisehedname name serial and dns   
+                string certSerial = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value;
+                string friendlyName = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                string thumbprint = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Thumbprint)?.Value;
+
+                if (certSerial == null)
+                {
+                    return StatusCode(401, "No Serial Number retrieved from Certificate");
+                }
+
+
+                // Certificate Serial Number
                 if (certSerial.Length < 18)
                 {
                     certSerial = certSerial.PadLeft(18, '0');
                 }
 
-                // TODO: Change to GetCCaller(userPublicKey)
+                //Friendly Certificate Name 
+                string certFriendlyName = friendlyName;
+                if (certFriendlyName == null)
+                {
+                    return StatusCode(401, "No Friendly Name associated with this certificate");
+                }
+
+                //check certificate is one of our registered certificates
 
                 RegisterNodes chkNode = new RegisterNodes();
                 try
                 {
-                    callerInfo = chkNode.GetClientNode(certSerial, "RegisteredUsers.json");
+                    CallerInfo callerInfo = chkNode.GetClientNode(certSerial, "RegisteredUsers.json");
 
-                    // OK - now to crteate the key parts
+                    // OK -is this a known serial certificate
                     if (string.IsNullOrEmpty(callerInfo.callerID))
                     {
-                        return Unauthorized("Unknown Certificate");
+                        return StatusCode(401, "Unknown Certificate");
                     }
                 }
                 catch (Exception ex)
                 {
-                    return StatusCode(500, "VerifyKeys cannot identify caller. Exception: " + ex.Message);
+                    return StatusCode(500, "Cannot identify caller. Exception: " + ex.Message);
                 }
+
+               
 
                 bool isValidCaller = valCaller.callerValidate(callerInfo, CallerStatus.requireKemValid);
                 // They need a valid KEM key, not a shared secret
@@ -97,7 +116,7 @@ namespace IBCQC_NetCore.Controllers
                     }
                     else
                     {
-                        return Unauthorized("Client unknown or invalid");
+                        return StatusCode(401,"Client unknown or invalid");
                     }
                 }
             }

@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authentication.Certificate;
 using IBCQC_NetCore.ViewModel;
 using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
-
+using System.Security.Claims;
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -64,23 +64,41 @@ namespace IBCQC_NetCore.Controllers
                 string friendlyName  = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                 string thumbprint = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Thumbprint)?.Value;
 
+                if (certSerial == null)
+                {
+                    return StatusCode(401, "No Serial Number retrieved from Certificate");
+                }
+
+
                 // Certificate Serial Number
                 if (certSerial.Length < 18)
                 {
                     certSerial = certSerial.PadLeft(18, '0');
                 }
 
-                //string certSerial = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value;
-                if (certSerial == null)
-                {
-                    return Unauthorized("No Serial Number retrieved from Certificate");
-                }
-
                 //Friendly Certificate Name 
                 string certFriendlyName = friendlyName;   
                 if (certFriendlyName == null)
                 {
-                    return Unauthorized( "No Friendly Name associated with this certificate");
+                    return StatusCode(401, "No Friendly Name associated with this certificate");
+                }
+
+                //check certificate is one of our registered certificates
+
+                RegisterNodes chkNode = new RegisterNodes();
+                try
+                {
+                  CallerInfo  callerInfo = chkNode.GetClientNode(certSerial, "RegisteredUsers.json");
+
+                    // OK -is this a known serial certificate
+                    if (string.IsNullOrEmpty(callerInfo.callerID))
+                    {
+                        return StatusCode(401, "Unknown Certificate");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, "Cannot identify caller. Exception: " + ex.Message);
                 }
 
                 JwtTokenHandler getToken = new JwtTokenHandler();
