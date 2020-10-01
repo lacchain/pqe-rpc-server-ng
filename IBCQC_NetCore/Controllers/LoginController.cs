@@ -12,7 +12,7 @@ using System.Security.Claims;
 using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
 using System.Text.Json;
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -40,17 +40,21 @@ namespace IBCQC_NetCore.Controllers
         {
             try
             {
-             
+                //go get from auth claims
+
+                ClaimsPrincipal currentUser = this.User;
+
+                //as this is the authenticated cert we get a number of claims from the authentication handler
+                //     issuer thumbprint x500distinguisehedname name serial and dns   
+
+                string certSerial = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value;
+
+                string friendlyName  = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+
+                string thumbprint = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Thumbprint)?.Value;
+
 
                 //cert Serial Number
-
-
-                var cert = Request.HttpContext.Connection.ClientCertificate;
-
-                // Get the public key
-                byte[] userPublicKey = cert.GetPublicKey();
-
-              string  certSerial = cert.SerialNumber;
 
 
                 if (certSerial.Length < 18)
@@ -67,11 +71,14 @@ namespace IBCQC_NetCore.Controllers
                 }
 
                 //Friendly Certificate Name 
-                string certFriendlyName = cert.FriendlyName;   //currentUser.Claims.FirstOrDefault( c => c.Type == ClaimTypes.Name)?.Value;
+                string certFriendlyName = friendlyName;   
                 if (certFriendlyName == null)
                 {
                     return Unauthorized( "No Friendly Name Associated with this certificate");
                 }
+
+
+
 
 
                 JwtTokenHandler getToken = new JwtTokenHandler();

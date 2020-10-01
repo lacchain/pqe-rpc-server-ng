@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using IBCQC_NetCore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -24,6 +25,7 @@ namespace IBCQC_NetCore.Controllers
         //[Route("{format}")]    // {} = optional
         //[Route("{format:int=0}")]    // {} = optional
        // [Route("api/[controller]")]    // {} = optional
+       [Authorize]
         [HttpGet]
         public IActionResult Get() //GetInfoViewModel model)
         {
