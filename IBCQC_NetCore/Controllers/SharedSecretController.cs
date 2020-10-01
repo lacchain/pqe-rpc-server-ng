@@ -114,7 +114,7 @@ namespace IBCQC_NetCore.Controllers
                 switch (Convert.ToInt16(callerInfo.kemAlgorithm))
                 {
                     case 222: // Frodo Kem640
-                              // TODO: Fix magic number
+                             
                     {
                         // Generate a new shared secret and encapsulate in KEM
                         /* FrodoParams frodoId = FrodoParams.Kem640; */
@@ -127,8 +127,7 @@ namespace IBCQC_NetCore.Controllers
                         //todo encapsulate rather than just send bytes
                         string ciphertextB64 = Convert.ToBase64String(randomBytes);
 
-                        // Update the shared secret in DB
-                        //APILogging.Log("GetSharedSecret", "Storing raw SharedSecret in DB");
+                        
                         //   Change to file method
 
                         RegisterNodes chkNode = new RegisterNodes();

@@ -6,6 +6,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using IBCQC_NetCore.Models;
+using static IBCQC_NetCore.Models.ApiEnums;
+using IBCQC_NetCore.Functions;
+using IBCQC_NetCore.Rng;
+using IBCQC_NetCore.Encryption;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,6 +19,10 @@ namespace IBCQC_NetCore.Controllers
     [ApiController]
     public class ReqKeyPairController : ControllerBase
     {
+
+        private static CallerInfo callerInfo;
+        private CallerValidate valCaller = new CallerValidate();
+
         // GET: api/<ReqKeyPairController>
         [HttpGet]
         public IActionResult Get()
@@ -52,7 +60,7 @@ namespace IBCQC_NetCore.Controllers
             RegisterNodes chkNode = new RegisterNodes();
             try
             {
-                CallerInfo callerInfo = chkNode.GetClientNode(certSerial, "RegisteredUsers.json");
+                 callerInfo = chkNode.GetClientNode(certSerial, "RegisteredUsers.json");
 
                 // OK -is this a known serial certificate
                 if (string.IsNullOrEmpty(callerInfo.callerID))
@@ -65,8 +73,176 @@ namespace IBCQC_NetCore.Controllers
                 return StatusCode(500, "Cannot identify caller. Exception: " + ex.Message);
             }
 
-            return StatusCode(200, "value1");
+          
+
+            // First check if this is intialise or not.
+            // If initialise then they would fail the validation checks
+            if (!Convert.ToBoolean(callerInfo.isInitialise))
+            {
+                bool isValidCaller = valCaller.callerValidate(callerInfo, CallerStatus.requireSharedValid);
+                if (!isValidCaller)
+                {
+                    if (valCaller.sharedSecretNeedsChanging)
+                    {
+                       
+                        return StatusCode(498, "SharedSecret has expired");
+                    }
+                    else
+                    {
+                       
+                        return StatusCode(401, "Client unknown or invalid");
+                    }
+                }
+            }
+
+
+
+            // Get the keypair
+            try
+            {
+
+                // As this is standalone we use bouncy castle
+
+                Prng getRandom = new Prng();
+                //so get 256 Byte key for AES
+
+                // Set number of iterations for the RFC2898 derivation function
+                // to a reasonably large number, and let's choose a prime number for fun.
+              
+                int iterations = Convert.ToInt16(Startup.StaticConfig["Config:DerivationIterations"]);
+              
+                int saltSize = Convert.ToInt16(Startup.StaticConfig["Config:SaltSize"]);
+
+                byte[] saltBytes = getRandom.GetBytes(saltSize);
+
+
+              
+                byte[] encryptedBytes1;   // Byte array to hold encrypted data
+                string sendBytes;         // String to hold send data
+
+                // OK - implement the AES encryption
+                AESEncrypt encryptAES = new AESEncrypt();
+
+                //used for testing the fiel nbased stored keys
+
+               
+
+
+                switch (Convert.ToInt16(callerInfo.kemAlgorithm))
+                {
+                    case 222: // Frodo Kem640
+                              // Generate a new key pair and encrypt with our existing shared secret
+
+                        //FrodoParams frodoId = FrodoParams.Kem640;
+
+                        //// Let us first get a new keypair
+
+                        //var keyPair = _algorithmServiceManager
+                        //                .KeyEncapsulationService<FrodoKemService, FrodoParams>(frodoId)
+                        //                .KeyGen();
+
+
+                        //for testing we use the file containing fixed keys
+
+                        CqcKeyPair cqcKeyPair = RegisterNodes.GetKemKey(callerInfo.kemAlgorithm, "TempKeys.json");
+
+                        //getcallersql.SetPublicKey(callerInfo.callerId,
+                        //                          keyPair.PublicKey,
+                        //                          keyPair.PrivateKey,
+                        //                          false);
+
+
+
+                        // Now use AES
+
+
+
+
+                        encryptedBytes1 = encryptAES.Encrypt(cqcKeyPair.PrivateKey,
+                                                                     Convert.FromBase64String(callerInfo.sharedSecretForSession),
+                                                                     saltBytes,
+                                                                     iterations);
+
+                        // Send as base64
+                       
+                        sendBytes = Convert.ToBase64String(encryptedBytes1);
+                        
+                        return StatusCode(200,sendBytes);
+
+                    case 322: // McEliece6960119
+
+                        //  McElieceParams McElId = IronBridge.Models.Encapsulation.McElieceParams.McEliece6960119;
+
+                        // First, let us generate a new keypair
+
+                        //var mcKeyPair = _algorithmServiceManager
+                        //                  .KeyEncapsulationService<McElieceService, McElieceParams>(McElId)
+                        //                  .KeyGen();
+
+                        // OK - Now we want to ecapsulate the private key with their old public key
+
+                        // This is a new call and extended in McEliece6960119 service to not return the key in plain text
+                        //var McEncapsulation = _algorithmServiceManager
+                        //                      .KeyEncapsulationService <McElieceService, McElieceParams>(McElId)
+                        //                      .Encapsulate(callerInfo.kemPublicKey, mcKeyPair.PrivateKey, true);
+
+
+                        //for testing we use the file containing fixed keys
+
+
+                        CqcKeyPair mcCqcKeyPair = RegisterNodes.GetKemKey(callerInfo.kemAlgorithm, "TempKeys.json");
+
+                        //getcallersql.SetPublicKey(callerInfo.callerId,
+                        //                          mcKeyPair.PublicKey,
+                        //                          mcKeyPair.PrivateKey,
+                        //                          false);
+
+
+
+
+                        // Now use AES
+
+                        // OK - implement the AES mcryption
+
+
+
+
+                        encryptedBytes1 = encryptAES.Encrypt(mcCqcKeyPair.PrivateKey,
+                                                                     Convert.FromBase64String(callerInfo.sharedSecretForSession),
+                                                                     saltBytes,
+                                                                     iterations);
+
+
+                        // Send as base64
+
+                        sendBytes = Convert.ToBase64String(encryptedBytes1);
+                      
+                        return StatusCode(200,sendBytes);
+
+                    default:
+                       
+                        return StatusCode(400, "Unsupported KEM Algorithm");
+                }
+            }
+            catch (Exception ex)
+            {
+               
+                return StatusCode(500, "ERROR: GetKeyPair failed with: " + ex.Message);
+            }
+
+
+  
+
+
+
+
+
+
+
         }
+
+
+
 
 
 
