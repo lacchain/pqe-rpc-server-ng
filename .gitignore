@@ -375,6 +375,16 @@ ib_credentials.cfg
 ib_credentials.cnf
 ib_credentials.json
 
+# Visual Studio Code directory
+#.vscode/
+
+# Visual Studio 2015 cache/options directory
+.vs/
+
+# Visual Studio cache files ending in .cache can be ignored
+*.[Cc]ache
+# but keep track of directories ending in .cache
+!*.[Cc]ache/
 
 IBCQC_NetCore/Lib/
 *.pfx
