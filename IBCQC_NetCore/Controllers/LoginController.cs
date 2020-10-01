@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authentication.Certificate;
 using IBCQC_NetCore.ViewModel;
 using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -55,20 +55,29 @@ namespace IBCQC_NetCore.Controllers
         {
             try
             {
-                // Certificate Serial Number
-                var cert = Request.HttpContext.Connection.ClientCertificate;   // Get the client certificate
-                byte[] userPublicKey = cert.GetPublicKey();                    // Get the public key
-                string certSerial = cert.SerialNumber;                         // Get the Serial Number
-                string certFriendlyName = cert.FriendlyName;                   // Get Friendly Certificate Name
+                // Go get from auth claims
+                ClaimsPrincipal currentUser = this.User;
 
-                if (certSerial == null)
-                {
-                    return Unauthorized("Unable to aquire a Certificate Serial Number");
-                }
+                // As this is the authenticated cert we get a number of claims from the authentication handler
+                // issuer thumbprint x500distinguisehedname name serial and dns   
+                string certSerial = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value;
+                string friendlyName  = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                string thumbprint = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Thumbprint)?.Value;
+
+                // Certificate Serial Number
                 if (certSerial.Length < 18)
                 {
                     certSerial = certSerial.PadLeft(18, '0');
                 }
+
+                //string certSerial = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value;
+                if (certSerial == null)
+                {
+                    return Unauthorized("No Serial Number retrieved from Certificate");
+                }
+
+                //Friendly Certificate Name 
+                string certFriendlyName = friendlyName;   
                 if (certFriendlyName == null)
                 {
                     return Unauthorized( "No Friendly Name associated with this certificate");

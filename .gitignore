@@ -343,6 +343,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+.vs/
 
 ##############################################################################
 
@@ -375,11 +376,19 @@ ib_credentials.cfg
 ib_credentials.cnf
 ib_credentials.json
 
-# Visual Studio Code directory
+*.v2
+*.v2
+.[Cc]ache
+.[Cc]ache/
 #.vscode/
 
-# Visual Studio 2015 cache/options directory
-.vs/
+.vs/IBCQC_NetCore/v16/.suo
+IBCQC_NetCore/obj/Debug/netcoreapp3.1/IBCQC_NetCore.dll
+IBCQC_NetCore/obj/Debug/netcoreapp3.1/IBCQC_NetCore.pdb
+IBCQC_NetCore/obj/Debug/netcoreapp3.1/IBCQC_NetCore.csproj.FileListAbsolute.txt
+.vs/IBCQC_NetCore/v16/.suo
+.vs/IBCQC_NetCore/DesignTimeBuild/.dtbcache.v2
+*.v2
 
 # Visual Studio cache files ending in .cache can be ignored
 *.[Cc]ache
@@ -389,3 +398,4 @@ ib_credentials.json
 IBCQC_NetCore/Lib/
 *.pfx
 Dockerfile.ben
+

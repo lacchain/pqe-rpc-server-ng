@@ -33,14 +33,14 @@ namespace IBCQC_NetCore
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+           
             //services.Configure<RegisteredNodes>(options => Configuration.GetSection("Registered").Bind(options));
             //services.Configure<RegisteredNodes>(Configuration.GetSection("Registered"));
 
             // Add certificate auth if we want it
 
-            bool certificateRequired = Convert.ToBoolean(Configuration["Config:ignoreClientCertificateErrors"]);
-            if (certificateRequired)
+            bool ignoreCertificate = Convert.ToBoolean(Configuration["Config:ignoreClientCertificateErrors"]);
+            if (!ignoreCertificate)
             {
                 services.AddAuthentication(
                     CertificateAuthenticationDefaults.AuthenticationScheme)
@@ -55,21 +55,8 @@ namespace IBCQC_NetCore
                                     //  check the certificate options and return
                                     OnCertificateValidated = context =>
                                     {
-                                        var claims = new[]
-                                        {
-                                            new Claim(
-                                                ClaimTypes.SerialNumber,
-                                                context.ClientCertificate.SerialNumber,
-                                                ClaimValueTypes.String,
-                                                context.Options.ClaimsIssuer),
-                                            new Claim(
-                                                ClaimTypes.Name,
-                                                context.ClientCertificate.FriendlyName,
-                                                ClaimValueTypes.String,
-                                                context.Options.ClaimsIssuer)
-                                        };
-
-                                        context.Principal = new ClaimsPrincipal(new ClaimsIdentity(claims, context.Scheme.Name));
+                                        // We do not ned to add claims the cert auth does that as the defaulty idetity
+                                        new ClaimsIdentity(claims, context.Scheme.Name));
                                         context.Success();
 
                                         return Task.CompletedTask;
@@ -83,7 +70,12 @@ namespace IBCQC_NetCore
                                 };
                             });
                     });
-            }
+            } 
+
+
+
+            
+            services.AddControllers();
         }
         // Add the controller service
 

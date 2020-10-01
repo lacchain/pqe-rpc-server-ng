@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Reflection;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization; // For AllowAnonymous
 using Microsoft.Extensions.Logging;

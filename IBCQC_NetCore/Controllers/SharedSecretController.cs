@@ -30,13 +30,14 @@ namespace IBCQC_NetCore.Controllers
             try
             {
                 // Cert req if passed validation then we have a client cert
-                bool ignoreClientCertificateErrors = Convert.ToBoolean(Startup.StaticConfig["Config:IgnoreClientCertificateErrors"]);
-                if (ignoreClientCertificateErrors)
+                bool ignoreClientCertificate = Convert.ToBoolean(Startup.StaticConfig["Config:IgnoreClientCertificateErrors"]);
+                if (ignoreClientCertificate)
                 {
                     return  /*401*/Unauthorized("WARNING: Not supported while Client Certificate checks are disabled");
                 }
 
                 var cert = Request.HttpContext.Connection.ClientCertificate;
+
 
                 // Get the public key
                 byte[] userPublicKey = cert.GetPublicKey();
