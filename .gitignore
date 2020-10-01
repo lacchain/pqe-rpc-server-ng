@@ -350,3 +350,6 @@ IBCQC_NetCore/obj/Debug/netcoreapp3.1/IBCQC_NetCore.dll
 IBCQC_NetCore/obj/Debug/netcoreapp3.1/IBCQC_NetCore.pdb
 IBCQC_NetCore/obj/Debug/netcoreapp3.1/IBCQC_NetCore.csproj.FileListAbsolute.txt
 .vs/IBCQC_NetCore/v16/.suo
+.vs/IBCQC_NetCore/DesignTimeBuild/.dtbcache.v2
+*.v2
+.vs/IBCQC_NetCore/v16/.suo
