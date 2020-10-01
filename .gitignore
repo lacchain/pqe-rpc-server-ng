@@ -377,3 +377,5 @@ ib_credentials.json
 
 
 IBCQC_NetCore/Lib/
+*.pfx
+Dockerfile.ben
