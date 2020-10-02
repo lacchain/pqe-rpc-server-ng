@@ -63,7 +63,7 @@ namespace IBCQC_NetCore.Controllers
                 RegisterNodes chkNode = new RegisterNodes();
                 try
                 {
-                    CallerInfo callerInfo = chkNode.GetClientNode(certSerial, "RegisteredUsers.json");
+                   callerInfo = chkNode.GetClientNode(certSerial, Startup.StaticConfig["Config:clientFileStore"]);
 
                     // OK -is this a known serial certificate
                     if (string.IsNullOrEmpty(callerInfo.callerID))

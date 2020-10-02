@@ -10,6 +10,7 @@ using static IBCQC_NetCore.Models.ApiEnums;
 using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Rng;
 using IBCQC_NetCore.Encryption;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,6 +25,7 @@ namespace IBCQC_NetCore.Controllers
         private CallerValidate valCaller = new CallerValidate();
 
         // GET: api/<ReqKeyPairController>
+        [Authorize]
         [HttpGet]
         public IActionResult Get()
         {
@@ -60,7 +62,7 @@ namespace IBCQC_NetCore.Controllers
             RegisterNodes chkNode = new RegisterNodes();
             try
             {
-                 callerInfo = chkNode.GetClientNode(certSerial, "RegisteredUsers.json");
+                 callerInfo = chkNode.GetClientNode(certSerial, Startup.StaticConfig["Config:clientFileStore"]);
 
                 // OK -is this a known serial certificate
                 if (string.IsNullOrEmpty(callerInfo.callerID))
@@ -144,7 +146,7 @@ namespace IBCQC_NetCore.Controllers
 
                         //for testing we use the file containing fixed keys
 
-                        CqcKeyPair cqcKeyPair = RegisterNodes.GetKemKey(callerInfo.kemAlgorithm, "TempKeys.json");
+                        CqcKeyPair cqcKeyPair = RegisterNodes.GetKemKey(callerInfo.kemAlgorithm, Startup.StaticConfig["Config:keyFileStore"]);
 
                         //getcallersql.SetPublicKey(callerInfo.callerId,
                         //                          keyPair.PublicKey,
@@ -190,7 +192,7 @@ namespace IBCQC_NetCore.Controllers
                         //for testing we use the file containing fixed keys
 
 
-                        CqcKeyPair mcCqcKeyPair = RegisterNodes.GetKemKey(callerInfo.kemAlgorithm, "TempKeys.json");
+                        CqcKeyPair mcCqcKeyPair = RegisterNodes.GetKemKey(callerInfo.kemAlgorithm, Startup.StaticConfig["Config:keyFileStore"]);
 
                         //getcallersql.SetPublicKey(callerInfo.callerId,
                         //                          mcKeyPair.PublicKey,

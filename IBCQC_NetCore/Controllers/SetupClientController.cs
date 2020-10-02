@@ -32,14 +32,15 @@ namespace IBCQC_NetCore.Controllers
         public SetupClientController(ILogger<SetupClientController> logger)
         {
             _logger = logger;
-        }
-
-
-        public SetupClientController()//IAlgorithmServiceManager algorithmServiceManager)
-        {
-           // _algorithmServiceManager = algorithmServiceManager;
             _phoneUtil = PhoneNumberUtil.GetInstance();
         }
+
+
+        //public SetupClientController()//IAlgorithmServiceManager algorithmServiceManager)
+        //{
+        //   // _algorithmServiceManager = algorithmServiceManager;
+           
+        //}
 
 
         [HttpPost]
@@ -116,7 +117,7 @@ namespace IBCQC_NetCore.Controllers
                     postedClientInfo.clientCertSerialNumber = postedClientInfo.clientCertSerialNumber.PadLeft(18, '0');
                 }
 
-                if (chkNode.nodeExists(postedClientInfo.clientCertSerialNumber,"RegisteredUsers.json"))
+                if (chkNode.nodeExists(postedClientInfo.clientCertSerialNumber, Startup.StaticConfig["Config:clientFileStore"]))
                 {
                     return BadRequest("Client Certificate Already Exists");
                 }
@@ -165,10 +166,17 @@ namespace IBCQC_NetCore.Controllers
 
                 // OK - Store client info
 
-                CqcKeyPair cqcKeyPair = RegisterNodes.GetKemKey(postedClientInfo.kemAlgorithm, "TempKeys.json");
+                //get next callerid available 
+
+
+                int nextid = RegisterNodes.GetNextID(Startup.StaticConfig["Config:clientFileStore"]);
+
+
+                CqcKeyPair cqcKeyPair = RegisterNodes.GetKemKey(postedClientInfo.kemAlgorithm, Startup.StaticConfig["Config:keyFileStore"]);
 
                 CallerInfo storeClient = new CallerInfo();
 
+                storeClient.callerID = nextid.ToString();
                 storeClient.kemAlgorithm = postedClientInfo.kemAlgorithm;
                 storeClient.kemPublicKey = Convert.ToBase64String(cqcKeyPair.PublicKey);
                 storeClient.keyExpiryDate = DateTime.Now.AddYears(2).ToShortDateString();
@@ -176,12 +184,12 @@ namespace IBCQC_NetCore.Controllers
                 storeClient.clientCertSerialNumber = postedClientInfo.clientCertSerialNumber;
                 storeClient.isInitialise = "true";
                 storeClient.sharedSecretExpiryDurationInSecs = "7200";
-                storeClient.sharedSecretExpiryTime = DateTime.Now.ToShortTimeString();
+                storeClient.sharedSecretExpiryTime = DateTime.Now.ToShortDateString();
                 storeClient.kemPrivateKey = Convert.ToBase64String(cqcKeyPair.PrivateKey);
 
                 try
                 {
-                    var whatamI = chkNode.writeNodes(storeClient, "RegisteredUsers.json");
+                    var whatamI = chkNode.writeNodes(storeClient, Startup.StaticConfig["Config:clientFileStore"]);
                     // OK - Now to crteate the key parts
 
                     // TODO: ???

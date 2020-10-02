@@ -100,7 +100,7 @@ namespace IBCQC_NetCore.Functions
             DateTime time1 = DateTime.Now.AddDays(7);
             DateTime dt;
             DateTime.TryParseExact(caller.keyExpiryDate,
-                                   "dd-MM-yyyy",
+                                   "dd/MM/yyyy",
                                    CultureInfo.InvariantCulture,
                                    DateTimeStyles.None,
                                    out dt);
@@ -120,7 +120,7 @@ namespace IBCQC_NetCore.Functions
 
             DateTime dt;
             DateTime.TryParseExact(caller.sharedSecretExpiryTime,
-                                   "dd-MM-yyyy",
+                                   "dd/MM/yyyy hh:mm:ss",
                                    CultureInfo.InvariantCulture,
                                    DateTimeStyles.None,
                                    out dt);
@@ -146,7 +146,7 @@ namespace IBCQC_NetCore.Functions
             // Check if the KemPrivateKey has expired
             DateTime dt;
             DateTime.TryParseExact(caller.keyExpiryDate,
-                                   "dd-MM-yyyy",
+                                   "dd/MM/yyyy",
                                    CultureInfo.InvariantCulture,
                                    DateTimeStyles.None,
                                    out dt);

@@ -5,10 +5,8 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Reflection;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization; // For AllowAnonymous
 using Microsoft.Extensions.Logging;
 
 using IBCQC_NetCore.Models;
@@ -73,7 +71,7 @@ namespace IBCQC_NetCore.Controllers
             RegisterNodes chkNode = new RegisterNodes();
             try
             {
-                CallerInfo callerInfo = chkNode.GetClientNode(certSerial, "RegisteredUsers.json");
+                CallerInfo callerInfo = chkNode.GetClientNode(certSerial, Startup.StaticConfig["Config:clientFileStore"]);
 
                 // OK -is this a known serial certificate
                 if (string.IsNullOrEmpty(callerInfo.callerID))

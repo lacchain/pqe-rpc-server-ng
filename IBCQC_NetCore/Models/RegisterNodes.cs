@@ -157,5 +157,22 @@ namespace IBCQC_NetCore.Models
             }
 
         }
+
+        internal static  int GetNextID(string filename)
+        {
+            int nextid = 0;
+
+            RegisterNodes registerNodes = new RegisterNodes();
+           
+            var allCallerInfo = registerNodes.readNodes(filename);
+
+            foreach (var callerInfo in allCallerInfo.CallerInfo)
+            {
+                nextid = Convert.ToInt16(callerInfo.callerID);
+            }
+
+
+                return nextid + 1;
+        }
     }
 }

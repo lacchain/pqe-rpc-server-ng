@@ -9,7 +9,7 @@
       "sharedSecretForSession": "1",
       "sharedSecretExpiryTime": "21-12-2025",
       "keyExpiryDate": "21-12-2022",
-      "clientCertSerialNumber": "005EA23D4725755E5A",
+      "clientCertSerialNumber": "995EA23D4725755E5A",
       "clientCertName": "client101.com",
       "isInitialise": "true"
     },
@@ -37,19 +37,6 @@
       "keyExpiryDate": "21-12-2022",
       "clientCertSerialNumber": "42619BCC1CD78D32F18F0E40BC232452FCBBCA90",
       "clientCertName": "jgtestcli1.com",
-      "isInitialise": "true"
-    },
-    {
-      "callerID": "104",
-      "kemAlgorithm": "222",
-      "kemPublicKey": "1",
-      "kemPrivateKey": "1",
-      "sharedSecretExpiryDurationInSecs": "1",
-      "sharedSecretForSession": "1",
-      "sharedSecretExpiryTime": "1",
-      "keyExpiryDate": "1",
-      "clientCertSerialNumber": "1",
-      "clientCertName": "client104",
       "isInitialise": "true"
     }
   ]
