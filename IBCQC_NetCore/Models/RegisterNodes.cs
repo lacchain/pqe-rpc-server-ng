@@ -1,5 +1,6 @@
 ﻿using IBCQC_NetCore.TempKeys;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
@@ -79,9 +80,11 @@ namespace IBCQC_NetCore.Models
             CqcKeyPair newpair = new CqcKeyPair();
 
             var filePath = Path.Combine(System.AppContext.BaseDirectory, filename);
-            string jsonString = System.IO.File.ReadAllText(filePath);
+             
+            var testjsonString = System.IO.File.ReadLines(filePath);
 
-            StoredKemKeys allKemKeys = JsonSerializer.Deserialize<StoredKemKeys>(jsonString);
+             string jsonString = System.IO.File.ReadAllText(filePath);
+           StoredKemKeys allKemKeys = JsonSerializer.Deserialize<StoredKemKeys>(jsonString);
 
             // Housekeeping: Keep the file with available keys
             // We set a key to one if used. When we get to 10 we reset
