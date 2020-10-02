@@ -35,7 +35,7 @@ namespace IBCQC_NetCore.Controllers
 
                 // As this is the authenticated cert we get a number of claims from the authentication handler
                 // issuer thumbprint x500distinguisehedname name serial and dns   
-                string certSerial = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value;
+                certSerial = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value;
                 string friendlyName = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                 string thumbprint = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Thumbprint)?.Value;
 

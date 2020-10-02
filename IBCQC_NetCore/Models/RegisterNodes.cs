@@ -139,16 +139,21 @@ namespace IBCQC_NetCore.Models
                 var filePath = Path.Combine(System.AppContext.BaseDirectory, filename);
                 foreach (var callerInfo in allCallerInfo.CallerInfo)
                 {
+                    
                     if (callerInfo.clientCertSerialNumber == serialNumber)
                     {
                         callerInfo.sharedSecretForSession = sharedsecret;
                         callerInfo.sharedSecretExpiryTime = DateTime.Now.ToShortDateString();
                         ////serialize the new updated object to a string
-                        string towrite = JsonSerializer.Serialize(callerInfo);
+                        string towrite = JsonSerializer.Serialize(allCallerInfo);
                         ////overwrite the file and it wil contain the new data
                         System.IO.File.WriteAllText(filePath, towrite);
                         return true;
                     }
+
+
+
+
                 }
                 return false;
             }

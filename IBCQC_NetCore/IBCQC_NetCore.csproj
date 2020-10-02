@@ -29,5 +29,14 @@
     <Folder Include="Lib\Frodo\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="RegisteredUsers.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="TempKeys.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 
 </Project>
