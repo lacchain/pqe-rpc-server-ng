@@ -174,7 +174,7 @@ namespace IBCQC_NetCore.Functions
            
             DateTime dt;
             DateTime.TryParseExact(caller.keyExpiryDate,
-                                   "dd-MM-yyyy",
+                                   "dd/MM/yyyy hh:mm:ss",
                                    CultureInfo.InvariantCulture,
                                    DateTimeStyles.None,
                                    out dt);
