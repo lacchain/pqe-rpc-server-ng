@@ -16,6 +16,6 @@ jobs:
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           repository: lacchain/pqe-rpc-server-ng/server
           tag_with_ref: true
