@@ -13,7 +13,7 @@ namespace IBCQC_NetCore.Models
         /// replaces tyhe key storage used in production
         /// </summary>
         /// <returns></returns>
-        public AllCallerInfo readNodes(string filename)
+        internal static AllCallerInfo readNodes(string filename)
         {
             var filePath = Path.Combine(System.AppContext.BaseDirectory, filename);
 
