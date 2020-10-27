@@ -12,6 +12,7 @@ using IBCQC_NetCore.Rng;
 using IBCQC_NetCore.Encryption;
 using Microsoft.AspNetCore.Authorization;
 
+
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace IBCQC_NetCore.Controllers
@@ -22,7 +23,11 @@ namespace IBCQC_NetCore.Controllers
     {
 
         private static CallerInfo callerInfo;
+      
         private CallerValidate valCaller = new CallerValidate();
+
+
+
 
         // GET: api/<ReqKeyPairController>
         [Authorize]
@@ -139,22 +144,16 @@ namespace IBCQC_NetCore.Controllers
 
                         //// Let us first get a new keypair
 
-                        //var keyPair = _algorithmServiceManager
-                        //                .KeyEncapsulationService<FrodoKemService, FrodoParams>(frodoId)
-                        //                .KeyGen();
+                        //FrodoKemService frodoKemService = new FrodoKemService();
+
+                        //var keyPair = frodoKemService.KeyGen();
 
 
                         //for testing we use the file containing fixed keys
 
-                        CqcKeyPair cqcKeyPair = RegisterNodes.GetKemKey(callerInfo.kemAlgorithm, Startup.StaticConfig["Config:keyFileStore"]);
+                         CqcKeyPair cqcKeyPair = RegisterNodes.GetKemKey(callerInfo.kemAlgorithm, Startup.StaticConfig["Config:keyFileStore"]);
 
-                        //getcallersql.SetPublicKey(callerInfo.callerId,
-                        //                          keyPair.PublicKey,
-                        //                          keyPair.PrivateKey,
-                        //                          false);
-
-
-
+                      
                         // Now use AES
 
 
@@ -193,11 +192,6 @@ namespace IBCQC_NetCore.Controllers
 
 
                         CqcKeyPair mcCqcKeyPair = RegisterNodes.GetKemKey(callerInfo.kemAlgorithm, Startup.StaticConfig["Config:keyFileStore"]);
-
-                        //getcallersql.SetPublicKey(callerInfo.callerId,
-                        //                          mcKeyPair.PublicKey,
-                        //                          mcKeyPair.PrivateKey,
-                        //                          false);
 
 
 

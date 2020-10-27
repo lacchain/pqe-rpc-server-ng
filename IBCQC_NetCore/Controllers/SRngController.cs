@@ -25,7 +25,7 @@ namespace IBCQC_NetCore.Controllers
 
         private CallerValidate valCaller = new CallerValidate();
         private CallerInfo callerInfo = new CallerInfo();
-        private static string certSerial;
+     private static string certSerial;
 
         // private ICqcRng _cqcSRng;
         //  private ISymmetricEncryptionManager _encryptionManager;
@@ -80,7 +80,7 @@ namespace IBCQC_NetCore.Controllers
 
                 // As this is the authenticated cert we get a number of claims from the authentication handler
                 // issuer thumbprint x500distinguisehedname name serial and dns   
-                string certSerial = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value;
+                certSerial = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value;
                 string friendlyName = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
                 string thumbprint = currentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Thumbprint)?.Value;
 
@@ -108,7 +108,7 @@ namespace IBCQC_NetCore.Controllers
                 RegisterNodes chkNode = new RegisterNodes();
                 try
                 {
-                    CallerInfo callerInfo = chkNode.GetClientNode(certSerial, Startup.StaticConfig["Config:clientFileStore"]);
+                   callerInfo = chkNode.GetClientNode(certSerial, Startup.StaticConfig["Config:clientFileStore"]);
 
                     // OK -is this a known serial certificate
                     if (string.IsNullOrEmpty(callerInfo.callerID))
