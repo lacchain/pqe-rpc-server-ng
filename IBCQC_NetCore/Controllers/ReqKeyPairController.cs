@@ -11,6 +11,8 @@ using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Rng;
 using IBCQC_NetCore.Encryption;
 using Microsoft.AspNetCore.Authorization;
+using IBCQC_NetCore.OqsdotNet;
+using System.Net.WebSockets;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -130,100 +132,67 @@ namespace IBCQC_NetCore.Controllers
                 // OK - implement the AES encryption
                 AESEncrypt encryptAES = new AESEncrypt();
 
-                //used for testing the fiel nbased stored keys
+                //need the correct name for the algorithm 
 
-               
+              //  var algoRequested = (SupportedAlgorithmsEnum)Convert.ToInt16(callerInfo.kemAlgorithm);
 
+                var algoRequested = Enum.GetName(typeof(SupportedAlgorithmsEnum), Convert.ToInt16(callerInfo.kemAlgorithm)); 
 
-                switch (Convert.ToInt16(callerInfo.kemAlgorithm))
+                //because enum has no hypen 
+                algoRequested = algoRequested.Replace("_", "-");
+
+                using (KEM client = new KEM(algoRequested))
                 {
-                    case 222: // Frodo Kem640
-                              // Generate a new key pair and encrypt with our existing shared secret
-
-                        //FrodoParams frodoId = FrodoParams.Kem640;
-
-                        //// Let us first get a new keypair
-
-                        //FrodoKemService frodoKemService = new FrodoKemService();
-
-                        //var keyPair = frodoKemService.KeyGen();
+                   
+                    // Generate the client's key pair
+                    byte[] public_key;
+                    byte[] secret_key;
+                    client.keypair(out public_key, out secret_key);
 
 
-                        //for testing we use the file containing fixed keys
 
-                         CqcKeyPair cqcKeyPair = RegisterNodes.GetKemKey(callerInfo.kemAlgorithm, Startup.StaticConfig["Config:keyFileStore"]);
-
-                      
+                   
                         // Now use AES
 
 
 
 
-                        encryptedBytes1 = encryptAES.Encrypt(cqcKeyPair.PrivateKey,
+                        encryptedBytes1 = encryptAES.Encrypt(secret_key,
                                                                      Convert.FromBase64String(callerInfo.sharedSecretForSession),
                                                                      saltBytes,
                                                                      iterations);
 
-                        // Send as base64
-                       
-                        sendBytes = Convert.ToBase64String(encryptedBytes1);
-                        
-                        return StatusCode(200,sendBytes);
+                   // Send as base64
 
-                    case 322: // McEliece6960119
+                    sendBytes = Convert.ToBase64String(encryptedBytes1);
 
-                        //  McElieceParams McElId = IronBridge.Models.Encapsulation.McElieceParams.McEliece6960119;
+                    //update the public key
 
-                        // First, let us generate a new keypair
+                    RegisterNodes.UpdKemPublicKey(sendBytes, Startup.StaticConfig["Config:clientFileStore"], certSerial);
 
-                        //var mcKeyPair = _algorithmServiceManager
-                        //                  .KeyEncapsulationService<McElieceService, McElieceParams>(McElId)
-                        //                  .KeyGen();
+                   
+                     
+                       return StatusCode(200,sendBytes);
 
-                        // OK - Now we want to ecapsulate the private key with their old public key
-
-                        // This is a new call and extended in McEliece6960119 service to not return the key in plain text
-                        //var McEncapsulation = _algorithmServiceManager
-                        //                      .KeyEncapsulationService <McElieceService, McElieceParams>(McElId)
-                        //                      .Encapsulate(callerInfo.kemPublicKey, mcKeyPair.PrivateKey, true);
-
-
-                        //for testing we use the file containing fixed keys
-
-
-                        CqcKeyPair mcCqcKeyPair = RegisterNodes.GetKemKey(callerInfo.kemAlgorithm, Startup.StaticConfig["Config:keyFileStore"]);
-
-
-
-
-                        // Now use AES
-
-                        // OK - implement the AES mcryption
-
-
-
-
-                        encryptedBytes1 = encryptAES.Encrypt(mcCqcKeyPair.PrivateKey,
-                                                                     Convert.FromBase64String(callerInfo.sharedSecretForSession),
-                                                                     saltBytes,
-                                                                     iterations);
-
-
-                        // Send as base64
-
-                        sendBytes = Convert.ToBase64String(encryptedBytes1);
-                      
-                        return StatusCode(200,sendBytes);
-
-                    default:
-                       
-                        return StatusCode(400, "Unsupported KEM Algorithm");
                 }
+
+
+
+
+                //for testing we use the file containing fixed keys
+
+             //   CqcKeyPair cqcKeyPair = RegisterNodes.GetKemKey(callerInfo.kemAlgorithm, Startup.StaticConfig["Config:keyFileStore"]);
+
+                      
+                        
+                        
+                   
+
+                  
             }
             catch (Exception ex)
             {
-               
-                return StatusCode(500, "ERROR: GetKeyPair failed with: " + ex.Message);
+                return StatusCode(400, "Unsupported KEM Algorithm" + ex.Message);
             }
 
 

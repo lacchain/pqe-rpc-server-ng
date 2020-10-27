@@ -15,11 +15,14 @@ namespace IBCQC_NetCore.Controllers
     public class TestOQSController : ControllerBase
     {
         // GET: api/<TestOQSController>
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("{algoname}")]
+        public IActionResult Get(string algoname)
         {
-            using (KEM client = new KEM("DEFAULT"),
-                      server = new KEM("DEFAULT"))
+
+
+
+
+            using (KEM client = new KEM(algoname))
             {
                 Console.WriteLine("Perform key exchange with DEFAULT mechanism");
                 StringBuilder supAlgos = new StringBuilder();
@@ -40,7 +43,7 @@ namespace IBCQC_NetCore.Controllers
                 byte[] secret_key;
                 client.keypair(out public_key, out secret_key);
 
-              return StatusCode(500, "ERROR: GetKeyPair failed with: " +supAlgos.ToString());
+                return StatusCode(500, "Algorithm requested is supported  with: " + supAlgos.ToString());
 
 
             }

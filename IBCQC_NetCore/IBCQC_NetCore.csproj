@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <Folder Include="DataFiles\" />
-    <Folder Include="OqsdotNet\" />
   </ItemGroup>
 
   <ItemGroup>

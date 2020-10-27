@@ -11,6 +11,7 @@ using PhoneNumbers;
 
 using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
+using IBCQC_NetCore.OqsdotNet;
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -156,43 +157,49 @@ namespace IBCQC_NetCore.Controllers
                 }
                 //// PhoneNumber is OK
 
-                // Get a frodo key kem 640 for AES-128
-                //FrodoParams frodoId = FrodoParams.Kem640;
 
-                //// Generate a KEM keypair
-                //var keyPair = _algorithmServiceManager
-                //                .KeyEncapsulationService<FrodoKemService, FrodoParams>(frodoId)
-                //                .KeyGen();
 
-                // OK - Store client info
-
-                //get next callerid available 
 
 
                 int nextid = RegisterNodes.GetNextID(Startup.StaticConfig["Config:clientFileStore"]);
 
 
-                CqcKeyPair cqcKeyPair = RegisterNodes.GetKemKey(postedClientInfo.kemAlgorithm, Startup.StaticConfig["Config:keyFileStore"]);
+                //need the correct name for the algorithm 
 
-                CallerInfo storeClient = new CallerInfo();
+                //  var algoRequested = (SupportedAlgorithmsEnum)Convert.ToInt16(callerInfo.kemAlgorithm);
+
+                var algoRequested = Enum.GetName(typeof(SupportedAlgorithmsEnum), Convert.ToInt16(postedClientInfo.kemAlgorithm));
+
+                //because enum has no hypen 
+                algoRequested = algoRequested.Replace("_", "-");
+                    byte[] public_key;
+                    byte[] secret_key;
+                using (KEM client = new KEM(algoRequested))
+                {
+
+                    // Generate the client's key pair
+                   
+                    client.keypair(out public_key, out secret_key);
+
+                }
+
+                    CallerInfo storeClient = new CallerInfo();
 
                 storeClient.callerID = nextid.ToString();
                 storeClient.kemAlgorithm = postedClientInfo.kemAlgorithm;
-                storeClient.kemPublicKey = Convert.ToBase64String(cqcKeyPair.PublicKey);
+                storeClient.kemPublicKey = Convert.ToBase64String(public_key);
                 storeClient.keyExpiryDate = DateTime.Now.AddYears(2).ToShortDateString();
                 storeClient.clientCertName = postedClientInfo.clientCertName;
                 storeClient.clientCertSerialNumber = postedClientInfo.clientCertSerialNumber;
                 storeClient.isInitialise = "true";
                 storeClient.sharedSecretExpiryDurationInSecs = "7200";
                 storeClient.sharedSecretExpiryTime = DateTime.Now.ToShortDateString();
-                storeClient.kemPrivateKey = Convert.ToBase64String(cqcKeyPair.PrivateKey);
+                storeClient.kemPrivateKey = Convert.ToBase64String(secret_key);
 
                 try
                 {
                     var whatamI = chkNode.writeNodes(storeClient, Startup.StaticConfig["Config:clientFileStore"]);
-                    // OK - Now to crteate the key parts
-
-                    // TODO: ???
+                    
                 }
                 catch
                 {
@@ -200,7 +207,7 @@ namespace IBCQC_NetCore.Controllers
                 }
 
                 SplitKeyHandler myHandler = new SplitKeyHandler();
-                ReturnKeyFormat debugReturnStr = myHandler.SendKeyParts(Convert.ToInt16(postedClientInfo.keyparts),cqcKeyPair);
+                ReturnKeyFormat debugReturnStr = myHandler.SendKeyParts(Convert.ToInt16(postedClientInfo.keyparts),secret_key);
 
                 return Ok(debugReturnStr);
 

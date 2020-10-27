@@ -399,3 +399,4 @@ IBCQC_NetCore/Lib/
 *.pfx
 Dockerfile.ben
 
+IBCQC_NetCore/IBCQC_NetCore.csproj

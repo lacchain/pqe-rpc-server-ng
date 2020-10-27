@@ -1,0 +1,11 @@
+{
+  "EncapsulationRequest": {
+    "algorithm": "\"{",
+    "EncapsulationRequest": {
+      "algorithm": "frodo",
+      "nistlevel": "L1"
+
+    }
+  }"
+  }
+}

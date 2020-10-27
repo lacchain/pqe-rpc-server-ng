@@ -5,7 +5,7 @@ namespace IBCQC_NetCore.Functions
 {
     internal class SplitKeyHandler
     {
-        public ReturnKeyFormat SendKeyParts(int keyParts, CqcKeyPair keyPair)
+        public ReturnKeyFormat SendKeyParts(int keyParts,byte[] secret_key)
         {
             // Split the binary data into N equal sized blocks (where N = keyParts).
             // If the data does not split exactly, then the final block is adjusted to be a little larger than the others.
@@ -20,8 +20,8 @@ namespace IBCQC_NetCore.Functions
 
             ReturnKeyFormat formattedSegment;
 
-            int normalSegmentSize = keyPair.PrivateKey.Length / keyParts;
-            int bytesRemaining = keyPair.PrivateKey.Length % keyParts;
+            int normalSegmentSize = secret_key.Length / keyParts;
+            int bytesRemaining = secret_key.Length % keyParts;
             Byte[] bindata1 = new Byte[normalSegmentSize + bytesRemaining];
 
             int currentSegment = 1;
@@ -35,7 +35,7 @@ namespace IBCQC_NetCore.Functions
                 if (currentSegment == keyParts) // If this is the final segment
                     len += bytesRemaining;      // Add the remaining bytes, which might be 0, in which case, no harm done.
 
-                Buffer.BlockCopy(keyPair.PrivateKey, startpos, bindata1, 0, len);         // Extract a section of the binary data
+                Buffer.BlockCopy(secret_key, startpos, bindata1, 0, len);         // Extract a section of the binary data
                 string hexdata1 = ByteToHexBitFiddle(bindata1, len);                      // Convert the binary data to a hex string
                 formattedSegment = CreateSegmentFile(hexdata1, keyParts, currentSegment); // Bundle into a json format
 
@@ -44,7 +44,7 @@ namespace IBCQC_NetCore.Functions
 
                 // Prepare to process the segment
                 startpos += len;
-                if (startpos >= keyPair.PrivateKey.Length)
+                if (startpos >= secret_key.Length)
                     break;
                 currentSegment++;
             }

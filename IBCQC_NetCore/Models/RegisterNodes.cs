@@ -61,6 +61,10 @@ namespace IBCQC_NetCore.Models
             return false;
         }
 
+
+
+
+
         internal CallerInfo GetClientNode(string serialNumber, string filename)
         {
             var allCallerInfo = readNodes(filename);
@@ -75,59 +79,43 @@ namespace IBCQC_NetCore.Models
             return new CallerInfo();
         }
 
-        internal static CqcKeyPair GetKemKey(string kemAlgorithm, string filename)
+
+
+        internal static bool UpdKemPublicKey(string public_Key, string filename, string serialNumber)
         {
-            CqcKeyPair newpair = new CqcKeyPair();
-
-            var filePath = Path.Combine(System.AppContext.BaseDirectory, filename);
-             
-            var testjsonString = System.IO.File.ReadLines(filePath);
-
-             string jsonString = System.IO.File.ReadAllText(filePath);
-           StoredKemKeys allKemKeys = JsonSerializer.Deserialize<StoredKemKeys>(jsonString);
-
-            // Housekeeping: Keep the file with available keys
-            // We set a key to one if used. When we get to 10 we reset
-
-            bool availablekeys = false;
-
-            foreach (var keyValues in allKemKeys.KemKeys)
+            try
             {
-                if (keyValues.keyAlgorithm == kemAlgorithm && keyValues.isUsed == "0")
+                var allCallerInfo = readNodes(filename);
+
+                // For writing back
+                var filePath = Path.Combine(System.AppContext.BaseDirectory, filename);
+                foreach (var callerInfo in allCallerInfo.CallerInfo)
                 {
-                    availablekeys = true;
-                    break;
+
+                    if (callerInfo.clientCertSerialNumber == serialNumber)
+                    {
+                        callerInfo.kemPublicKey = public_Key;
+                        callerInfo.keyExpiryDate= DateTime.Now.AddYears(5).ToShortDateString();
+                        ////serialize the new updated object to a string
+                        string towrite = JsonSerializer.Serialize(allCallerInfo);
+                        ////overwrite the file and it wil contain the new data
+                        System.IO.File.WriteAllText(filePath, towrite);
+                        return true;
+                    }
+
+
+
+
                 }
+                return false;
+            }
+            catch
+            {
+                return false;
             }
 
-            if (!availablekeys)
-            {
-                //reset the keys
-                foreach (var keyValues in allKemKeys.KemKeys)
-                {
-                    if (keyValues.keyAlgorithm == kemAlgorithm)
-                        keyValues.isUsed = "0";
-                }
-
-                string towrite = JsonSerializer.Serialize(allKemKeys);
-                ////overwrite the file and it wil contain the new data
-                System.IO.File.WriteAllText(filePath, towrite);
-            }
-
-            //we have updated the file and the object so we have now keys available
-
-            foreach (var keyPair in allKemKeys.KemKeys)
-            {
-                if (keyPair.isUsed == "0" && keyPair.keyAlgorithm == kemAlgorithm)
-                {
-                    //looks convoluted but need to stick with what we have to ensure the libraries can slot in when ready
-                    newpair.PrivateKey = Convert.FromBase64String(keyPair.kemPrivateKey);
-                    newpair.PublicKey = Convert.FromBase64String(keyPair.kemPublicKey);
-                    return newpair;
-                }
-            }
-            return null;
         }
+
 
         internal bool UpdSharedSecret(string sharedsecret, string filename, string serialNumber)
         {
@@ -168,9 +156,9 @@ namespace IBCQC_NetCore.Models
         {
             int nextid = 0;
 
-            RegisterNodes registerNodes = new RegisterNodes();
+          
            
-            var allCallerInfo = registerNodes.readNodes(filename);
+            var allCallerInfo = readNodes(filename);
 
             foreach (var callerInfo in allCallerInfo.CallerInfo)
             {
