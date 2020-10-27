@@ -60,10 +60,10 @@ namespace IBCQC_NetCore.Controllers
 
                 //check certificate is one of our registered certificates
 
-                RegisterNodes chkNode = new RegisterNodes();
+                
                 try
                 {
-                   callerInfo = chkNode.GetClientNode(certSerial, Startup.StaticConfig["Config:clientFileStore"]);
+                   callerInfo = RegisterNodes.GetClientNode(certSerial, Startup.StaticConfig["Config:clientFileStore"]);
 
                     // OK -is this a known serial certificate
                     if (string.IsNullOrEmpty(callerInfo.callerID))
@@ -116,22 +116,17 @@ namespace IBCQC_NetCore.Controllers
                     case 222: // Frodo Kem640
                              
                     {
-                        // Generate a new shared secret and encapsulate in KEM
-                        /* FrodoParams frodoId = FrodoParams.Kem640; */
-                        // Returns the new shared secret in bytes and the encapsulated version
-                        /*   var encapsulatedSecret = _algorithmServiceManager
-                                                        .KeyEncapsulationService<FrodoKemService, FrodoParams>(frodoId)
-                                                        .Encapsulate(callerInfo.kemPublicKey);
-                        */
-                        // Send as base64
+                      
+
+
                         //todo encapsulate rather than just send bytes
                         string ciphertextB64 = Convert.ToBase64String(randomBytes);
 
                         
                         //   Change to file method
 
-                        RegisterNodes chkNode = new RegisterNodes();
-                        var updSecret = chkNode.UpdSharedSecret(ciphertextB64, Startup.StaticConfig["Config:clientFileStore"],certSerial);
+                       
+                        var updSecret = RegisterNodes.UpdSharedSecret(ciphertextB64, Startup.StaticConfig["Config:clientFileStore"],certSerial);
 
                         return Ok(ciphertextB64);
                     }

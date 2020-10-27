@@ -111,14 +111,14 @@ namespace IBCQC_NetCore.Controllers
                 // OK - now we need to know if the certificate is in use
                 // Test ensure read write to store is working
 
-                RegisterNodes chkNode = new RegisterNodes();
+               
 
                 if (postedClientInfo.clientCertSerialNumber.Length < 18)
                 {
                     postedClientInfo.clientCertSerialNumber = postedClientInfo.clientCertSerialNumber.PadLeft(18, '0');
                 }
 
-                if (chkNode.nodeExists(postedClientInfo.clientCertSerialNumber, Startup.StaticConfig["Config:clientFileStore"]))
+                if (RegisterNodes.nodeExists(postedClientInfo.clientCertSerialNumber, Startup.StaticConfig["Config:clientFileStore"]))
                 {
                     return BadRequest("Client Certificate Already Exists");
                 }
@@ -198,7 +198,7 @@ namespace IBCQC_NetCore.Controllers
 
                 try
                 {
-                    var whatamI = chkNode.writeNodes(storeClient, Startup.StaticConfig["Config:clientFileStore"]);
+                    var whatamI = RegisterNodes.writeNodes(storeClient, Startup.StaticConfig["Config:clientFileStore"]);
                     
                 }
                 catch

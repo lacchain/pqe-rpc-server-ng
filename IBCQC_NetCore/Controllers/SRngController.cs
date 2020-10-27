@@ -105,10 +105,10 @@ namespace IBCQC_NetCore.Controllers
 
                 //check certificate is one of our registered certificates
 
-                RegisterNodes chkNode = new RegisterNodes();
+              
                 try
                 {
-                   callerInfo = chkNode.GetClientNode(certSerial, Startup.StaticConfig["Config:clientFileStore"]);
+                   callerInfo = RegisterNodes.GetClientNode(certSerial, Startup.StaticConfig["Config:clientFileStore"]);
 
                     // OK -is this a known serial certificate
                     if (string.IsNullOrEmpty(callerInfo.callerID))

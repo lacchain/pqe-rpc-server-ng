@@ -35,7 +35,7 @@ namespace IBCQC_NetCore.Models
             return allCallerInfo;
         }
 
-        public bool writeNodes(CallerInfo newNode, string filename)
+        internal static bool writeNodes(CallerInfo newNode, string filename)
         {
             var allCallerInfo = readNodes(filename);
             var filePath = Path.Combine(System.AppContext.BaseDirectory, filename);
@@ -48,7 +48,7 @@ namespace IBCQC_NetCore.Models
             return true;
         }
 
-        public bool nodeExists(string certserial, string filename)
+        internal static bool nodeExists(string certserial, string filename)
         {
             var allCallerInfo = readNodes(filename);
             foreach (var callerInfo in allCallerInfo.CallerInfo)
@@ -65,7 +65,7 @@ namespace IBCQC_NetCore.Models
 
 
 
-        internal CallerInfo GetClientNode(string serialNumber, string filename)
+        internal static CallerInfo GetClientNode(string serialNumber, string filename)
         {
             var allCallerInfo = readNodes(filename);
             foreach (var callerInfo in allCallerInfo.CallerInfo)
@@ -117,7 +117,7 @@ namespace IBCQC_NetCore.Models
         }
 
 
-        internal bool UpdSharedSecret(string sharedsecret, string filename, string serialNumber)
+        internal static bool UpdSharedSecret(string sharedsecret, string filename, string serialNumber)
         {
             try
             {
