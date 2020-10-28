@@ -131,7 +131,7 @@ namespace IBCQC_NetCore.Models
                     if (callerInfo.clientCertSerialNumber == serialNumber)
                     {
                         callerInfo.sharedSecretForSession = sharedsecret;
-                        callerInfo.sharedSecretExpiryTime = DateTime.Now.ToShortDateString();
+                        callerInfo.sharedSecretExpiryTime = DateTime.Now.ToLongDateString();
                         ////serialize the new updated object to a string
                         string towrite = JsonSerializer.Serialize(allCallerInfo);
                         ////overwrite the file and it wil contain the new data
