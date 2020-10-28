@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 
 namespace IBCQC_NetCore.Functions
 {
-    public class ByteCompare
+    public class ByteCompareFunction
     {
         public bool ByteArrayCompare(byte[] a1, byte[] a2)
         {

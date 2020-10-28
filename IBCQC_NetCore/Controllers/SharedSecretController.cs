@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
 using IBCQC_NetCore.OqsdotNet;
 using IBCQC_NetCore.Rng;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Crypto;
 using static IBCQC_NetCore.Models.ApiEnums;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -20,8 +17,8 @@ namespace IBCQC_NetCore.Controllers
     public class SharedSecretController : ControllerBase
     {
 
-    
-        private CallerInfo callerInfo = new CallerInfo();
+
+        private static CallerInfo callerInfo;
         private static string certSerial;
 
 
@@ -29,7 +26,7 @@ namespace IBCQC_NetCore.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            // For this they must be logged in, so check if this is initialise or not
+         
             try
             {
                 // Go get from auth claims

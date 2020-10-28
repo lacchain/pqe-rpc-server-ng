@@ -1,9 +1,0 @@
-{
-  "clientCertName":"devclient.ironbridgeapi.com",
-  "clientCertSerialNumber":"00b19874e430a756f8",
-  "countryCode":"GB",
-  "smsNumber":"07711221555",
-  "email":"me@home.com",
-  "keyparts":"2",
-  "kemAlgorithm":"222"
-}

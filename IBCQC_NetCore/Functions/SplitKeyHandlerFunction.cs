@@ -1,11 +1,10 @@
-﻿using IBCQC_NetCore.Models;
-using System;
+﻿using System;
 
 namespace IBCQC_NetCore.Functions
 {
-    internal class SplitKeyHandler
+    internal  class SplitKeyHandlerFunction
     {
-        public ReturnKeyFormat SendKeyParts(int keyParts,byte[] secret_key)
+        internal static ReturnKeyFormat SendKeyParts(int keyParts,byte[] secret_key)
         {
             // Split the binary data into N equal sized blocks (where N = keyParts).
             // If the data does not split exactly, then the final block is adjusted to be a little larger than the others.

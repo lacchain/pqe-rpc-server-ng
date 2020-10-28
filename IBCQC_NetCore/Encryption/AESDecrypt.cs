@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
+
 
 namespace IBCQC_NetCore.Encryption
 {
@@ -27,7 +26,7 @@ namespace IBCQC_NetCore.Encryption
                 // Create a decrytor to perform the stream transform.
                 // Create the streams used for decryption.
                 // The default Cipher Mode is CBC and the Padding is PKCS7 which are both good
-                // using (var symmetricManaged = new T() )
+               
 
                 // Changed to use no padding
                 using (var symmetricManaged = new AesManaged() { Padding = PaddingMode.None })

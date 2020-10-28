@@ -1,9 +1,5 @@
 ﻿using IBCQC_NetCore.Models;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using static IBCQC_NetCore.Models.ApiEnums;
 
 namespace IBCQC_NetCore.Functions
@@ -14,29 +10,14 @@ namespace IBCQC_NetCore.Functions
         internal static bool kemKeyPairNeedsChanging;
         internal static bool sharedSecretNeedsChanging;
 
-        //public CallerValidateFunction()
-        //{
-        //    kemKeyPairNeedsChanging = false;
-        //    sharedSecretNeedsChanging = false;
-        //}
+  
 
         ///<Summary>
         /// Validate a users session and keys
         ///</Summary>
         public static bool callerValidate(CallerInfo caller, CallerStatus status)
         {
-            // For example...
-            //   callerId	0x00000000	int
-            //   clientCertName	""	string
-            //   clientCertSerialNumber	null	string
-            //   isInitialise	false	bool
-            //   kemAlgorithm	0x00000000	int
-            //   kemPrivateKey	null	byte[]
-            //   kemPublicKey	null	byte[]
-            //  +keyExpiryDate	{03/09/2021 15:06:20}	System.DateTime
-            //   sharedSecretExpiryDurationInSecs	0x0000000000000000	long
-            //  +sharedSecretExpiryTime	{03/09/2020 15:06:20}	System.DateTime
-            //   sharedSecretForSession	null	byte[]
+        
 
             kemKeyPairNeedsChanging = false;
             sharedSecretNeedsChanging = false;
@@ -51,7 +32,7 @@ namespace IBCQC_NetCore.Functions
                 return false;
             }
 
-            // Not sure on concensus but using calculated values to see where we are
+            
 
             // Use caller status to see what to validate each call may need only one of private or shared key or both
 

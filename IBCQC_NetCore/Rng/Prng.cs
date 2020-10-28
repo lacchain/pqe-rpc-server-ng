@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Org.BouncyCastle.Crypto.Prng;
+﻿using Org.BouncyCastle.Crypto.Prng;
 
 namespace IBCQC_NetCore.Rng
 {

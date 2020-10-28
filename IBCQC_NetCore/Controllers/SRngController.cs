@@ -1,12 +1,8 @@
 ﻿
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
-
 using IBCQC_NetCore.Encryption;
 using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
@@ -14,7 +10,7 @@ using IBCQC_NetCore.Rng;
 using static IBCQC_NetCore.Models.ApiEnums;
 using System.Security.Claims;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -24,35 +20,14 @@ namespace IBCQC_NetCore.Controllers
     {
 
 
-        private CallerInfo callerInfo = new CallerInfo();
-     private static string certSerial;
-
-        // private ICqcRng _cqcSRng;
-        //  private ISymmetricEncryptionManager _encryptionManager;
-        //  private IAlgorithmServiceManager _algorithmServiceManager;
+        private static CallerInfo callerInfo;
+        private static string certSerial;
         private readonly ILogger<SRngController> _logger;
 
         public SRngController(ILogger<SRngController> logger)
         {
             _logger = logger;
         }
-
-
-        /// <summary>
-        ///  This is the default constructor
-        /// </summary>
-        /// <param name="encryptionManager"></param>
-        /// <param name="algorithmServiceManager"></param>
-        /// <param name="cqcRng"></param>
-        //public SRngController(ISymmetricEncryptionManager encryptionManager, IAlgorithmServiceManager algorithmServiceManager, ICqcRng cqcRng)
-        //{
-        //    APILogging.Log("SRng", "Constructor");
-
-        //    // Get our services
-        //    _cqcSRng = cqcRng;
-        //    _encryptionManager = encryptionManager;
-        //    _algorithmServiceManager = algorithmServiceManager;
-        //}
 
 
         private int roundUp(int numToRound, int multiple)
@@ -185,15 +160,9 @@ namespace IBCQC_NetCore.Controllers
                     AESEncrypt encryptAES = new AESEncrypt();
 
                     var encryptedBytes1 = encryptAES.Encrypt(bytes1,Convert.FromBase64String(callerInfo.sharedSecretForSession),saltBytes,iterations);
-                    // Debug check shared secret
+                  
 
-                    string b64Shared = callerInfo.sharedSecretForSession;
-                    // Send as base64
-//#if debug
-                    string sendBytes = Convert.ToBase64String(encryptedBytes1);
-                    AESDecrypt decryptAES = new AESDecrypt();
-                    var decryptbytes = decryptAES.AESDecryptBytes(encryptedBytes1, callerInfo.sharedSecretForSession, saltSize, iterations);
-//#endif
+
                     return Ok(Convert.ToBase64String(encryptedBytes1));
                 }
                 catch (Exception ex)

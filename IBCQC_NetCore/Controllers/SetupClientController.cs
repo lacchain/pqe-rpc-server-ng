@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PhoneNumbers;
-
 using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
 using IBCQC_NetCore.OqsdotNet;
@@ -37,19 +30,11 @@ namespace IBCQC_NetCore.Controllers
         }
 
 
-        //public SetupClientController()//IAlgorithmServiceManager algorithmServiceManager)
-        //{
-        //   // _algorithmServiceManager = algorithmServiceManager;
-           
-        //}
-
 
         [HttpPost]
         public IActionResult Post([FromBody] NewClient postedClientInfo)
         {
-            //// OK, if the posted json fails they will get default message on validatio.
-            //// Then default is to just set values to nulls
-            ///
+     
 
             //use the supportedalgorithms to look for supported algorithm
 
@@ -196,8 +181,8 @@ namespace IBCQC_NetCore.Controllers
                     return StatusCode(500);
                 }
 
-                SplitKeyHandler myHandler = new SplitKeyHandler();
-                ReturnKeyFormat debugReturnStr = myHandler.SendKeyParts(Convert.ToInt16(postedClientInfo.keyparts),secret_key);
+               
+                ReturnKeyFormat debugReturnStr = SplitKeyHandlerFunction.SendKeyParts(Convert.ToInt16(postedClientInfo.keyparts),secret_key);
 
                 return Ok(debugReturnStr);
 

@@ -1,18 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using IBCQC_NetCore.Models;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+
 
 namespace IBCQC_NetCore
 {
@@ -34,8 +28,7 @@ namespace IBCQC_NetCore
         {
 
            
-            //services.Configure<RegisteredNodes>(options => Configuration.GetSection("Registered").Bind(options));
-            //services.Configure<RegisteredNodes>(Configuration.GetSection("Registered"));
+      
 
             // Add certificate auth if we want it
 

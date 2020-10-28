@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using IBCQC_NetCore.Models;
@@ -12,9 +9,6 @@ using IBCQC_NetCore.Rng;
 using IBCQC_NetCore.Encryption;
 using Microsoft.AspNetCore.Authorization;
 using IBCQC_NetCore.OqsdotNet;
-using System.Net.WebSockets;
-
-
 
 
 namespace IBCQC_NetCore.Controllers
@@ -25,12 +19,7 @@ namespace IBCQC_NetCore.Controllers
     {
 
         private static CallerInfo callerInfo;
-      
-       
-
-
-
-
+ 
         // GET: api/<ReqKeyPairController>
         [Authorize]
         [HttpGet]
@@ -174,11 +163,6 @@ namespace IBCQC_NetCore.Controllers
                 }
 
 
-
-
-                //for testing we use the file containing fixed keys
-
-             //   CqcKeyPair cqcKeyPair = RegisterNodes.GetKemKey(callerInfo.kemAlgorithm, Startup.StaticConfig["Config:keyFileStore"]);
 
                       
                         

@@ -1,19 +1,15 @@
 ﻿
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
 using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
 using IBCQC_NetCore.Rng;
 using static IBCQC_NetCore.Models.ApiEnums;
 using System.Security.Claims;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -22,12 +18,9 @@ namespace IBCQC_NetCore.Controllers
     public class VerifyKeysController : ControllerBase
     {
 
-        //private ICqcRng _cqcSRng;
-        //private ISymmetricEncryptionManager _encryptionManager;
-        //private IAlgorithmServiceManager _algorithmServiceManager;
         private string certSerial;
         private static CallerInfo callerInfo;
-               private readonly ILogger<VerifyKeysController> _logger;
+        private readonly ILogger<VerifyKeysController> _logger;
 
         public VerifyKeysController(ILogger<VerifyKeysController> logger)
         {
@@ -35,12 +28,7 @@ namespace IBCQC_NetCore.Controllers
         }
 
 
-        //public VerifyKeysController(ISymmetricEncryptionManager encryptionManager, IAlgorithmServiceManager algorithmServiceManager, ICqcRng cqcRng)
-        //{
-        //    _cqcSRng = cqcRng;
-        //    _encryptionManager = encryptionManager;
-        //    _algorithmServiceManager = algorithmServiceManager;
-        //}
+       
         public IActionResult Post([FromBody] KeyValidate keyValidate)
         {
             try
@@ -159,8 +147,8 @@ namespace IBCQC_NetCore.Controllers
                                         //                    .KeyEncapsulationService<FrodoKemService, FrodoParams>(frodoId)
                                         //                    .Decapsulate(callerInfo.kemPublicKey, respBytes);
 
-                                        ByteCompare compareData = new ByteCompare();
-                                        //var isCorrect = (compareData.ByteArrayCompare(decapsulation, Convert.FromBase64String(validInfo.storedData)));
+                                       
+                                      //  var isCorrect = (ByteCompareFunction.ByteArrayCompare(decapsulation, Convert.FromBase64String(validInfo.storedData)));
 
                                         // Delete from the DB
                                         //getcallersql.DeleteKeyValidationData(callerInfo.callerId);
@@ -174,25 +162,25 @@ namespace IBCQC_NetCore.Controllers
 
                                     case 322: // TODO: Fix magic number
                                     {
-                                        // McElieceParams elieceParams = McElieceParams.McEliece6960119;
+                                                // McElieceParams elieceParams = McElieceParams.McEliece6960119;
 
-                                        // Returns a random encapsulated string
-                                        //var mcDecapsulation = _algorithmServiceManager
-                                        //                        .KeyEncapsulationService<McElieceService, McElieceParams>(elieceParams)
-                                        //                        .Decapsulate(callerInfo.kemPublicKey, respBytes);
+                                                // Returns a random encapsulated string
+                                                //var mcDecapsulation = _algorithmServiceManager
+                                                //                        .KeyEncapsulationService<McElieceService, McElieceParams>(elieceParams)
+                                                //                        .Decapsulate(callerInfo.kemPublicKey, respBytes);
 
-                                        ByteCompare mcCompareData = new ByteCompare();
 
-                                        //var isMcCorrect = (mcCompareData.ByteArrayCompare(mcDecapsulation, Convert.FromBase64String(validInfo.storedData)));
 
-                                        // Delete from the DB
-                                        //getcallersql.DeleteKeyValidationData(callerInfo.callerId);
-                                        //if (isMcCorrect)
-                                        //{
-                                        //    return Ok("Valid");
-                                        //}
+                                                //var isMcCorrect = (ByteCompareFunction.ByteArrayCompare(mcDecapsulation, Convert.FromBase64String(validInfo.storedData)));
 
-                                        return StatusCode(401,"Invalid");
+                                                // Delete from the DB
+                                                //getcallersql.DeleteKeyValidationData(callerInfo.callerId);
+                                                //if (isMcCorrect)
+                                                //{
+                                                //    return Ok("Valid");
+                                                //}
+
+                                                return StatusCode(401,"Invalid");
                                     }
                                     default:
                                         return StatusCode(400, "Unsupported KEM algorithm");
@@ -290,30 +278,30 @@ namespace IBCQC_NetCore.Controllers
                                 // Get the byte array
                                 var respBytes = Convert.FromBase64String(keyValidate.keyToValidate);
 
-                                // Decrypt the response
-                                //var aesDecryptedBytes = _encryptionManager.Decrypt_UsingKeyBytes(respBytes,
-                                //                                                    callerInfo.sharedSecretForSession,
-                                //                                                    16,
-                                //                                                    RFC2898DeriveBytesIterations);
+                                    // Decrypt the response
+                                    //var aesDecryptedBytes = _encryptionManager.Decrypt_UsingKeyBytes(respBytes,
+                                    //                                                    callerInfo.sharedSecretForSession,
+                                    //                                                    16,
+                                    //                                                    RFC2898DeriveBytesIterations);
 
-                                // Get the stored random data
-                                //var aesValidInfo = getcallersql.GetKeyValidationData(callerInfo.callerId);
+                                    // Get the stored random data
+                                    //var aesValidInfo = getcallersql.GetKeyValidationData(callerInfo.callerId);
 
-                                ByteCompare AesCompareData = new ByteCompare();
 
-                                //var storedDataB64 = Convert.FromBase64String(aesValidInfo.storedData);
-                                //var isCorrect = (AesCompareData.ByteArrayCompare(aesDecryptedBytes, storedDataB64));
 
-                                // Delete from the DB
-                                //getcallersql.DeleteKeyValidationData(callerInfo.callerId);
+                                    //var storedDataB64 = Convert.FromBase64String(aesValidInfo.storedData);
+                                    //var isCorrect = (ByteCompareFunction.ByteArrayCompare(aesDecryptedBytes, storedDataB64));
 
-                                //if (isCorrect)
-                                //{
-                                //    return Ok("Valid"); // Compare OK
-                                //}
-                                // Compare NG
+                                    // Delete from the DB
+                                    //getcallersql.DeleteKeyValidationData(callerInfo.callerId);
 
-                                return StatusCode(406, "Verify failed");
+                                    //if (isCorrect)
+                                    //{
+                                    //    return Ok("Valid"); // Compare OK
+                                    //}
+                                    // Compare NG
+
+                                    return StatusCode(406, "Verify failed");
                             }
                             else if (keyValidate.requestType.ToLower() == "request")
                             {

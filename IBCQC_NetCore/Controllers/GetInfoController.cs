@@ -1,22 +1,18 @@
 ﻿
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
 using IBCQC_NetCore.Models;
 using System.Security.Claims;
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace IBCQC_NetCore.Controllers
 {
     [Authorize]
-    //[AllowAnonymous]
+
     [ApiController]
     [Route("api/[controller]/{format:int=0}")]  // {} = optional
     [Route("[controller]/{format:int=0}")]  // {} = optional

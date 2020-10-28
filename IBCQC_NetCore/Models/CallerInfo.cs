@@ -1,14 +1,10 @@
-﻿using IBCQC_NetCore.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace IBCQC_NetCore.Models
 {
 
 
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
+
     public class CallerInfo
     {
         public string callerID { get; set; }

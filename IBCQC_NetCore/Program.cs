@@ -1,15 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+
 
 namespace IBCQC_NetCore
 {
@@ -44,7 +37,9 @@ namespace IBCQC_NetCore
                            o.ConfigureHttpsDefaults(o =>
                                o.ClientCertificateMode = ClientCertificateMode.RequireCertificate
                            );
-                       //    o.ListenAnyIP(443, ListenOptions => { ListenOptions.UseHttps("dev.ironbridgeapi.com.pfx", "$London123"); });
+                      
+                           //use to set to port 443 and apply a certificate
+                           //    o.ListenAnyIP(443, ListenOptions => { ListenOptions.UseHttps("dev.ironbridgeapi.com.pfx", "$London123"); });
                        });
                    });
         }
