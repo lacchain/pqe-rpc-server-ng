@@ -38,6 +38,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="dev.ironbridgeapi.com.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="oqs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

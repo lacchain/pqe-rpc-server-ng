@@ -44,6 +44,7 @@ namespace IBCQC_NetCore
                            o.ConfigureHttpsDefaults(o =>
                                o.ClientCertificateMode = ClientCertificateMode.RequireCertificate
                            );
+                           o.ListenAnyIP(443, ListenOptions => { ListenOptions.UseHttps("dev.ironbridgeapi.com.pfx", "$London123"); });
                        });
                    });
         }
