@@ -5,8 +5,10 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
+using IBCQC_NetCore.OqsdotNet;
 using IBCQC_NetCore.Rng;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Crypto;
 using static IBCQC_NetCore.Models.ApiEnums;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -111,28 +113,32 @@ namespace IBCQC_NetCore.Controllers
             var randomBytes = getRandom.GetBytes(256);
             try
             {
-                switch (Convert.ToInt16(callerInfo.kemAlgorithm))
-                {
-                    case 222: // Frodo Kem640
-                             
-                    {
-                      
 
+                var algoRequested = Enum.GetName(typeof(SupportedAlgorithmsEnum), Convert.ToInt16(callerInfo.kemAlgorithm));
 
-                        //todo encapsulate rather than just send bytes
-                        string ciphertextB64 = Convert.ToBase64String(randomBytes);
+                //because enum has no hypen 
+                algoRequested = algoRequested.Replace("_", "-");
 
-                        
-                        //   Change to file method
+                var public_key =Convert.FromBase64String(callerInfo.kemPublicKey);
 
-                       
-                        var updSecret = RegisterNodes.UpdSharedSecret(ciphertextB64, Startup.StaticConfig["Config:clientFileStore"],certSerial);
+                using (KEM client = new KEM(algoRequested))
+                            {
 
-                        return Ok(ciphertextB64);
-                    }
-                    default:
-                        return BadRequest();
+                    byte[] ciphertext;
+                    byte[] shared_secret;
+
+                    client.encaps(out ciphertext, out shared_secret, public_key); 
+                     
+                    string ciphertextB64 = Convert.ToBase64String(ciphertext);
+                    
+                    var updSecret = RegisterNodes.UpdSharedSecret(ciphertextB64, Startup.StaticConfig["Config:clientFileStore"],certSerial);
+
+                            return Ok(ciphertextB64); 
+                
                 }
+
+       
+                    
             }
             catch (Exception ex)
             {

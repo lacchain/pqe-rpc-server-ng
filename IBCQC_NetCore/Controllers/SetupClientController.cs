@@ -155,18 +155,11 @@ namespace IBCQC_NetCore.Controllers
                     isValidRegion = false;
                     return  BadRequest("ERROR: Is Valid Mobile: " + isMobile + ", Is Valid Region: " + isValidRegion);
                 }
-                //// PhoneNumber is OK
-
-
-
-
+              
 
                 int nextid = RegisterNodes.GetNextID(Startup.StaticConfig["Config:clientFileStore"]);
 
 
-                //need the correct name for the algorithm 
-
-                //  var algoRequested = (SupportedAlgorithmsEnum)Convert.ToInt16(callerInfo.kemAlgorithm);
 
                 var algoRequested = Enum.GetName(typeof(SupportedAlgorithmsEnum), Convert.ToInt16(postedClientInfo.kemAlgorithm));
 

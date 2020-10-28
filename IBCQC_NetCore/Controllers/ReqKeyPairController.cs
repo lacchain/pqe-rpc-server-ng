@@ -15,7 +15,7 @@ using IBCQC_NetCore.OqsdotNet;
 using System.Net.WebSockets;
 
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -134,7 +134,7 @@ namespace IBCQC_NetCore.Controllers
 
                 //need the correct name for the algorithm 
 
-              //  var algoRequested = (SupportedAlgorithmsEnum)Convert.ToInt16(callerInfo.kemAlgorithm);
+              
 
                 var algoRequested = Enum.GetName(typeof(SupportedAlgorithmsEnum), Convert.ToInt16(callerInfo.kemAlgorithm)); 
 
@@ -149,9 +149,6 @@ namespace IBCQC_NetCore.Controllers
                     byte[] secret_key;
                     client.keypair(out public_key, out secret_key);
 
-
-
-                   
                         // Now use AES
 
 
