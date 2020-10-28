@@ -49,6 +49,19 @@ namespace IBCQC_NetCore.Controllers
         {
             //// OK, if the posted json fails they will get default message on validatio.
             //// Then default is to just set values to nulls
+            ///
+
+            //use the supportedalgorithms to look for supported algorithm
+
+            var algoRequested = Enum.GetName(typeof(SupportedAlgorithmsEnum), Convert.ToInt16(postedClientInfo.kemAlgorithm));
+
+
+            if (String.IsNullOrEmpty(algoRequested))
+            {
+                return BadRequest("Unsupported Algorithm");
+            }
+
+
 
             if (String.IsNullOrEmpty(postedClientInfo.clientCertName))
             {
@@ -82,24 +95,8 @@ namespace IBCQC_NetCore.Controllers
             }
             else //check the type is supported
             {
-                bool supported = false;
-                // Get access to config
-                var Conf = Startup.StaticConfig;
-
-                var allalgos = Conf.GetSection("PQEAlgorithms").GetChildren();
-
-                // Read the list of algoritjhms
-                foreach (var algo in allalgos)
-                {
-                    if (algo.Value == postedClientInfo.kemAlgorithm.Trim())
-                    {
-                        supported = true;
-                    }
-                }
-                if (!supported)
-                {
-                    return BadRequest( "Unsupported Algorithm");
-                }
+              
+                
 
                 ValidateEmail xx = new ValidateEmail(_logger);
                 bool validEmail = xx.IsValidEmail(postedClientInfo.email);
@@ -161,7 +158,7 @@ namespace IBCQC_NetCore.Controllers
 
 
 
-                var algoRequested = Enum.GetName(typeof(SupportedAlgorithmsEnum), Convert.ToInt16(postedClientInfo.kemAlgorithm));
+ 
 
                 //because enum has no hypen 
                 algoRequested = algoRequested.Replace("_", "-");

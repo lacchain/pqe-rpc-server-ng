@@ -22,7 +22,7 @@
       "sharedSecretForSession": "22",
       "sharedSecretExpiryTime": "21-12-2025",
       "keyExpiryDate": "21-12-2022",
-      "clientCertSerialNumber": "00792B31A0DA57D0BD",
+      "clientCertSerialNumber": "00792B31A0DA57D0AA",
       "clientCertName": "client102.com",
       "isInitialise": "true"
     },
