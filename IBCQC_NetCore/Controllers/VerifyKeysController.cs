@@ -27,8 +27,7 @@ namespace IBCQC_NetCore.Controllers
         //private IAlgorithmServiceManager _algorithmServiceManager;
         private string certSerial;
         private static CallerInfo callerInfo;
-        private CallerValidate valCaller = new CallerValidate();
-        private readonly ILogger<VerifyKeysController> _logger;
+               private readonly ILogger<VerifyKeysController> _logger;
 
         public VerifyKeysController(ILogger<VerifyKeysController> logger)
         {
@@ -106,11 +105,11 @@ namespace IBCQC_NetCore.Controllers
 
                
 
-                bool isValidCaller = valCaller.callerValidate(callerInfo, CallerStatus.requireKemValid);
+                bool isValidCaller = CallerValidateFunction.callerValidate(callerInfo, CallerStatus.requireKemValid);
                 // They need a valid KEM key, not a shared secret
                 if (!isValidCaller)
                 {
-                    if (valCaller.kemKeyPairNeedsChanging)
+                    if (CallerValidateFunction.kemKeyPairNeedsChanging)
                     {
                         return StatusCode(498, "KemKeyPair Not Valid)");// Content((System.Net.HttpStatusCode)498 /*TokenExpiredOrInvalid*/, "KEM KeyPair not valid");
                     }
@@ -136,7 +135,7 @@ namespace IBCQC_NetCore.Controllers
                     // We encode a random string. They will decode and re-encode with the private key and resubmit
                     case "kem":
                     {
-                        if (valCaller.callerValidate(callerInfo, CallerStatus.requireKemValid))
+                        if (CallerValidateFunction.callerValidate(callerInfo, CallerStatus.requireKemValid))
                         {
                             // Check if this is the request or response
                             if (keyValidate.requestType.ToLower() == "response")
@@ -254,11 +253,11 @@ namespace IBCQC_NetCore.Controllers
                         }
                         else
                         {
-                            if (valCaller.kemKeyPairNeedsChanging)
+                            if (CallerValidateFunction.kemKeyPairNeedsChanging)
                             {
                                 return StatusCode(498, "KEM KeyPair not valid");
                             }
-                            else if (valCaller.sharedSecretNeedsChanging)
+                            else if (CallerValidateFunction.sharedSecretNeedsChanging)
                             {
                                 return StatusCode(498 , "SharedSecret not valid");
                             }
@@ -283,7 +282,7 @@ namespace IBCQC_NetCore.Controllers
                         // Byte array to hold encrypted data
                         //byte[] encryptedBytes;
 
-                        if (valCaller.callerValidate(callerInfo, CallerStatus.requireSharedValid))
+                        if (CallerValidateFunction.callerValidate(callerInfo, CallerStatus.requireSharedValid))
                         {
                             // Check if this is the request or response
                             if (keyValidate.requestType.ToLower() == "response")
@@ -351,11 +350,11 @@ namespace IBCQC_NetCore.Controllers
                         }
                         else
                         {
-                            if (valCaller.kemKeyPairNeedsChanging)
+                            if (CallerValidateFunction.kemKeyPairNeedsChanging)
                             {
                                 return StatusCode(498 , "KEM KeyPair not valid");
                             }
-                            else if (valCaller.sharedSecretNeedsChanging)
+                            else if (CallerValidateFunction.sharedSecretNeedsChanging)
                             {
                                 return StatusCode(498 , "SharedSecret not valid");
                             }

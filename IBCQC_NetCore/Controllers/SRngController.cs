@@ -23,7 +23,7 @@ namespace IBCQC_NetCore.Controllers
     public class SRngController : ControllerBase
     {
 
-        private CallerValidate valCaller = new CallerValidate();
+
         private CallerInfo callerInfo = new CallerInfo();
      private static string certSerial;
 
@@ -121,11 +121,11 @@ namespace IBCQC_NetCore.Controllers
                     return StatusCode(500, "Cannot identify caller. Exception: " + ex.Message);
                 }
 
-                bool isValidCaller = valCaller.callerValidate(callerInfo, CallerStatus.requireKemValid);
+                bool isValidCaller = CallerValidateFunction.callerValidate(callerInfo, CallerStatus.requireKemValid);
                 // They need a valid KEM key, not a shared secret
                 if (!isValidCaller)
                 {
-                    if (valCaller.kemKeyPairNeedsChanging)
+                    if (CallerValidateFunction.kemKeyPairNeedsChanging)
                     {
                         return StatusCode(498, "KemKeyPair Not Valid)");
                     }
@@ -143,11 +143,11 @@ namespace IBCQC_NetCore.Controllers
 
             // Request for entropy is all OK so far,
             // but if the KEM private key (or the SharedSecret) are expiring soon, we need to warn the client side now.
-            if (valCaller.mustIssueKemPrivateKeyExpiryWarning(callerInfo))
+            if (CallerValidateFunction.mustIssueKemPrivateKeyExpiryWarning(callerInfo))
             {
                 return StatusCode(405, "KEM key pair requires renewal before you can proceed");
             }
-            if (valCaller.mustIssueSharedSecretExpiryWarning(callerInfo))
+            if (CallerValidateFunction.mustIssueSharedSecretExpiryWarning(callerInfo))
             {
                 return StatusCode(405, "Shared Secret (aka Session Key) requires renewal before you can proceed");
             }

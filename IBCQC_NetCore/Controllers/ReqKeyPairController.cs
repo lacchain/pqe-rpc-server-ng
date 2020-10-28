@@ -26,7 +26,7 @@ namespace IBCQC_NetCore.Controllers
 
         private static CallerInfo callerInfo;
       
-        private CallerValidate valCaller = new CallerValidate();
+       
 
 
 
@@ -88,10 +88,10 @@ namespace IBCQC_NetCore.Controllers
             // If initialise then they would fail the validation checks
             if (!Convert.ToBoolean(callerInfo.isInitialise))
             {
-                bool isValidCaller = valCaller.callerValidate(callerInfo, CallerStatus.requireSharedValid);
+                bool isValidCaller = CallerValidateFunction.callerValidate(callerInfo, CallerStatus.requireSharedValid);
                 if (!isValidCaller)
                 {
-                    if (valCaller.sharedSecretNeedsChanging)
+                    if (CallerValidateFunction.sharedSecretNeedsChanging)
                     {
                        
                         return StatusCode(498, "SharedSecret has expired");

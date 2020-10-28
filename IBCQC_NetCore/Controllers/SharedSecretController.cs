@@ -20,7 +20,7 @@ namespace IBCQC_NetCore.Controllers
     public class SharedSecretController : ControllerBase
     {
 
-        private CallerValidate valCaller = new CallerValidate();
+    
         private CallerInfo callerInfo = new CallerInfo();
         private static string certSerial;
 
@@ -78,11 +78,11 @@ namespace IBCQC_NetCore.Controllers
                     return StatusCode(500, "Cannot identify caller. Exception: " + ex.Message);
                 }
 
-                bool isValidCaller = valCaller.callerValidate(callerInfo, CallerStatus.requireKemValid);
+                bool isValidCaller = CallerValidateFunction.callerValidate(callerInfo, CallerStatus.requireKemValid);
                 // They need a valid KEM key, not a shared secret
                 if (!isValidCaller)
                 {
-                    if (valCaller.kemKeyPairNeedsChanging)
+                    if (CallerValidateFunction.kemKeyPairNeedsChanging)
                     {
                         return StatusCode(498,"KemKeyPair Not Valid)");// Content((System.Net.HttpStatusCode)498 /*TokenExpiredOrInvalid*/, "KEM KeyPair not valid");
                     }
@@ -99,7 +99,7 @@ namespace IBCQC_NetCore.Controllers
 
             // Request for a new SharedSecret is all OK so far,
             // but if the private key is expiring soon, we need to warn the client side now.
-            if (valCaller.mustIssueKemPrivateKeyExpiryWarning(callerInfo))
+            if (CallerValidateFunction.mustIssueKemPrivateKeyExpiryWarning(callerInfo))
             {
                 return StatusCode(405, "KEM key requires renewal before you can proceed");
             }
