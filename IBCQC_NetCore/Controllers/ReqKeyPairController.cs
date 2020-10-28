@@ -156,10 +156,28 @@ namespace IBCQC_NetCore.Controllers
 
                     RegisterNodes.UpdKemPublicKey(sendBytes, Startup.StaticConfig["Config:clientFileStore"], certSerial);
 
-                   
-                     
-                       return StatusCode(200,sendBytes);
+                    bool isdebug = false;
+                    try
+                    {
+                        isdebug = Convert.ToBoolean(Startup.StaticConfig["Config:OutputDebugKeys"]);
 
+                    }
+                    catch 
+                    { 
+                    //nothing to do if debug not set
+                    }
+
+                    if (isdebug)
+                    {
+                        string dbgPrivateKey = Convert.ToBase64String(secret_key);
+                       
+                        return StatusCode(200, "::The private key encrypted is ::" + sendBytes + "::The private key in Base64 is ::" + dbgPrivateKey);
+
+                    }
+                    else
+                    {
+                        return StatusCode(200, sendBytes);
+                    }
                 }
 
 

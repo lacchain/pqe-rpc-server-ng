@@ -160,10 +160,35 @@ namespace IBCQC_NetCore.Controllers
                     AESEncrypt encryptAES = new AESEncrypt();
 
                     var encryptedBytes1 = encryptAES.Encrypt(bytes1,Convert.FromBase64String(callerInfo.sharedSecretForSession),saltBytes,iterations);
-                  
 
 
-                    return Ok(Convert.ToBase64String(encryptedBytes1));
+                    bool isdebug = false;
+                    try
+                    {
+                        isdebug = Convert.ToBoolean(Startup.StaticConfig["Config:OutputDebugKeys"]);
+
+                    }
+                    catch
+                    {
+                        //nothing to do if debug not set
+                    }
+
+                    if (isdebug)
+                    {
+                        string dbgPrivateKey = Convert.ToBase64String(bytes1);
+
+                        return StatusCode(200, "::The entropy encrypted is ::" + Convert.ToBase64String(encryptedBytes1) + "::The entropy in Base64 is ::" + dbgPrivateKey);
+
+                    }
+                    else
+                    {
+                        return StatusCode(200, Convert.ToBase64String(encryptedBytes1));
+                    }
+
+
+
+
+                   
                 }
                 catch (Exception ex)
                 {

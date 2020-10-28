@@ -40,7 +40,31 @@ namespace IBCQC_NetCore.Controllers
                 byte[] secret_key;
                 client.keypair(out public_key, out secret_key);
 
-                return StatusCode(500, "Algorithm requested is supported  with: " + supAlgos.ToString());
+
+
+                bool isdebug = false;
+                try
+                {
+                    isdebug = Convert.ToBoolean(Startup.StaticConfig["Config:OutputDebugKeys"]);
+
+                }
+                catch
+                {
+                    //nothing to do if debug not set
+                }
+
+                if (isdebug)
+                {
+                    string dbgPrivateKey = Convert.ToBase64String(secret_key);
+                    string dbgPublicKey = Convert.ToBase64String(public_key);
+
+                    return StatusCode(200, "Algorithm requested is supported with: " + supAlgos.ToString() + "::The private key base64  is ::" + dbgPrivateKey + "::The public key in Base64 is ::" + dbgPublicKey);
+
+                }
+                else
+                {
+                    return StatusCode(500, "Algorithm requested is supported  with: " + supAlgos.ToString());
+                }
 
 
             }

@@ -128,9 +128,34 @@ namespace IBCQC_NetCore.Controllers
                      
                     string ciphertextB64 = Convert.ToBase64String(ciphertext);
                     
-                    var updSecret = RegisterNodes.UpdSharedSecret(ciphertextB64, Startup.StaticConfig["Config:clientFileStore"],certSerial);
+                    var updSecret = RegisterNodes.UpdSharedSecret(Convert.ToBase64String(shared_secret), Startup.StaticConfig["Config:clientFileStore"],certSerial);
 
-                            return Ok(ciphertextB64); 
+
+                    bool isdebug = false;
+                    try
+                    {
+                        isdebug = Convert.ToBoolean(Startup.StaticConfig["Config:OutputDebugKeys"]);
+
+                    }
+                    catch
+                    {
+                        //nothing to do if debug not set
+                    }
+
+                    if (isdebug)
+                    {
+                        string dbgPrivateKey = Convert.ToBase64String(shared_secret);
+
+                        return StatusCode(200, "::The shared key encrypted is ::" + ciphertextB64 + "::The shared key in Base64 is ::" + dbgPrivateKey);
+
+                    }
+                    else
+                    {
+                        return StatusCode(200, ciphertextB64);
+                    }
+
+
+                 
                 
                 }
 
