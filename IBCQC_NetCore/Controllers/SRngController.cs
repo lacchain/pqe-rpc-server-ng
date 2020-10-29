@@ -47,6 +47,9 @@ namespace IBCQC_NetCore.Controllers
         [HttpGet("{byteCount}")]
         public IActionResult Get(int byteCount)
         {
+
+            _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SRng called called with Bytecount of : " +byteCount);
+
             // For this they must be logged in, so check if this is initialise or not
             try
             {
@@ -182,6 +185,8 @@ namespace IBCQC_NetCore.Controllers
                     }
                     else
                     {
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from SRNG call ");
+
                         return StatusCode(200, Convert.ToBase64String(encryptedBytes1));
                     }
 
@@ -192,6 +197,8 @@ namespace IBCQC_NetCore.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Fail from SRNG::" + ex.Message);
+
                     return StatusCode(500, "ERROR: SRNG failed with: " + ex.Message);
                 }
             }

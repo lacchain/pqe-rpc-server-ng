@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-
-
+using Microsoft.Extensions.Logging;
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -12,10 +8,21 @@ namespace IBCQC_NetCore.Controllers
     [ApiController]
     public class TestConnectionController : ControllerBase
     {
+        private readonly ILogger<TestConnectionController> _logger;
+
+        public TestConnectionController(ILogger<TestConnectionController> logger)
+        {
+            _logger = logger;
+        }
+
+
         // GET: api/<TestConnectionController>
         [HttpGet]
         public IActionResult Get()
         {
+            _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] TestConnection  called");
+
+            _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from TestConnection ");
             return StatusCode(200, "Alive");
         }
 

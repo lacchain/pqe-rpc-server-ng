@@ -2,8 +2,7 @@
 using System.Text;
 using IBCQC_NetCore.OqsdotNet;
 using Microsoft.AspNetCore.Mvc;
-
-
+using Microsoft.Extensions.Logging;
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -11,12 +10,22 @@ namespace IBCQC_NetCore.Controllers
     [ApiController]
     public class TestOQSController : ControllerBase
     {
+
+
+        private readonly ILogger<TestOQSController> _logger;
+
+        public TestOQSController(ILogger<TestOQSController> logger)
+        {
+            _logger = logger;
+        }
+
+
         // GET: api/<TestOQSController>
         [HttpGet("{algoname}")]
         public IActionResult Get(string algoname)
         {
 
-
+            _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] TestOQS called for algorithm: " + algoname);
 
 
             using (KEM client = new KEM(algoname))
@@ -58,11 +67,14 @@ namespace IBCQC_NetCore.Controllers
                     string dbgPrivateKey = Convert.ToBase64String(secret_key);
                     string dbgPublicKey = Convert.ToBase64String(public_key);
 
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from TestOQS ");
+
                     return StatusCode(200, "Algorithm requested is supported with: " + supAlgos.ToString() + "::The private key base64  is ::" + dbgPrivateKey + "::The public key in Base64 is ::" + dbgPublicKey);
 
                 }
                 else
                 {
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from TestOQS ");
                     return StatusCode(500, "Algorithm requested is supported  with: " + supAlgos.ToString());
                 }
 

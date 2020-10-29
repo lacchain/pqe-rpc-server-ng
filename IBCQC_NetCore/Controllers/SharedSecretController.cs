@@ -6,6 +6,7 @@ using IBCQC_NetCore.Models;
 using IBCQC_NetCore.OqsdotNet;
 using IBCQC_NetCore.Rng;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using static IBCQC_NetCore.Models.ApiEnums;
 
 
@@ -20,13 +21,22 @@ namespace IBCQC_NetCore.Controllers
 
         private static CallerInfo callerInfo;
         private static string certSerial;
+        private readonly ILogger<SharedSecretController> _logger;
+     
+        public SharedSecretController(ILogger<SharedSecretController> logger)
+        {
+            _logger = logger;
+        }
+
 
 
         // GET: api/<SharedSecretController>
         [HttpGet]
         public IActionResult Get()
         {
-         
+
+            _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Shared Secret  called");
+
             try
             {
                 // Go get from auth claims
@@ -146,11 +156,14 @@ namespace IBCQC_NetCore.Controllers
                     {
                         string dbgPrivateKey = Convert.ToBase64String(shared_secret);
 
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from Shared Secret Call ");
+
                         return StatusCode(200, "::The shared key encrypted is ::" + ciphertextB64 + "::The shared key in Base64 is ::" + dbgPrivateKey);
 
                     }
                     else
                     {
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from Shared Secret Call ");
                         return StatusCode(200, ciphertextB64);
                     }
 
@@ -164,6 +177,7 @@ namespace IBCQC_NetCore.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Error  from Shared Secret Call ::" + ex.Message);
                 return StatusCode(500, "ERROR: GetSharedSecret failed with: " + ex.Message);
             }
         }

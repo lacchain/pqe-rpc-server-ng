@@ -32,6 +32,10 @@ namespace IBCQC_NetCore.Controllers
        
         public IActionResult Post([FromBody] KeyValidate keyValidate)
         {
+
+            _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] VerifyKeys called  ");
+
+
             try
             {
                
@@ -78,7 +82,7 @@ namespace IBCQC_NetCore.Controllers
                
                 try
                 {
-                    CallerInfo callerInfo = RegisterNodes.GetClientNode(certSerial, Startup.StaticConfig["Config:clientFileStore"]);
+                   callerInfo = RegisterNodes.GetClientNode(certSerial, Startup.StaticConfig["Config:clientFileStore"]);
 
                     // OK -is this a known serial certificate
                     if (string.IsNullOrEmpty(callerInfo.callerID))

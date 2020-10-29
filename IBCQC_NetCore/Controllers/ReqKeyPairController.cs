@@ -9,7 +9,7 @@ using IBCQC_NetCore.Rng;
 using IBCQC_NetCore.Encryption;
 using Microsoft.AspNetCore.Authorization;
 using IBCQC_NetCore.OqsdotNet;
-
+using Microsoft.Extensions.Logging;
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -19,12 +19,24 @@ namespace IBCQC_NetCore.Controllers
     {
 
         private static CallerInfo callerInfo;
- 
+
+        private readonly ILogger<ReqKeyPairController> _logger;
+        public ReqKeyPairController(ILogger<ReqKeyPairController> logger)
+        {
+            _logger = logger;
+        }
+
+
+
         // GET: api/<ReqKeyPairController>
         [Authorize]
         [HttpGet]
         public IActionResult Get()
         {
+
+            _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] ReqKeyPairCalled called");
+
+
             // Go get from auth claims
             ClaimsPrincipal currentUser = this.User;
 
@@ -170,12 +182,15 @@ namespace IBCQC_NetCore.Controllers
                     if (isdebug)
                     {
                         string dbgPrivateKey = Convert.ToBase64String(secret_key);
-                       
+
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from Request Key Pair Call ");
+
                         return StatusCode(200, "::The private key encrypted is ::" + sendBytes + "::The private key in Base64 is ::" + dbgPrivateKey);
 
                     }
                     else
                     {
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from Request Key Pair Call ");
                         return StatusCode(200, sendBytes);
                     }
                 }
@@ -191,6 +206,8 @@ namespace IBCQC_NetCore.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Error from Request Key Pair Call ::" + ex.Message);
+
                 return StatusCode(400, "Unsupported KEM Algorithm" + ex.Message);
             }
 

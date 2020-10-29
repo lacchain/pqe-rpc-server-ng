@@ -34,7 +34,7 @@ namespace IBCQC_NetCore.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] NewClient postedClientInfo)
         {
-     
+            _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Setup Client called");
 
             //use the supportedalgorithms to look for supported algorithm
 
@@ -178,6 +178,7 @@ namespace IBCQC_NetCore.Controllers
                 }
                 catch
                 {
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Error 500 from Setup Client Call ");
                     return StatusCode(500);
                 }
 
@@ -201,13 +202,18 @@ namespace IBCQC_NetCore.Controllers
                 {
                     string dbgPrivateKey = Convert.ToBase64String(secret_key);
 
+
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from Setup Client Call ");
+
                     return StatusCode(200, "::The private key encrypted is ::" + debugReturnStr + "::The private key in Base64 is ::" + dbgPrivateKey);
 
                
                 }
                 else
                 {
-                   return Ok(debugReturnStr); 
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from Setup Client Call ");
+
+                    return Ok(debugReturnStr); 
                 }
 
 
