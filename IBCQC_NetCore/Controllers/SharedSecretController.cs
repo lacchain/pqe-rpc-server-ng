@@ -50,6 +50,7 @@ namespace IBCQC_NetCore.Controllers
 
                 if (certSerial == null)
                 {
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret  No Certificate Serial Number");
                     return StatusCode(401, "No Serial Number retrieved from Certificate");
                 }
 
@@ -64,6 +65,7 @@ namespace IBCQC_NetCore.Controllers
                 string certFriendlyName = friendlyName;
                 if (certFriendlyName == null)
                 {
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret  No Certificate Friendle Name");
                     return StatusCode(401, "No Friendly Name associated with this certificate");
                 }
 
@@ -77,11 +79,13 @@ namespace IBCQC_NetCore.Controllers
                     // OK -is this a known serial certificate
                     if (string.IsNullOrEmpty(callerInfo.callerID))
                     {
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret  Unknown Certificate Serial Number");
                         return StatusCode(401, "Unknown Certificate");
                     }
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret Cannot Identify caller");
                     return StatusCode(500, "Cannot identify caller. Exception: " + ex.Message);
                 }
 
@@ -91,23 +95,27 @@ namespace IBCQC_NetCore.Controllers
                 {
                     if (CallerValidateFunction.kemKeyPairNeedsChanging)
                     {
-                        return StatusCode(498,"KemKeyPair Not Valid)");// Content((System.Net.HttpStatusCode)498 /*TokenExpiredOrInvalid*/, "KEM KeyPair not valid");
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret KEM Keypair Invalid");
+                        return StatusCode(498,"KemKeyPair Not Valid)");
                     }
                     else
                     {
-                        return Unauthorized( "Client unknown or invalid");
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret  Client Unknown");
+                        return StatusCode(401, "Client unknown or invalid");
                     }
                 }
             }
             catch(Exception ex)
             {
-                return Unauthorized("Unable to locate security parameters for client. Exception: " + ex.Message);
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret Cannot Locate Client security parameters");
+                return StatusCode(401,"Unable to locate security parameters for client. Exception: " + ex.Message);
             }
 
             // Request for a new SharedSecret is all OK so far,
             // but if the private key is expiring soon, we need to warn the client side now.
             if (CallerValidateFunction.mustIssueKemPrivateKeyExpiryWarning(callerInfo))
             {
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret  KEM Key requires renewalr");
                 return StatusCode(405, "KEM key requires renewal before you can proceed");
             }
 

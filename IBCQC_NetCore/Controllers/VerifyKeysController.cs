@@ -47,6 +47,7 @@ namespace IBCQC_NetCore.Controllers
                 bool ignoreClientCertificateErrors = Convert.ToBoolean(Startup.StaticConfig["Config:IgnoreClientCertificateErrors"]);
                 if (ignoreClientCertificateErrors)
                 {
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] VerifyKeys Client Certificate Checks Disabled Cannot Proceed");
                     return StatusCode(401,"WARNING: Not supported while Client Certificate checks are disabled");
                 }
 
@@ -60,6 +61,7 @@ namespace IBCQC_NetCore.Controllers
 
                 if (certSerial == null)
                 {
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Verify Keys No Certificate Serial Number");
                     return StatusCode(401, "No Serial Number retrieved from Certificate");
                 }
 
@@ -74,6 +76,8 @@ namespace IBCQC_NetCore.Controllers
                 string certFriendlyName = friendlyName;
                 if (certFriendlyName == null)
                 {
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Verify Keys No Certificate Friendly Name");
+
                     return StatusCode(401, "No Friendly Name associated with this certificate");
                 }
 
@@ -87,6 +91,8 @@ namespace IBCQC_NetCore.Controllers
                     // OK -is this a known serial certificate
                     if (string.IsNullOrEmpty(callerInfo.callerID))
                     {
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Verify Keys No Certificate Serial Number");
+
                         return StatusCode(401, "Unknown Certificate");
                     }
                 }
@@ -103,10 +109,12 @@ namespace IBCQC_NetCore.Controllers
                 {
                     if (CallerValidateFunction.kemKeyPairNeedsChanging)
                     {
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Verify Keys Kem Key Pair Invalid");
                         return StatusCode(498, "KemKeyPair Not Valid)");// Content((System.Net.HttpStatusCode)498 /*TokenExpiredOrInvalid*/, "KEM KeyPair not valid");
                     }
                     else
                     {
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Verify KeysUnknown Clientr");
                         return StatusCode(401,"Client unknown or invalid");
                     }
                 }
@@ -117,7 +125,7 @@ namespace IBCQC_NetCore.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation("ERROR: Failed with exception: " + ex.Message);
-                return Unauthorized("Unable to locate security parameters for client");
+                return StatusCode(401,"Unable to locate security parameters for client");
             }
 
             try

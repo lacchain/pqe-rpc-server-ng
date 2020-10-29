@@ -64,6 +64,7 @@ namespace IBCQC_NetCore.Controllers
 
                 if (certSerial == null)
                 {
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SRNG No Certificate Serial Number");
                     return StatusCode(401, "No Serial Number retrieved from Certificate");
                 }
 
@@ -78,6 +79,7 @@ namespace IBCQC_NetCore.Controllers
                 string certFriendlyName = friendlyName;
                 if (certFriendlyName == null)
                 {
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret  No Certificate SFriendly Name");
                     return StatusCode(401, "No Friendly Name associated with this certificate");
                 }
 
@@ -91,11 +93,13 @@ namespace IBCQC_NetCore.Controllers
                     // OK -is this a known serial certificate
                     if (string.IsNullOrEmpty(callerInfo.callerID))
                     {
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret  Unknown Certificate");
                         return StatusCode(401, "Unknown Certificate");
                     }
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret  Cannot Identify User");
                     return StatusCode(500, "Cannot identify caller. Exception: " + ex.Message);
                 }
 
@@ -105,33 +109,41 @@ namespace IBCQC_NetCore.Controllers
                 {
                     if (CallerValidateFunction.kemKeyPairNeedsChanging)
                     {
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret Kem Key Not Valid");
                         return StatusCode(498, "KemKeyPair Not Valid)");
                     }
                     else
                     {
-                        return Unauthorized("Client unknown or invalid");
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret  Client Unknown");
+                        return StatusCode(401,"Client unknown or invalid");
                     }
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogInformation("ERROR: Failed with exception: " + ex.Message);
-                return Unauthorized("Unable to locate security parameters for client");
+                return StatusCode(401,"Unable to locate security parameters for client");
             }
 
             // Request for entropy is all OK so far,
             // but if the KEM private key (or the SharedSecret) are expiring soon, we need to warn the client side now.
             if (CallerValidateFunction.mustIssueKemPrivateKeyExpiryWarning(callerInfo))
             {
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret Kem Key Pair Renewal Required");
+
                 return StatusCode(405, "KEM key pair requires renewal before you can proceed");
             }
             if (CallerValidateFunction.mustIssueSharedSecretExpiryWarning(callerInfo))
             {
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecretShared Secret Require Renewal");
+
                 return StatusCode(405, "Shared Secret (aka Session Key) requires renewal before you can proceed");
             }
 
             if (byteCount == 0) // Encapsulation of a new Private  Key
             {
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret  No bytes requested");
+
                 return StatusCode(400,"Nothing requested");
             }
             else // Request for actual QRNG
@@ -179,7 +191,7 @@ namespace IBCQC_NetCore.Controllers
                     if (isdebug)
                     {
                         string dbgPrivateKey = Convert.ToBase64String(bytes1);
-
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from SRNG call ");
                         return StatusCode(200, "::The entropy encrypted is ::" + Convert.ToBase64String(encryptedBytes1) + "::The entropy in Base64 is ::" + dbgPrivateKey);
 
                     }

@@ -48,6 +48,7 @@ namespace IBCQC_NetCore.Controllers
 
             if (certSerial == null)
             {
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] ReqKeyPair No Certificate Serial Number");
                 return StatusCode(401, "No Serial Number retrieved from Certificate");
             }
 
@@ -62,6 +63,7 @@ namespace IBCQC_NetCore.Controllers
             string certFriendlyName = friendlyName;
             if (certFriendlyName == null)
             {
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] ReqKeyPair No Certificate Friendly Namer");
                 return StatusCode(401, "No Friendly Name associated with this certificate");
             }
 
@@ -75,11 +77,13 @@ namespace IBCQC_NetCore.Controllers
                 // OK -is this a known serial certificate
                 if (string.IsNullOrEmpty(callerInfo.callerID))
                 {
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] ReqKeyPair Unknown Certificate ");
                     return StatusCode(401, "Unknown Certificate");
                 }
             }
             catch (Exception ex)
             {
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] ReqKeyPair Cannot Identify User");
                 return StatusCode(500, "Cannot identify caller. Exception: " + ex.Message);
             }
 
@@ -94,12 +98,14 @@ namespace IBCQC_NetCore.Controllers
                 {
                     if (CallerValidateFunction.sharedSecretNeedsChanging)
                     {
-                       
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] ReqKeyPair Shared Secret Expired");
+
                         return StatusCode(498, "SharedSecret has expired");
                     }
                     else
                     {
-                       
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] ReqKeyPair Client Unknown");
+
                         return StatusCode(401, "Client unknown or invalid");
                     }
                 }

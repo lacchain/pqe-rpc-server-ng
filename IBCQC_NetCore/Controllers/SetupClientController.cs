@@ -43,23 +43,27 @@ namespace IBCQC_NetCore.Controllers
 
             if (String.IsNullOrEmpty(algoRequested))
             {
-                return BadRequest("Unsupported Algorithm");
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SetupClient  Unsupported Algo :::" + algoRequested);
+                return StatusCode(400,"Unsupported Algorithm");
             }
 
 
 
             if (String.IsNullOrEmpty(postedClientInfo.clientCertName))
             {
-                return BadRequest( "No Cert Details");
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Setup Client No Certificate Details");
+                return StatusCode(400, "No Cert Details");
             }
             if (String.IsNullOrEmpty(postedClientInfo.clientCertSerialNumber))
             {
-                return BadRequest("No Cert Details");
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Setup Client No Certificate Details");
+                return StatusCode(400,"No Cert Details");
             }
 
             if (String.IsNullOrEmpty(postedClientInfo.countryCode))
             {
-                return BadRequest("Invalid Country Code");
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Setup Client Invalid Country Code");
+                return StatusCode(400,"Invalid Country Code");
             }
             if (String.IsNullOrEmpty(postedClientInfo.smsNumber))
             {
@@ -67,18 +71,16 @@ namespace IBCQC_NetCore.Controllers
             }
             if (String.IsNullOrEmpty(postedClientInfo.email))
             {
-                return BadRequest("No valid Email");
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Setup Client Invalid Email");
+                return StatusCode(400,"No valid Email");
             }
             if (String.IsNullOrEmpty(postedClientInfo.keyparts))
             {
-                return BadRequest( "Invalid keyparts");
+                _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Setup Client wrong number of Keyparts");
+                return StatusCode(400, "Invalid keyparts");
             }
 
-            if (String.IsNullOrEmpty(postedClientInfo.kemAlgorithm))
-            {
-                return BadRequest("Unknown Algorithm");
-            }
-            else //check the type is supported
+            else 
             {
               
                 
@@ -87,7 +89,8 @@ namespace IBCQC_NetCore.Controllers
                 bool validEmail = xx.IsValidEmail(postedClientInfo.email);
                 if (!validEmail)
                 {
-                    return BadRequest("Not a valid Email");
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Setup Client Invalid Email");
+                    return StatusCode(400,"Not a valid Email");
                 }
 
                 // OK - now we need to know if the certificate is in use
@@ -102,7 +105,8 @@ namespace IBCQC_NetCore.Controllers
 
                 if (RegisterNodes.nodeExists(postedClientInfo.clientCertSerialNumber, Startup.StaticConfig["Config:clientFileStore"]))
                 {
-                    return BadRequest("Client Certificate Already Exists");
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Setup Client Certificate Exists");
+                    return StatusCode(400,"Client Certificate Already Exists");
                 }
 
                 // Variabels for phone checking
@@ -135,7 +139,7 @@ namespace IBCQC_NetCore.Controllers
                     _logger.LogInformation("ERROR: Failed with exception: " + ex.Message);
                     isMobile = false;
                     isValidRegion = false;
-                    return  BadRequest("ERROR: Is Valid Mobile: " + isMobile + ", Is Valid Region: " + isValidRegion);
+                    return  StatusCode(400,"ERROR: Is Valid Mobile: " + isMobile + ", Is Valid Region: " + isValidRegion);
                 }
               
 
