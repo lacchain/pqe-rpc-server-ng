@@ -1,7 +1,7 @@
 
 # IronBridge.API.NetCore
 
-.NET Core version of the IronBridge API
+.NET Core version of the IronBridge API This is tandalone server utilising the LibOQS libraries
 
 
 
