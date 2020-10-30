@@ -69,7 +69,7 @@ namespace IBCQC_NetCore.Models
             var allCallerInfo = readNodes(filename);
             foreach (var callerInfo in allCallerInfo.CallerInfo)
             {
-                if (callerInfo.clientCertSerialNumber == serialNumber)
+                if (callerInfo.clientCertSerialNumber.ToLower() == serialNumber.ToLower())
                 {
                     return callerInfo;
                 }
@@ -91,7 +91,7 @@ namespace IBCQC_NetCore.Models
                 foreach (var callerInfo in allCallerInfo.CallerInfo)
                 {
 
-                    if (callerInfo.clientCertSerialNumber == serialNumber)
+                    if (callerInfo.clientCertSerialNumber.ToLower() == serialNumber.ToLower())
                     {
                         callerInfo.kemPublicKey = public_Key;
                         callerInfo.keyExpiryDate= DateTime.Now.AddYears(5).ToShortDateString();
@@ -127,7 +127,7 @@ namespace IBCQC_NetCore.Models
                 foreach (var callerInfo in allCallerInfo.CallerInfo)
                 {
                     
-                    if (callerInfo.clientCertSerialNumber == serialNumber)
+                    if (callerInfo.clientCertSerialNumber.ToLower() == serialNumber.ToLower())
                     {
                         callerInfo.sharedSecretForSession = sharedsecret;
                         callerInfo.sharedSecretExpiryTime = DateTime.Now.ToLongDateString();

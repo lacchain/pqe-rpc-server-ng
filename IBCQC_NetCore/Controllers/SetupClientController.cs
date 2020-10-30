@@ -5,6 +5,7 @@ using PhoneNumbers;
 using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
 using IBCQC_NetCore.OqsdotNet;
+using System.Text.Json;
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -189,7 +190,7 @@ namespace IBCQC_NetCore.Controllers
                
                 ReturnKeyFormat debugReturnStr = SplitKeyHandlerFunction.SendKeyParts(Convert.ToInt16(postedClientInfo.keyparts),secret_key);
 
-
+              var newclientinfo =  JsonSerializer.Serialize<ReturnKeyFormat>(debugReturnStr);
 
                 bool isdebug = false;
                 try
@@ -209,7 +210,7 @@ namespace IBCQC_NetCore.Controllers
 
                     _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from Setup Client Call ");
 
-                    return StatusCode(200, "::The private key encrypted is ::" + debugReturnStr + "::The private key in Base64 is ::" + dbgPrivateKey);
+                    return StatusCode(200, "The new client return is  ::" + newclientinfo + "::The private key in Base64 is ::" + dbgPrivateKey);
 
                
                 }
@@ -217,7 +218,7 @@ namespace IBCQC_NetCore.Controllers
                 {
                     _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from Setup Client Call ");
 
-                    return Ok(debugReturnStr); 
+                    return Ok(newclientinfo); 
                 }
 
 

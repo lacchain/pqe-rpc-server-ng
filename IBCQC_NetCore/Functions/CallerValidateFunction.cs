@@ -100,7 +100,7 @@ namespace IBCQC_NetCore.Functions
             DateTime dt;
             DateTime.TryParse(caller.sharedSecretExpiryTime, out dt);
 
-            DateTime time1 = DateTime.Now.AddSeconds(Convert.ToInt16(caller.sharedSecretExpiryDurationInSecs) / 10);
+            DateTime time1 = DateTime.Now.AddSeconds(Convert.ToInt32(caller.sharedSecretExpiryDurationInSecs) / 10);
 
 
             if (System.DateTime.Compare(time1, dt) < 0)
