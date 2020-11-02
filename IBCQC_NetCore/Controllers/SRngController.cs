@@ -176,6 +176,13 @@ namespace IBCQC_NetCore.Controllers
 
                     var encryptedBytes1 = encryptAES.Encrypt(bytes1,Convert.FromBase64String(callerInfo.sharedSecretForSession),saltBytes,iterations);
 
+                    //debug  
+                    AESDecrypt aesDecrypt = new AESDecrypt();
+                    var decdryptbytes = aesDecrypt.AESDecryptBytes(encryptedBytes1, Convert.FromBase64String(callerInfo.sharedSecretForSession), saltSize,iterations);
+
+                    ByteCompareFunction cmp = new ByteCompareFunction();
+                   var isgood =  cmp.ByteArrayCompare(bytes1, decdryptbytes);
+
 
                     bool isdebug = false;
                     try
@@ -190,9 +197,11 @@ namespace IBCQC_NetCore.Controllers
 
                     if (isdebug)
                     {
+                        string strSalt = Convert.ToBase64String(saltBytes);
                         string dbgPrivateKey = Convert.ToBase64String(bytes1);
+                        string dbgEncKey = Convert.ToBase64String(encryptedBytes1);
                         _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from SRNG call ");
-                        return StatusCode(200, "::The entropy encrypted is ::" + Convert.ToBase64String(encryptedBytes1) + "::The entropy in Base64 is ::" + dbgPrivateKey);
+                        return StatusCode(200, "The entropy encrypted is ::" + Convert.ToBase64String(encryptedBytes1) + "::The entropy in Base64 is ::" + dbgPrivateKey + "::Saltvytes are ::" + strSalt);
 
                     }
                     else
