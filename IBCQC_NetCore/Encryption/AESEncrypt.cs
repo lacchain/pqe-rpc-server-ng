@@ -26,8 +26,8 @@ namespace IBCQC_NetCore.Encryption
                 using (var memoryStream = new MemoryStream())
                 {
 
-                    symmetricManaged.Padding = PaddingMode.PKCS7;
-                    symmetricManaged.Mode = CipherMode.CBC;
+                  
+
                     using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
                     {
                         // Send the data through the CryptoStream, to the underlying MemoryStream

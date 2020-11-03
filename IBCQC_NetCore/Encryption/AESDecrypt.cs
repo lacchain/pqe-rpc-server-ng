@@ -8,7 +8,7 @@ namespace IBCQC_NetCore.Encryption
 {
     public class AESDecrypt
     {
-        public byte[] AESDecryptBytes(byte[] toDecrypt, byte[] sharedSecret, int saltSize, int iterations)
+        public byte[] AESDecryptBytes(byte[] toDecrypt, byte[] sharedSecret, int saltSize, int iterations,int dataSize)
         {
            
 
@@ -28,20 +28,18 @@ namespace IBCQC_NetCore.Encryption
                 // The default Cipher Mode is CBC and the Padding is PKCS7 which are both good
 
 
-              
+
                 using (var symmetricManaged = new AesCryptoServiceProvider())
                 using (var decryptor = symmetricManaged.CreateDecryptor(keyBytes, ivBytes))
                 using (var memoryStream = new MemoryStream(ciphertextBytes))
                 using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
                 {
+                 
 
-                    symmetricManaged.Padding = PaddingMode.PKCS7;
-                    symmetricManaged.Mode = CipherMode.CBC;
-
-                    var results = new byte[ciphertextBytes.Length];
+                    var results = new byte[dataSize];
 
                     // Return the decrypted bytes from the decrypting stream.
-                    cryptoStream.Read(results, 0, ciphertextBytes.Length);
+                    cryptoStream.Read(results, 0, dataSize);
                     cryptoStream.Flush();
 
                     return results;
