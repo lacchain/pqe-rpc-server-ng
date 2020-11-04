@@ -177,7 +177,8 @@ namespace IBCQC_NetCore.Controllers
 
                     //update the public key
 
-                    RegisterNodes.UpdKemPublicKey(sendBytes, Startup.StaticConfig["Config:clientFileStore"], certSerial);
+                    //comment out until testing complete
+                 //   RegisterNodes.UpdKemPublicKey(sendBytes, Startup.StaticConfig["Config:clientFileStore"], certSerial);
 
                     bool isdebug = false;
                     try
