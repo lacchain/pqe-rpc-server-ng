@@ -61,7 +61,33 @@ namespace IBCQC_NetCore.Models
         }
 
 
+        internal static bool RemoveClientNode(string serialNumber, string filename)
+        {
+            try
+            {
 
+                var allCallerInfo = readNodes(filename);
+
+                allCallerInfo.CallerInfo.RemoveAll(x => x.clientCertSerialNumber.ToLower() == serialNumber.ToLower());
+                var filePath = Path.Combine(System.AppContext.BaseDirectory, filename);
+                ////serialize the new updated object to a string
+                string towrite = JsonSerializer.Serialize(allCallerInfo);
+                ////overwrite the file and it will not contain the removed client
+                System.IO.File.WriteAllText(filePath, towrite);
+
+
+                return true;
+            }
+
+
+            catch 
+            {
+                return false;
+            
+            }
+
+           
+        }
 
 
         internal static CallerInfo GetClientNode(string serialNumber, string filename)
