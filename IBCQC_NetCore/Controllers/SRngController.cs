@@ -182,9 +182,9 @@ namespace IBCQC_NetCore.Controllers
                     var sendWithHeader = AESHeaderProcessing.AddEncryptHeader(byteCount, encryptedBytes1);
 
 
+                    _logger.LogInformation(Convert.ToBase64String(sendWithHeader) + " datasize::" + byteCount);
 
 
-                  
 
                     bool isdebug = false;
                     try
@@ -203,13 +203,15 @@ namespace IBCQC_NetCore.Controllers
                         string dbgPrivateKey = Convert.ToBase64String(bytes1);
                         string dbgEncKey = Convert.ToBase64String(encryptedBytes1);
                         _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from SRNG call ");
+
+                        _logger.LogInformation("Debug The entropy encrypted is ::" + Convert.ToBase64String(sendWithHeader) + "::The entropy in Base64 is ::" + dbgPrivateKey + "::Saltbytes are ::" + strSalt);
                         return StatusCode(200, "The entropy encrypted is ::" + Convert.ToBase64String(sendWithHeader) + "::The entropy in Base64 is ::" + dbgPrivateKey + "::Saltbytes are ::" + strSalt);
 
                     }
                     else
                     {
                         _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from SRNG call ");
-
+                     
                         return StatusCode(200, Convert.ToBase64String(sendWithHeader));
                     }
 
