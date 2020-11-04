@@ -99,7 +99,7 @@ namespace IBCQC_NetCore.Controllers
             {
                 _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] client with certificate was removed");
 
-                return StatusCode(401, "Client was not removed");
+                return StatusCode(200, "Client was removed");
 
             }
 
