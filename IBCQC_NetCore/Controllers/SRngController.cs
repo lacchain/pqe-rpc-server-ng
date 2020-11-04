@@ -210,7 +210,7 @@ namespace IBCQC_NetCore.Controllers
                     {
                         _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from SRNG call ");
 
-                        return StatusCode(200, Convert.ToBase64String(encryptedBytes1));
+                        return StatusCode(200, Convert.ToBase64String(sendWithHeader));
                     }
 
 

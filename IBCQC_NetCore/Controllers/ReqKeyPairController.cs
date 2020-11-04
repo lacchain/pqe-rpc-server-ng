@@ -166,9 +166,14 @@ namespace IBCQC_NetCore.Controllers
                                                                      saltBytes,
                                                                      iterations);
 
-                   // Send as base64
 
-                    sendBytes = Convert.ToBase64String(encryptedBytes1);
+                    //add our  header value
+                    var sendWithHeader = AESHeaderProcessing.AddEncryptHeader(secret_key.Length, encryptedBytes1);
+
+
+                    // Send as base64
+
+                    sendBytes = Convert.ToBase64String(sendWithHeader);
 
                     //update the public key
 
@@ -192,6 +197,8 @@ namespace IBCQC_NetCore.Controllers
                         _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from Request Key Pair Call ");
 
                         return StatusCode(200, "::The private key encrypted is ::" + sendBytes + "::The private key in Base64 is ::" + dbgPrivateKey);
+
+                      
 
                     }
                     else
