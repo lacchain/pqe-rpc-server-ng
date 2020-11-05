@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Builder;
@@ -39,6 +43,7 @@ namespace IBCQC_NetCore
                     CertificateAuthenticationDefaults.AuthenticationScheme)
                     .AddCertificate(options =>
                     {
+                        options.RevocationMode = X509RevocationMode.NoCheck;
                         services.AddAuthentication(
                             CertificateAuthenticationDefaults.AuthenticationScheme)
                             .AddCertificate(options =>
