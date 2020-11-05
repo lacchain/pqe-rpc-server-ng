@@ -96,7 +96,7 @@ namespace IBCQC_NetCore.Controllers
                     if (CallerValidateFunction.kemKeyPairNeedsChanging)
                     {
                         _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] SharedSecret KEM Keypair Invalid");
-                        return StatusCode(498,"KemKeyPair Not Valid)");
+                        return StatusCode(499,"KemKeyPair Not Valid)");
                     }
                     else
                     {
