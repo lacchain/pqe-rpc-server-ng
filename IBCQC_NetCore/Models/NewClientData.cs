@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace IBCQC_NetCore.Models
 {
 
-
+    //new data
 
     public class Channel
     {
