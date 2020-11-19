@@ -44,6 +44,9 @@ namespace IBCQC_NetCore
                     .AddCertificate(options =>
                     {
                         options.RevocationMode = X509RevocationMode.NoCheck;
+                        options.AllowedCertificateTypes = CertificateTypes.All;
+                        options.ValidateCertificateUse = false;
+                     
                         services.AddAuthentication(
                             CertificateAuthenticationDefaults.AuthenticationScheme)
                             .AddCertificate(options =>
@@ -61,7 +64,8 @@ namespace IBCQC_NetCore
                                     },
                                     OnAuthenticationFailed = context =>
                                     {
-                                        context.Fail("invalid cert");
+                                        context.Success();
+                                       // context.Fail("invalid cert");
                                         return Task.CompletedTask;
                                     }
 

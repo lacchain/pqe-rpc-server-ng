@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using IBCQC_NetCore.Models;
 using System.Security.Claims;
-
+using System.Threading.Tasks;
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -98,14 +98,31 @@ namespace IBCQC_NetCore.Controllers
             response.buildDate = System.IO.File.GetLastWriteTime(Assembly.GetExecutingAssembly().Location);
             response.configuration = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyConfigurationAttribute>().Configuration;
             response.targetFramework = Assembly.GetExecutingAssembly().GetCustomAttribute<System.Runtime.Versioning.TargetFrameworkAttribute>().FrameworkName;
-            response.supportedEndpoints = "getinfo" + "|" + // Search solution for "[Route("
-                                          "api/getinfo" + "|" +
-                                          "api/login" + "|" +
-                                          "api/reqkeypair" + "|" +
-                                          "api/setupclient" + "|" +
-                                          "api/sharedsecret" + "|" +
-                                          "api/srng" + "|" +
-                                          "api/verifykeys";
+            //  response.supportedEndpoints = 
+            var asm = Assembly.GetExecutingAssembly();
+            var methods = asm.GetTypes()
+                .Where(type => typeof(Controller)
+                    .IsAssignableFrom(type))
+                .SelectMany(type => type.GetMethods())
+                .Where(method => method.IsPublic
+                    && !method.IsDefined(typeof(NonActionAttribute))
+                    && (
+                        
+                        method.ReturnType == typeof(IActionResult) 
+                     
+                        )
+                    )
+                .Select(m => m.Name);
+
+
+            //"getinfo" + "|" + // Search solution for "[Route("
+            //                          "api/getinfo" + "|" +
+            //                          "api/login" + "|" +
+            //                          "api/reqkeypair" + "|" +
+            //                          "api/setupclient" + "|" +
+            //                          "api/sharedsecret" + "|" +
+            //                          "api/srng" + "|" +
+            //                          "api/verifykeys";
 
             switch (whichFormat)
             {
