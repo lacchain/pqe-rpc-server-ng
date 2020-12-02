@@ -77,13 +77,14 @@ namespace IBCQC_NetCore.Controllers
                     case "sms":
                         keyparts++;
                         useEmail = true;
-
+                        sms = sendChannel.value;
                 break;
 
                     case "email":
 
                         keyparts++;
                         useSms = true;
+                        email = sendChannel.value;
                         break;
 
                     default:
@@ -119,7 +120,7 @@ namespace IBCQC_NetCore.Controllers
                     bool validEmail = xx.IsValidEmail(email);
                     if (!validEmail)
                     {
-                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Setup Client Invalid Email");
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Setup Client Invalid Email: {email}");
                         return StatusCode(400, "Not a valid Email");
                     }
 
