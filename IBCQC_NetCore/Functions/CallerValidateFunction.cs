@@ -1,5 +1,6 @@
 ﻿using IBCQC_NetCore.Models;
 using System;
+using System.Globalization;
 using static IBCQC_NetCore.Models.ApiEnums;
 
 namespace IBCQC_NetCore.Functions
@@ -80,9 +81,10 @@ namespace IBCQC_NetCore.Functions
             // Check if the key that we hold has less than 7 days remaining.
             // So with the default value of 1 year, 7 days is approx 2%.
             DateTime time1 = DateTime.Now.AddDays(7);
+            string pattern = "dd-MM-yyyy hh:mm:ss";
             DateTime dt;
-
-            DateTime.TryParse(caller.keyExpiryDate, out dt);
+            DateTime.TryParseExact(caller.keyExpiryDate, pattern, null,
+                                   DateTimeStyles.None, out dt);
 
             if (System.DateTime.Compare(time1, dt) > 0)
             {
@@ -97,8 +99,11 @@ namespace IBCQC_NetCore.Functions
             // Check if the key that we hold has less than 1 tenth of its life left.
             // So with the default value of 7200 secs (2hours), 10% is 12 mins.
 
+         
+            string pattern =  "dd-MM-yyyy hh:mm:ss";
             DateTime dt;
-            DateTime.TryParse(caller.sharedSecretExpiryTime, out dt);
+            DateTime.TryParseExact(caller.keyExpiryDate, pattern, null,
+                                   DateTimeStyles.None, out dt);
 
             DateTime time1 = DateTime.Now.AddSeconds(Convert.ToInt32(caller.sharedSecretExpiryDurationInSecs) / 10);
 
@@ -119,9 +124,12 @@ namespace IBCQC_NetCore.Functions
         private static bool ValidateKemPrivateKey(CallerInfo caller)
         {
             // Check if the KemPrivateKey has expired
-            DateTime dt;
-            DateTime.TryParse(caller.keyExpiryDate, out dt);
 
+            string pattern = "dd-MM-yyyy hh:mm:ss";
+            DateTime dt;
+            DateTime.TryParseExact(caller.keyExpiryDate,pattern, null,
+                                   DateTimeStyles.None, out dt);
+            //compare if now is earlier than the set time we OK
 
             if (System.DateTime.Compare(DateTime.Now, dt) < 0)
             {
@@ -142,9 +150,10 @@ namespace IBCQC_NetCore.Functions
         {
             // Check if the shared secret has expired
 
-
+            string pattern = "dd-MM-yyyy hh:mm:ss";
             DateTime dt;
-            DateTime.TryParse(caller.keyExpiryDate, out dt);
+            DateTime.TryParseExact(caller.keyExpiryDate, pattern, null,
+                                   DateTimeStyles.None, out dt);
 
             if (System.DateTime.Compare(DateTime.Now, dt) < 0)
             {

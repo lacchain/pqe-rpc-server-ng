@@ -64,7 +64,7 @@ namespace IBCQC_NetCore.Functions
                 c[i * 2 + 1] = (char)(55 + b + (((b - 10) >> 31) & -7));
             }
             return new string(c);
-        }
+        }       
 
         static string ByteToHexBitFiddle(byte[] bytes, int len)
         {

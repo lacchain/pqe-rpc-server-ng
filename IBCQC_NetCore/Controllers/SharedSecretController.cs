@@ -91,7 +91,13 @@ namespace IBCQC_NetCore.Controllers
 
                 bool isValidCaller = CallerValidateFunction.callerValidate(callerInfo, CallerStatus.requireKemValid);
                 // They need a valid KEM key, not a shared secret
-                if (!isValidCaller)
+                if (isValidCaller)
+                { 
+                //go on
+                
+                }
+
+                else
                 {
                     if (CallerValidateFunction.kemKeyPairNeedsChanging)
                     {
@@ -104,6 +110,8 @@ namespace IBCQC_NetCore.Controllers
                         return StatusCode(401, "Client unknown or invalid");
                     }
                 }
+
+
             }
             catch(Exception ex)
             {
