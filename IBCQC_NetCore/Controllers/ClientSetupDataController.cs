@@ -66,25 +66,71 @@ namespace IBCQC_NetCore.Controllers
             int keyparts = 0;
             string email = string.Empty;
             string sms = string.Empty;
-            bool useEmail = false;
-            bool useSms = false;
+       
+            // Variabels for phone checking
+            bool isMobile = false;
+            bool isValidNumber = false;
+            bool isValidRegion = false;
+            string originalNumber;
 
-            foreach(var sendChannel in postedClientInfo.channels)
+            foreach (var sendChannel in postedClientInfo.channels)
             {
 
                 switch (sendChannel.type)
                 {
                     case "sms":
-                        keyparts++;
-                        useEmail = true;
+                       
+                    
                         sms = sendChannel.value;
-                break;
+
+                        try
+                        {
+                            PhoneNumber phoneNumber = _phoneUtil.Parse(sms, postedClientInfo.countryCode);
+                            isValidNumber = _phoneUtil.IsValidNumber(phoneNumber);          // Returns true for valid number
+
+                            // Returns true or false w.r.t phone number with the specified region
+                            isValidRegion = _phoneUtil.IsValidNumberForRegion(phoneNumber, postedClientInfo.countryCode);
+                            string region = _phoneUtil.GetRegionCodeForNumber(phoneNumber); // GB, US , et al
+
+                            var numberType = _phoneUtil.GetNumberType(phoneNumber);         // Produces Mobile , FIXED_LINE
+                            string phoneNumberType = numberType.ToString();
+
+                            if (!string.IsNullOrEmpty(phoneNumberType) && phoneNumberType == "MOBILE")
+                            {
+                                isMobile = true;
+                            }
+                            originalNumber = _phoneUtil.Format(phoneNumber, PhoneNumberFormat.E164); // Produces "+923336323997" 
+                          
+                            //NOTe removed as wwe do not support SMS as yet
+                            
+                            //  keyparts++;
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogInformation("ERROR: Failed with exception: " + ex.Message);
+                            isMobile = false;
+                            isValidRegion = false;
+                            return StatusCode(400, "ERROR: Is Valid Mobile: " + isMobile + ", Is Valid Region: " + isValidRegion);
+                        }
+
+
+                        break;
 
                     case "email":
 
-                        keyparts++;
-                        useSms = true;
+                      
+                       
                         email = sendChannel.value;
+
+                        ValidateEmail xx = new ValidateEmail(_logger);
+                        bool validEmail = xx.IsValidEmail(email);
+                        if (!validEmail)
+                        {
+                            _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Setup Client Invalid Email: {email}");
+                            return StatusCode(400, "Not a valid Email");
+                        }
+                             keyparts++;
+
                         break;
 
                     default:
@@ -113,22 +159,7 @@ namespace IBCQC_NetCore.Controllers
             else
             {
 
-                if (useEmail)
-                {
-
-                    ValidateEmail xx = new ValidateEmail(_logger);
-                    bool validEmail = xx.IsValidEmail(email);
-                    if (!validEmail)
-                    {
-                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Setup Client Invalid Email: {email}");
-                        return StatusCode(400, "Not a valid Email");
-                    }
-
-                    // OK - now we need to know if the certificate is in use
-                    // Test ensure read write to store is working
-
-                }
-
+         
                 if (postedClientInfo.clientCertSerialNumber.Length < 18)
                 {
                     postedClientInfo.clientCertSerialNumber = postedClientInfo.clientCertSerialNumber.PadLeft(18, '0');
@@ -140,42 +171,8 @@ namespace IBCQC_NetCore.Controllers
                     return StatusCode(400, "Client Certificate Already Exists");
                 }
 
-                // Variabels for phone checking
-                bool isMobile = false;
-                bool isValidNumber = false;
-                bool isValidRegion = false;
-                string originalNumber;
+               
 
-                if (useSms)
-                {
-                    //// Check the phone number
-                    try
-                    {
-                        PhoneNumber phoneNumber = _phoneUtil.Parse(sms, postedClientInfo.countryCode);
-                        isValidNumber = _phoneUtil.IsValidNumber(phoneNumber);          // Returns true for valid number
-
-                        // Returns true or false w.r.t phone number with the specified region
-                        isValidRegion = _phoneUtil.IsValidNumberForRegion(phoneNumber, postedClientInfo.countryCode);
-                        string region = _phoneUtil.GetRegionCodeForNumber(phoneNumber); // GB, US , et al
-
-                        var numberType = _phoneUtil.GetNumberType(phoneNumber);         // Produces Mobile , FIXED_LINE
-                        string phoneNumberType = numberType.ToString();
-
-                        if (!string.IsNullOrEmpty(phoneNumberType) && phoneNumberType == "MOBILE")
-                        {
-                            isMobile = true;
-                        }
-                        originalNumber = _phoneUtil.Format(phoneNumber, PhoneNumberFormat.E164); // Produces "+923336323997"
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogInformation("ERROR: Failed with exception: " + ex.Message);
-                        isMobile = false;
-                        isValidRegion = false;
-                        return StatusCode(400, "ERROR: Is Valid Mobile: " + isMobile + ", Is Valid Region: " + isValidRegion);
-                    }
-
-                }
                 int nextid = RegisterNodes.GetNextID(Startup.StaticConfig["Config:clientFileStore"]);
 
 
@@ -220,7 +217,7 @@ namespace IBCQC_NetCore.Controllers
                 }
 
 
-                ReturnKeyFormat debugReturnStr = SplitKeyHandlerFunction.SendKeyParts(Convert.ToInt16(keyparts), secret_key);
+                ReturnKeyFormat debugReturnStr = SplitKeyHandlerFunction.SendKeyParts(Convert.ToInt16(keyparts), secret_key,postedClientInfo.channels);
 
                 var newclientinfo = JsonSerializer.Serialize<ReturnKeyFormat>(debugReturnStr);
 

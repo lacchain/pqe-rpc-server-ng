@@ -1,4 +1,7 @@
-﻿using System;
+﻿using IBCQC_NetCore.Models;
+using MailClient;
+using System;
+using System.Collections.Generic;
 
 namespace IBCQC_NetCore.Functions
 {
@@ -49,8 +52,73 @@ namespace IBCQC_NetCore.Functions
             }
             return formattedSegment;
         }
+        //used for new channel config
+  internal static ReturnKeyFormat SendKeyParts(short keyParts, byte[] secret_key, List<Channel> channels)
+        {
+            if (Convert.ToBoolean(Startup.StaticConfig["Config:singleSetupClientKeyPartOnly"]))
+            {
+                keyParts = 1;
+            }
 
 
+            ReturnKeyFormat formattedSegment;
+
+            int normalSegmentSize = secret_key.Length / keyParts;
+            int bytesRemaining = secret_key.Length % keyParts;
+            Byte[] bindata1 = new Byte[normalSegmentSize + bytesRemaining];
+
+            int currentSegment = 1;
+            int startpos = 0;
+
+            //infinite look with break condition
+            for (; ; )
+            {
+                int len = normalSegmentSize;
+
+                if (currentSegment == keyParts) // If this is the final segment
+                    len += bytesRemaining;      // Add the remaining bytes, which might be 0, in which case, no harm done.
+
+                Buffer.BlockCopy(secret_key, startpos, bindata1, 0, len);         // Extract a section of the binary data
+                string hexdata1 = ByteToHexBitFiddle(bindata1, len);                      // Convert the binary data to a hex string
+                formattedSegment = CreateSegmentFile(hexdata1, keyParts, currentSegment); // Bundle into a json format
+
+                // And send it
+                // TODO: Send each segment string to client
+
+                //as we have the channels lets see what we have
+
+                Channel sendHere = channels[currentSegment - 1];
+
+                if (sendHere.type.ToLower() == "email")
+                {
+
+                    ExternalMail sendMail = new ExternalMail();
+                    MailInformation newMail = new MailInformation();
+
+                    newMail.fromName = Startup.StaticConfig["Mail:FromName"];
+                    newMail.fromEmail = Startup.StaticConfig["Mail:FromEmail"];
+                    //newMail.toName = config["Mail:ToName"];
+                    //newMail.toEmail = config["Mail:ToEmail"];
+                    //newMail.body = config["Mail:MmailBody"];
+                    newMail.subject = Startup.StaticConfig["Mail:MailSubject"];
+
+                    newMail.attachment = ""; //add an attachment here for testing
+
+                    sendMail.SendThisMail(newMail);
+
+
+                }
+
+
+
+                // Prepare to process the segment
+                startpos += len;
+                if (startpos >= secret_key.Length)
+                    break;
+                currentSegment++;
+            }
+            return formattedSegment;
+        }
 
         static string ByteToHexBitFiddle(byte[] bytes)
         {
@@ -94,6 +162,7 @@ namespace IBCQC_NetCore.Functions
             return segment;
         }
 
+      
     }
 
 

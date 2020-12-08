@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IBCQC_NetCore", "IBCQC_NetC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XUnitTestIBCQC_NetCore", "XUnitTestIBCQC_NetCore\XUnitTestIBCQC_NetCore.csproj", "{541ECA6D-193F-4775-9D6A-D2F16E2B6756}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MailClient", "..\MailClient\MailClient\MailClient.csproj", "{6DDDFE62-F302-4C2E-A7F2-05077861836F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestMail", "..\MailClient\TestMail\TestMail.csproj", "{1ADBD197-0AF3-4359-B2A7-87775C33756A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{541ECA6D-193F-4775-9D6A-D2F16E2B6756}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{541ECA6D-193F-4775-9D6A-D2F16E2B6756}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{541ECA6D-193F-4775-9D6A-D2F16E2B6756}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DDDFE62-F302-4C2E-A7F2-05077861836F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DDDFE62-F302-4C2E-A7F2-05077861836F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DDDFE62-F302-4C2E-A7F2-05077861836F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DDDFE62-F302-4C2E-A7F2-05077861836F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ADBD197-0AF3-4359-B2A7-87775C33756A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ADBD197-0AF3-4359-B2A7-87775C33756A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ADBD197-0AF3-4359-B2A7-87775C33756A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ADBD197-0AF3-4359-B2A7-87775C33756A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
