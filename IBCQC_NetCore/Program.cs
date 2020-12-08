@@ -39,7 +39,9 @@ namespace IBCQC_NetCore
                            );
                       
                            //use to set to port 443 and apply a certificate
-                               o.ListenAnyIP(32770, ListenOptions => { ListenOptions.UseHttps("testing.ironbridgeapi.com.pfx", "$London123"); });                       });
+                              // o.ListenAnyIP(32770, ListenOptions => { ListenOptions.UseHttps("testing.ironbridgeapi.com.pfx", "$London123"); });      
+                       
+                       });
                    });
         }
 

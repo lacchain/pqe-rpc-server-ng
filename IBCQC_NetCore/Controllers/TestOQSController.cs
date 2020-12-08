@@ -13,6 +13,7 @@ namespace IBCQC_NetCore.Controllers
 
 
         private readonly ILogger<TestOQSController> _logger;
+        private string algoRequested;
 
         public TestOQSController(ILogger<TestOQSController> logger)
         {
@@ -27,10 +28,50 @@ namespace IBCQC_NetCore.Controllers
 
             _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] TestOQS called for algorithm: " + algoname);
 
+            //TODO : check if this is  an algo name or an integer
 
-            using (KEM client = new KEM(algoname))
+          bool isint =  int.TryParse(algoname, out int algonumber);
+
+            if (isint)
             {
-                Console.WriteLine("Perform key exchange with DEFAULT mechanism");
+
+                //get the algoname
+
+                algoRequested = Enum.GetName(typeof(SupportedAlgorithmsEnum), algonumber);
+
+                //because enum has no hypen 
+                algoRequested = algoRequested.Replace("_", "-");
+
+            }
+
+            else 
+            {
+                try
+                {
+                    //see if it is supported
+                    var isConfiged = (SupportedAlgorithmsEnum)System.Enum.Parse(typeof(SupportedAlgorithmsEnum), algoname);
+                    algoRequested = isConfiged.ToString();
+                    algoRequested = algoRequested.Replace("_", "-");
+                }
+
+                catch 
+                {
+                    return StatusCode(500, "Algorithm requested is not supported or recognised : " + algoname);
+                }
+
+
+            }
+
+            if (string.IsNullOrEmpty(algoRequested))
+            {
+                return StatusCode(500, "Algorithm requested is not supported or recognised : " + algoname);
+
+            }
+
+
+            using (KEM client = new KEM(algoRequested))
+            {
+                Console.WriteLine("Perform key exchange with :" + algoRequested);
                 StringBuilder supAlgos = new StringBuilder();
 
                 // Print out some info about the mechanism
@@ -64,8 +105,8 @@ namespace IBCQC_NetCore.Controllers
 
                 if (isdebug)
                 {
-                    string dbgPrivateKey = Convert.ToBase64String(secret_key);
-                    string dbgPublicKey = Convert.ToBase64String(public_key);
+                    string dbgPrivateKey = "Server not configured to send keys to console"; //Convert.ToBase64String(secret_key);
+                    string dbgPublicKey = "Server not configured to send keys to console"; // Convert.ToBase64String(public_key);
 
                     _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from TestOQS ");
 
