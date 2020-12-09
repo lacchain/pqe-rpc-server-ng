@@ -73,6 +73,9 @@ namespace IBCQC_NetCore.Functions
             int currentSegment = 1;
             int startpos = 0;
 
+
+
+
             //infinite look with break condition
             for (; ; )
             {
@@ -82,14 +85,17 @@ namespace IBCQC_NetCore.Functions
                     len += bytesRemaining;      // Add the remaining bytes, which might be 0, in which case, no harm done.
 
                 Buffer.BlockCopy(secret_key, startpos, bindata1, 0, len);         // Extract a section of the binary data
-                string hexdata1 = ByteToHexBitFiddle(bindata1, len);                      // Convert the binary data to a hex string
+                string hexdata1 = ByteToHexBitFiddle(bindata1, len);
+
+
+                //dave debug
+
+                string hexdata2 = ByteToHexBitFiddle(secret_key);
+
+
+                // Convert the binary data to a hex string
                 formattedSegment = CreateSegmentFile(hexdata1, keyParts, currentSegment); // Bundle into a json format
-                if (currentSegment > 1)
-                {
-                   
-                }
-                
-                
+           
                 
                 Channel sendHere = channels[sendToChannel];
              
