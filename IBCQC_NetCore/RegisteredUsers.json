@@ -13,19 +13,6 @@
       "clientCertSerialNumber": "995EA23D4725755E5A",
       "clientCertName": "client101.com",
       "isInitialise": "true"
-    },
-    {
-      "callerID": "102",
-      "kemAlgorithm": "222",
-      "kemPublicKey": "22",
-      "kemPrivateKey": "22",
-      "sharedSecretExpiryDurationInSecs": "7200",
-      "sharedSecretForSession": "22",
-      "sharedSecretExpiryTime": "21-12-2025",
-      "keyExpiryDate": "21-12-2022",
-      "clientCertSerialNumber": "005EA23D4725755E5A",
-      "clientCertName": "client102.com",
-      "isInitialise": "true"
     }
   ]
 }

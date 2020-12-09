@@ -120,7 +120,7 @@ namespace IBCQC_NetCore.Models
                     if (callerInfo.clientCertSerialNumber.ToLower() == serialNumber.ToLower())
                     {
                         callerInfo.kemPublicKey = public_Key;
-                        callerInfo.keyExpiryDate= DateTime.Now.AddYears(5).ToShortDateString();
+                        callerInfo.keyExpiryDate= DateTime.Now.AddYears(2).ToString("dd-MM-yyyy hh:mm:ss"); 
                         ////serialize the new updated object to a string
                         string towrite = JsonSerializer.Serialize(allCallerInfo);
                         ////overwrite the file and it wil contain the new data
@@ -156,7 +156,7 @@ namespace IBCQC_NetCore.Models
                     if (callerInfo.clientCertSerialNumber.ToLower() == serialNumber.ToLower())
                     {
                         callerInfo.sharedSecretForSession = sharedsecret;
-                        callerInfo.sharedSecretExpiryTime = DateTime.Now.ToLongDateString();
+                        callerInfo.sharedSecretExpiryTime =  DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss"); ;
                         ////serialize the new updated object to a string
                         string towrite = JsonSerializer.Serialize(allCallerInfo);
                         ////overwrite the file and it wil contain the new data

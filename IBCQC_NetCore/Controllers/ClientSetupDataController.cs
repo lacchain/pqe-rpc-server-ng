@@ -197,13 +197,16 @@ namespace IBCQC_NetCore.Controllers
                 storeClient.callerID = nextid.ToString();
                 storeClient.kemAlgorithm = postedClientInfo.kemAlgorithm;
                 storeClient.kemPublicKey = Convert.ToBase64String(public_key);
-                storeClient.keyExpiryDate = DateTime.Now.AddYears(2).ToShortDateString();
+                storeClient.keyExpiryDate = DateTime.Now.AddYears(2).ToString("dd-MM-yyyy hh:mm:ss");
                 storeClient.clientCertName = postedClientInfo.clientCertName;
                 storeClient.clientCertSerialNumber = postedClientInfo.clientCertSerialNumber;
                 storeClient.isInitialise = "true";
                 storeClient.sharedSecretExpiryDurationInSecs = "7200";
-                storeClient.sharedSecretExpiryTime = DateTime.Now.ToShortDateString();
+                storeClient.sharedSecretExpiryTime = DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss");
                 storeClient.kemPrivateKey = Convert.ToBase64String(secret_key);
+
+
+
 
                 try
                 {
