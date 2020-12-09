@@ -2,6 +2,7 @@
 using MailClient;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace IBCQC_NetCore.Functions
 {
@@ -55,13 +56,15 @@ namespace IBCQC_NetCore.Functions
         //used for new channel config
   internal static ReturnKeyFormat SendKeyParts(short keyParts, byte[] secret_key, List<Channel> channels)
         {
-            if (Convert.ToBoolean(Startup.StaticConfig["Config:singleSetupClientKeyPartOnly"]))
-            {
-                keyParts = 1;
-            }
 
 
+            //add 1 to keyparts for the returned inline segment
+
+            keyParts = keyParts += 1;
             ReturnKeyFormat formattedSegment;
+            ReturnKeyFormat returnformattedSegment = new ReturnKeyFormat();
+
+            int sendToChannel = 0;
 
             int normalSegmentSize = secret_key.Length / keyParts;
             int bytesRemaining = secret_key.Length % keyParts;
@@ -81,30 +84,49 @@ namespace IBCQC_NetCore.Functions
                 Buffer.BlockCopy(secret_key, startpos, bindata1, 0, len);         // Extract a section of the binary data
                 string hexdata1 = ByteToHexBitFiddle(bindata1, len);                      // Convert the binary data to a hex string
                 formattedSegment = CreateSegmentFile(hexdata1, keyParts, currentSegment); // Bundle into a json format
+                if (currentSegment > 1)
+                {
+                   
+                }
+                
+                
+                
+                Channel sendHere = channels[sendToChannel];
+             
+                
+                
+                if (currentSegment == 1)
+                {
+
+                    returnformattedSegment = formattedSegment;
+                }
 
                 // And send it
                 // TODO: Send each segment string to client
 
                 //as we have the channels lets see what we have
 
-                Channel sendHere = channels[currentSegment - 1];
+              
 
-                if (sendHere.type.ToLower() == "email")
+                //do not send first segment
+
+              else  if (sendHere.type.ToLower() == "email" && currentSegment >1 )
                 {
 
                     ExternalMail sendMail = new ExternalMail();
                     MailInformation newMail = new MailInformation();
 
-                    newMail.fromName = Startup.StaticConfig["Mail:FromName"];
-                    newMail.fromEmail = Startup.StaticConfig["Mail:FromEmail"];
-                    //newMail.toName = config["Mail:ToName"];
-                    //newMail.toEmail = config["Mail:ToEmail"];
-                    //newMail.body = config["Mail:MmailBody"];
-                    newMail.subject = Startup.StaticConfig["Mail:MailSubject"];
+                    newMail.fromName = Startup.StaticConfig["Config:Mail:FromName"];
+                    newMail.fromEmail = Startup.StaticConfig["Config:Mail:FromEmail"];
+                    newMail.toName = sendHere.value.Trim();
+                    newMail.toEmail = sendHere.value.Trim();
+                    newMail.body = JsonSerializer.Serialize<ReturnKeyFormat> (formattedSegment);                       ;
+                    newMail.subject = Startup.StaticConfig["Config:Mail:MailSubject"];
 
-                    newMail.attachment = ""; //add an attachment here for testing
+                    // newMail.attachment = ""; //add an attachment here for testing
 
                     sendMail.SendThisMail(newMail);
+                    sendToChannel++;
 
 
                 }
@@ -117,7 +139,8 @@ namespace IBCQC_NetCore.Functions
                     break;
                 currentSegment++;
             }
-            return formattedSegment;
+
+            return returnformattedSegment;
         }
 
         static string ByteToHexBitFiddle(byte[] bytes)
