@@ -1,0 +1,12 @@
+{
+  "ChatSession": [
+
+    {
+      "callerSerialNumber": "101",
+      "participantSerialNumber": "222",
+      "sessionKey": "1",
+      "keyExpiryDate": "21-12-2022 12:00:00"
+
+    }
+  ]
+}

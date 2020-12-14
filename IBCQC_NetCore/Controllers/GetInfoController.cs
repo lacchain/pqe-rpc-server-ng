@@ -33,8 +33,7 @@ namespace IBCQC_NetCore.Controllers
         /// <returns></returns>
         [HttpGet]
         public IActionResult Get([FromQuery] GetInfoViewModel model)
-        {
-            // Go get from auth claims
+        {          // Go get from auth claims
             ClaimsPrincipal currentUser = this.User;
 
             // As this is the authenticated cert we get a number of claims from the authentication handler
