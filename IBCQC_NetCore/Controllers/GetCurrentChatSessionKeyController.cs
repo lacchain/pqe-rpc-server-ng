@@ -16,29 +16,30 @@ namespace IBCQC_NetCore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GetChatSessionKeyController : ControllerBase
+    public class GetCurrentChatSessionKeyController : ControllerBase
     {
+
+
+
         private static CallerInfo callerInfo;
         private static CallerInfo participatingPartyInfo;
         private static string certSerial;
-        private readonly ILogger<GetChatSessionKeyController> _logger;
+        private readonly ILogger<GetCurrentChatSessionKeyController> _logger;
 
-        public GetChatSessionKeyController(ILogger<GetChatSessionKeyController> logger)
+        public GetCurrentChatSessionKeyController(ILogger<GetCurrentChatSessionKeyController> logger)
         {
             _logger = logger;
         }
 
-
-
-        // GET api/RequestPublicKey/certserial
+        // GET api/getCurrentChatSessionKey/chatHost|Certserial
         [HttpGet("{participatingSerialNumber}")]
-        public IActionResult Get(string participatingSerialNumber)
+        public IActionResult Get(string chatHostSerialNumber)
         {
 
-          
 
 
-            _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] GetChat Session Key Called for Serial Numbers : " + participatingSerialNumber);
+
+            _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Getcurrent Chat Session Key Called for Serial Numbers : " + chatHostSerialNumber);
 
             // For this they must be logged in, so check if this is initialise or not
             try
@@ -46,7 +47,7 @@ namespace IBCQC_NetCore.Controllers
                 // Go get from auth claims
                 ClaimsPrincipal currentUser = this.User;
 
-               
+
 
 
                 // As this is the authenticated cert we get a number of claims from the authentication handler
@@ -57,7 +58,7 @@ namespace IBCQC_NetCore.Controllers
 
                 if (certSerial == null)
                 {
-                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Chat Session Key No Certificate Serial Number");
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Get Current Chat Session Key No Certificate Serial Number");
                     return StatusCode(401, "No Serial Number retrieved from Certificate");
                 }
 
@@ -72,7 +73,7 @@ namespace IBCQC_NetCore.Controllers
                 string certFriendlyName = friendlyName;
                 if (certFriendlyName == null)
                 {
-                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Chat Session Key  No Certificate SFriendly Name");
+                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Get current Chat Session Key  No Certificate Friendly Name");
                     return StatusCode(401, "No Friendly Name associated with this certificate");
                 }
 
@@ -135,7 +136,7 @@ namespace IBCQC_NetCore.Controllers
                 return StatusCode(405, "Shared Secret (aka Session Key) requires renewal before you can proceed");
             }
 
-           
+
             else // Request for shared key
             {
 
@@ -161,23 +162,23 @@ namespace IBCQC_NetCore.Controllers
                     try
                     {
                         // Certificate Serial Number
-                        if (participatingSerialNumber.Length < 18)
+                        if (chatHostSerialNumber.Length < 18)
                         {
-                            participatingSerialNumber = participatingSerialNumber.PadLeft(18, '0');
+                            chatHostSerialNumber = chatHostSerialNumber.PadLeft(18, '0');
                         }
 
-                        participatingPartyInfo = RegisterNodes.GetClientNode(participatingSerialNumber, Startup.StaticConfig["Config:clientFileStore"]);
+                        participatingPartyInfo = RegisterNodes.GetClientNode(chatHostSerialNumber, Startup.StaticConfig["Config:clientFileStore"]);
 
                         // OK -is this a known serial certificate
                         if (string.IsNullOrEmpty(callerInfo.callerID))
                         {
-                            _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Chat Session Key  A public key is not held for that  Certificate");
+                            _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] get current Chat Session Key  A public key is not held for that  Certificate");
                             return StatusCode(401, "A public key is not held for that  Certificate");
                         }
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Chat Session Key for requested serial number  Cannot Identify User");
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] get current Chat Session Key for requested serial number  Cannot Identify User");
                         return StatusCode(500, "Cannot identify the serial number matching a public key. Exception: " + ex.Message);
                     }
 
@@ -186,17 +187,22 @@ namespace IBCQC_NetCore.Controllers
 
                     byte[] saltBytes = getRandom.GetBytes(saltSize);
 
-                    byte[] chatSessionKey = getRandom.GetBytes(256);
+                    ////TODO get the key back
+
+                string chatSessionKey =    ManageChatSessions.GetChatSession(chatHostSerialNumber, certSerial, Startup.StaticConfig["Config:chatSessionStore"]);
+                    //byte[] chatSessionKey = getRandom.GetBytes(256);
 
                     int saltsize = saltBytes.Length;
 
                     // OK - implement the AES encryption
                     AESEncrypt encryptAES = new AESEncrypt();
 
-                    var encryptedBytes1 = encryptAES.Encrypt(chatSessionKey, Convert.FromBase64String(callerInfo.sharedSecretForSession), saltBytes, iterations);
+                    var encryptedBytes1 = encryptAES.Encrypt(Convert.FromBase64String(chatSessionKey), Convert.FromBase64String(callerInfo.sharedSecretForSession), saltBytes, iterations);
 
                     //TODO we need to store thios somewhere with the serial numbers of the certificates
 
+
+               
                     //add our  header value
                     var sendWithHeader = AESHeaderProcessing.AddEncryptHeader(chatSessionKey.Length, encryptedBytes1);
 
@@ -219,12 +225,12 @@ namespace IBCQC_NetCore.Controllers
                     if (isdebug)
                     {
                         string strSalt = Convert.ToBase64String(saltBytes);
-                      
+
                         // string dbgEncKey = Convert.ToBase64String(encryptedBytes1);
                         _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from Chat Session Keycall ");
 
-                        _logger.LogInformation("Debug The public Key encrypted is ::" + Convert.ToBase64String(sendWithHeader) + "::The Public Key in Base64 is ::" + Convert.ToBase64String(chatSessionKey) + "::Saltbytes are ::" + strSalt);
-                        return StatusCode(200, "The publicy encrypted is ::" + Convert.ToBase64String(sendWithHeader) + "::The public in Base64 is ::" + Convert.ToBase64String(chatSessionKey) + "::Saltbytes are ::" + strSalt);
+                        _logger.LogInformation("Debug The public Key encrypted is ::" + Convert.ToBase64String(sendWithHeader) + "::The Public Key in Base64 is ::" + chatSessionKey + "::Saltbytes are ::" + strSalt);
+                        return StatusCode(200, "The publicy encrypted is ::" + Convert.ToBase64String(sendWithHeader) + "::The public in Base64 is ::" + chatSessionKey + "::Saltbytes are ::" + strSalt);
 
                     }
                     else
@@ -248,7 +254,6 @@ namespace IBCQC_NetCore.Controllers
             }
 
         }
-
 
 
 

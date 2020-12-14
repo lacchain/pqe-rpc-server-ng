@@ -51,7 +51,48 @@ namespace IBCQC_NetCore.Functions
             return "";
         }
 
+        internal static bool CreateChatSession(string initiatorSerialNumber, string participatingSerialNumber, string filename, string sessionkey)
+        {
+            try
+            {
+                var allChatSessions = readNodes(filename);
 
+                //check no current keys hel;d if so delete them
+                foreach (var checkSession in allChatSessions.ChatSession)
+                {
+                    if ((checkSession.callerSerialNumber.ToLower() == initiatorSerialNumber.ToLower()) && (checkSession.participantSerialNumber.ToLower() == participatingSerialNumber.ToLower()))
+                    {
+
+                        //ok we need to delete this session key now as for it to be here then it is already with the person who started the chat
+
+                        bool isDeleted = RemoveChat(initiatorSerialNumber, participatingSerialNumber, filename);
+                    }
+                }
+
+                ChatSession newChat = new ChatSession();
+
+                newChat.callerSerialNumber = initiatorSerialNumber;
+                newChat.participantSerialNumber = participatingSerialNumber;
+                newChat.sessionKey = sessionkey;
+                newChat.keyExpiryDate = DateTime.Now.AddMinutes(15).ToString("dd-MM-yyyy hh:mm:ss");
+
+
+                allChatSessions.ChatSession.Add(newChat);
+                var filePath = Path.Combine(System.AppContext.BaseDirectory, filename);
+                
+                ////serialize the new updated object to a string
+                string towrite = JsonSerializer.Serialize(allChatSessions);
+                ////overwrite the file and it wil contain the new data
+                System.IO.File.WriteAllText(filePath, towrite);
+
+
+                return true;
+            }
+
+            catch { return false; }
+
+
+        }
         internal static bool RemoveExpiredChats(string filename)
         {
 
