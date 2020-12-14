@@ -1,0 +1,10 @@
+{
+  "Mail": {
+    "FromName": "ironbrodge",
+    "FromEmail": "ironbridge.onboarding@cambridgequantum.com",
+    "ToName": "dave",
+    "ToEmail": "david.worrall@cambridgequantum.com",
+    "MailBody": "here is a test mail",
+    "MailSubject":  "Test from mail"
+  }
+}

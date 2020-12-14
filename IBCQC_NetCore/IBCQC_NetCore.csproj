@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MailClient\MailClient\MailClient.csproj" />
+    <ProjectReference Include="..\MailClient\MailClient\MailClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>
