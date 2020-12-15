@@ -127,8 +127,8 @@ namespace IBCQC_NetCore.Functions
 
             string pattern = "dd-MM-yyyy hh:mm:ss";
             DateTime dt;
-            DateTime.TryParseExact(caller.keyExpiryDate,pattern, null,
-                                   DateTimeStyles.None, out dt);
+        var resdt =    DateTime.TryParseExact(caller.keyExpiryDate,pattern, CultureInfo.InvariantCulture,
+                                   DateTimeStyles.AssumeLocal, out dt);
             //compare if now is earlier than the set time we OK
 
             if (System.DateTime.Compare(DateTime.Now, dt) < 0)
