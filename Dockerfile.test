@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install --no-install-recommends -yV \
     jq \
     wget \
     procps \
+    wait-for-it \
  && rm -rf /var/lib/apt/lists/*
 RUN mkdir /ca-certs/
 RUN mkdir /certs/
@@ -39,6 +40,27 @@ openssl req -new -sha512 -key /certs/server.key -subj "/CN=$SERVICE_NAME" -exten
 openssl x509 -req -in /certs/server.csr -CA /ca-certs/root.crt -CAkey /ca-certs/root.key -CAcreateserial -out /certs/server.crt -days 500 -sha512\n\
 \n\
 openssl pkcs12 -export -in /certs/server.crt -inkey /certs/server.key -out /app/server.pfx -passout pass:password\n\
+cp mailconfig.json temp.json\n\
+if [ ! -z ${SMTP_HOST+x} ]; then\n\
+  jq '\''.Smtp.Host = "'\''$SMTP_HOST'\''"'\'' temp.json > mailconfig.json\n\
+  cp mailconfig.json temp.json\n\
+fi\n\
+if [ ! -z ${SMTP_PORT+x} ]; then\n\
+  jq '\''.Smtp.Port = '\''$SMTP_PORT'\'''\'' temp.json > mailconfig.json\n\
+  cp mailconfig.json temp.json\n\
+fi\n\
+if [ ! -z ${SMTP_SSL+x} ]; then\n\
+  jq '\''.Smtp.Ssl = '\''$SMTP_SSL'\'''\'' temp.json > mailconfig.json\n\
+  cp mailconfig.json temp.json\n\
+fi\n\
+if [ ! -z ${SMTP_USER+x} ]; then\n\
+  jq '\''.Smtp.Username = "'\''$SMTP_USER'\''"'\'' temp.json > mailconfig.json\n\
+  cp mailconfig.json temp.json\n\
+fi\n\
+if [ ! -z ${SMTP_PASS+x} ]; then\n\
+  jq '\''.Smtp.Password = "'\''$SMTP_PASS'\''"'\'' temp.json > mailconfig.json\n\
+fi\n\
+rm temp.json\n\
 dotnet IBCQC_NetCore.dll\n'\
 >> /run.sh
 RUN chmod +x /run.sh

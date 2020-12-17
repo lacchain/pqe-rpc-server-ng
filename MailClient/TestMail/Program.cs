@@ -13,7 +13,7 @@ namespace TestMail
         {
 
             var builder = new ConfigurationBuilder()
-       .AddJsonFile("mailconfig.json");
+       .AddJsonFile("testmail.json");
             config = builder.Build();
 
             ExternalMail mailClient = new ExternalMail();
