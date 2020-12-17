@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install --no-install-recommends -yV \
     jq \
     wget \
     procps \
+    wait-for-it \
  && rm -rf /var/lib/apt/lists/*
 RUN mkdir /ca-certs/
 RUN mkdir /certs/
