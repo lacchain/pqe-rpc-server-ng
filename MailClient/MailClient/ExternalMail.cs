@@ -79,13 +79,15 @@ namespace MailClient
 
                     string passWord = config["Smtp:Password"];
 
+                    bool ssl = Convert.ToBoolean(config["Smtp:Ssl"]);
+
                     if (string.IsNullOrEmpty(mailServer) || string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(passWord))
                     {
                         return false;
 
                     }
                  
-                    smtpClient.Connect(mailServer, port,true);
+                    smtpClient.Connect(mailServer, port, ssl);
                     if (!smtpClient.IsConnected)
                     {
                         return false;
