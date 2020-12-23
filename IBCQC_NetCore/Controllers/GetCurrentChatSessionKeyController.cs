@@ -32,7 +32,7 @@ namespace IBCQC_NetCore.Controllers
         }
 
         // GET api/getCurrentChatSessionKey/chatHost|Certserial
-        [HttpGet("{participatingSerialNumber}")]
+        [HttpGet("{chatHostSerialNumber}")]
         public IActionResult Get(string chatHostSerialNumber)
         {
 
@@ -190,9 +190,9 @@ namespace IBCQC_NetCore.Controllers
                     ////TODO get the key back
 
                 string chatSessionKey =    ManageChatSessions.GetChatSession(chatHostSerialNumber, certSerial, Startup.StaticConfig["Config:chatSessionStore"]);
-                    //byte[] chatSessionKey = getRandom.GetBytes(256);
+                  
 
-                    int saltsize = saltBytes.Length;
+                    
 
                     // OK - implement the AES encryption
                     AESEncrypt encryptAES = new AESEncrypt();
@@ -231,6 +231,11 @@ namespace IBCQC_NetCore.Controllers
 
                         _logger.LogInformation("Debug The public Key encrypted is ::" + Convert.ToBase64String(sendWithHeader) + "::The Public Key in Base64 is ::" + chatSessionKey + "::Saltbytes are ::" + strSalt);
                         return StatusCode(200, "The publicy encrypted is ::" + Convert.ToBase64String(sendWithHeader) + "::The public in Base64 is ::" + chatSessionKey + "::Saltbytes are ::" + strSalt);
+
+
+                        //_logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from Chat Session Key call ");
+
+                        //return StatusCode(200, Convert.ToBase64String(sendWithHeader));
 
                     }
                     else

@@ -174,7 +174,7 @@ namespace IBCQC_NetCore.Controllers
 
                         _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from Shared Secret Call ");
 
-                        return StatusCode(200, "The shared key encrypted is ::" + ciphertextB64 + "::The shared key in Base64 is ::" + dbgPrivateKey);
+                        return StatusCode(200, "The shared key encapsulated is ::" + ciphertextB64 + "::The shared key in Base64 is ::" + dbgPrivateKey);
 
                     }
                     else

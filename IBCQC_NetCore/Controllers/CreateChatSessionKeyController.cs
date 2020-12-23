@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using IBCQC_NetCore.Encryption;
 using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
+using IBCQC_NetCore.OqsdotNet;
 using IBCQC_NetCore.Rng;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +36,7 @@ namespace IBCQC_NetCore.Controllers
         public IActionResult Get(string participatingSerialNumber)
         {
 
-          
+
 
 
             _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] GetChat Session Key Called for Serial Numbers : " + participatingSerialNumber);
@@ -46,7 +47,7 @@ namespace IBCQC_NetCore.Controllers
                 // Go get from auth claims
                 ClaimsPrincipal currentUser = this.User;
 
-               
+
 
 
                 // As this is the authenticated cert we get a number of claims from the authentication handler
@@ -135,23 +136,13 @@ namespace IBCQC_NetCore.Controllers
                 return StatusCode(405, "Shared Secret (aka Session Key) requires renewal before you can proceed");
             }
 
-           
+
             else // Request for shared key
             {
 
 
-                try
-                {
-                    // As this is standalone we use bouncy castle
+              
 
-                    Prng getRandom = new Prng();
-
-
-
-                    // Set number of iterations for the RFC2898 derivation function
-                    // to a reasonably large number, and let's choose a prime number for fun.
-                    int iterations = Convert.ToInt16(Startup.StaticConfig["Config:DerivationIterations"]);
-                    int saltSize = Convert.ToInt16(Startup.StaticConfig["Config:SaltSize"]);
 
                     // Get the public key to send
 
@@ -181,30 +172,45 @@ namespace IBCQC_NetCore.Controllers
                         return StatusCode(500, "Cannot identify the serial number matching a public key. Exception: " + ex.Message);
                     }
 
+                // Set number of iterations for the RFC2898 derivation function
+                // to a reasonably large number, and let's choose a prime number for fun.
+                int iterations = Convert.ToInt16(Startup.StaticConfig["Config:DerivationIterations"]);
+                int saltSize = Convert.ToInt16(Startup.StaticConfig["Config:SaltSize"]);
 
-                    // Now get QRNG bytes for the salt
+                Prng getRandom = new Prng();
 
-                    byte[] saltBytes = getRandom.GetBytes(saltSize);
 
-                    byte[] chatSessionKey = getRandom.GetBytes(256);
+                    var randomBytes = getRandom.GetBytes(256);
+                   byte[] saltBytes = getRandom.GetBytes(saltSize);
+                string chatSessionKey = Convert.ToBase64String(randomBytes);
+                try
+                    {
+
+
+                    
+
+
+                    var storeChatSession =    ManageChatSessions.CreateChatSession(certSerial, participatingSerialNumber, Startup.StaticConfig["Config:chatSessionStore"],chatSessionKey);
+
+                    //AES
+                    ///
 
                     int saltsize = saltBytes.Length;
 
                     // OK - implement the AES encryption
                     AESEncrypt encryptAES = new AESEncrypt();
 
-                    var encryptedBytes1 = encryptAES.Encrypt(chatSessionKey, Convert.FromBase64String(callerInfo.sharedSecretForSession), saltBytes, iterations);
+                    var encryptedBytes1 = encryptAES.Encrypt(randomBytes, Convert.FromBase64String(callerInfo.sharedSecretForSession), saltBytes, iterations);
 
                     //TODO we need to store thios somewhere with the serial numbers of the certificates
 
 
-                    ManageChatSessions.CreateChatSession(certSerial, participatingSerialNumber, Startup.StaticConfig["Config:chatSessionStore"], Convert.ToBase64String(chatSessionKey));
 
                     //add our  header value
-                    var sendWithHeader = AESHeaderProcessing.AddEncryptHeader(chatSessionKey.Length, encryptedBytes1);
+                    var sendWithHeader = AESHeaderProcessing.AddEncryptHeader(randomBytes.Length, encryptedBytes1);
 
-
-                    _logger.LogInformation(Convert.ToBase64String(sendWithHeader) + " datasize::" + chatSessionKey.Length);
+                   
+                    _logger.LogInformation(Convert.ToBase64String(sendWithHeader) + " datasize::" + randomBytes.Length);
 
 
 
@@ -222,12 +228,17 @@ namespace IBCQC_NetCore.Controllers
                     if (isdebug)
                     {
                         string strSalt = Convert.ToBase64String(saltBytes);
-                      
+
                         // string dbgEncKey = Convert.ToBase64String(encryptedBytes1);
                         _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from Chat Session Keycall ");
 
-                        _logger.LogInformation("Debug The public Key encrypted is ::" + Convert.ToBase64String(sendWithHeader) + "::The Public Key in Base64 is ::" + Convert.ToBase64String(chatSessionKey) + "::Saltbytes are ::" + strSalt);
-                        return StatusCode(200, "The publicy encrypted is ::" + Convert.ToBase64String(sendWithHeader) + "::The public in Base64 is ::" + Convert.ToBase64String(chatSessionKey) + "::Saltbytes are ::" + strSalt);
+                        _logger.LogInformation("Debug The public Key encrypted is ::" + Convert.ToBase64String(sendWithHeader) + "::The Public Key in Base64 is ::" + chatSessionKey + "::Saltbytes are ::" + strSalt);
+                        return StatusCode(200, "The publicy encrypted is ::" + Convert.ToBase64String(sendWithHeader) + "::The public in Base64 is ::" + chatSessionKey + "::Saltbytes are ::" + strSalt);
+
+
+                        //_logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Success from Chat Session Key call ");
+
+                        //return StatusCode(200, Convert.ToBase64String(sendWithHeader));
 
                     }
                     else
@@ -241,19 +252,29 @@ namespace IBCQC_NetCore.Controllers
 
 
 
+
+
+                    ///
+
+
                 }
                 catch (Exception ex)
-                {
-                    _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Fail from Chat Session Key::" + ex.Message);
+                    {
+                        _logger.LogInformation($"[{DateTime.UtcNow.ToLongTimeString()}] Returning Fail from Chat Session Key::" + ex.Message);
 
-                    return StatusCode(500, "ERROR: Chat Session Key failed with: " + ex.Message);
-                }
-            }
+                        return StatusCode(500, "ERROR: Chat Session Key failed with: " + ex.Message);
+                    }
+
+
+
+              
 
         }
 
 
 
 
-    }
-}
+
+        }
+    } }
+
