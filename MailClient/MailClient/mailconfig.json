@@ -2,6 +2,7 @@
   "Smtp": {
     "Host": "smtp.gmail.com",
     "Port": 465,
+    "Ssl" : true,
     "Username": "ironbridge.onboarding@cambridgequantum.com",
     "Password": "7q#bE,.r"
   }
