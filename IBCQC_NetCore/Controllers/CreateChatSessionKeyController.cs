@@ -180,7 +180,7 @@ namespace IBCQC_NetCore.Controllers
                 Prng getRandom = new Prng();
 
 
-                    var randomBytes = getRandom.GetBytes(256);
+                    var randomBytes = getRandom.GetBytes(32);
                    byte[] saltBytes = getRandom.GetBytes(saltSize);
                 string chatSessionKey = Convert.ToBase64String(randomBytes);
                 try

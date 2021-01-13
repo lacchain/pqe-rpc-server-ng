@@ -201,13 +201,13 @@ namespace IBCQC_NetCore.Controllers
 
                     //TODO we need to store thios somewhere with the serial numbers of the certificates
 
-
+                    int datasize = Convert.FromBase64String(chatSessionKey).Length;
                
                     //add our  header value
-                    var sendWithHeader = AESHeaderProcessing.AddEncryptHeader(chatSessionKey.Length, encryptedBytes1);
+                    var sendWithHeader = AESHeaderProcessing.AddEncryptHeader(datasize, encryptedBytes1);
 
 
-                    _logger.LogInformation(Convert.ToBase64String(sendWithHeader) + " datasize::" + chatSessionKey.Length);
+                    _logger.LogInformation(Convert.ToBase64String(sendWithHeader) + " datasize::" + datasize);
 
 
 

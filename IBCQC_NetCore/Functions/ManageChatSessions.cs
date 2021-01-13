@@ -36,16 +36,26 @@ namespace IBCQC_NetCore.Functions
         internal static string  GetChatSession(string initiatorSerialNumber, string participatingSerialNumber,string filename)
         {
             var allChatSessions = readNodes(filename);
+
+            string chatSessionB64;
             foreach (var checkSession in allChatSessions.ChatSession)
             {
-                if ((checkSession.callerSerialNumber.ToLower() == initiatorSerialNumber.ToLower()) && (checkSession.participantSerialNumber.ToLower() == participatingSerialNumber.ToLower()))
+                if ((checkSession.callerSerialNumber.ToLower() == initiatorSerialNumber.ToLower()))    // && (checkSession.participantSerialNumber.ToLower() == participatingSerialNumber.ToLower()))
                 {
                    
                     //ok we need to delete this session key now as for it to be here then it is already with the person who started the chat
                     
                     
-                    return checkSession.sessionKey; 
+                    chatSessionB64 = checkSession.sessionKey;
+                    bool isDeleted = RemoveChat(initiatorSerialNumber, participatingSerialNumber, filename);
+
+                    return chatSessionB64;
+
+                    //do not forget to return
                 }
+
+
+
             }
 
             return "";
@@ -57,10 +67,16 @@ namespace IBCQC_NetCore.Functions
             {
                 var allChatSessions = readNodes(filename);
 
-                //check no current keys hel;d if so delete them
+                //check no current keys held if so delete them
                 foreach (var checkSession in allChatSessions.ChatSession)
                 {
-                    if ((checkSession.callerSerialNumber.ToLower() == initiatorSerialNumber.ToLower()) && (checkSession.participantSerialNumber.ToLower() == participatingSerialNumber.ToLower()))
+                    if (String.IsNullOrEmpty(checkSession.callerSerialNumber))
+                        { 
+                    
+                  //  empty move on                     
+                    }
+
+                   else  if ((checkSession.callerSerialNumber.ToLower() == initiatorSerialNumber.ToLower()) && (checkSession.participantSerialNumber.ToLower() == participatingSerialNumber.ToLower()))
                     {
 
                         //ok we need to delete this session key now as for it to be here then it is already with the person who started the chat
@@ -68,6 +84,11 @@ namespace IBCQC_NetCore.Functions
                         bool isDeleted = RemoveChat(initiatorSerialNumber, participatingSerialNumber, filename);
                     }
                 }
+
+
+                //reread the file
+
+                allChatSessions = readNodes(filename);
 
                 ChatSession newChat = new ChatSession();
 
@@ -143,7 +164,7 @@ namespace IBCQC_NetCore.Functions
 
                 var allChatSessions = readNodes(filename);
 
-                allChatSessions.ChatSession.RemoveAll(x => x.callerSerialNumber.ToLower() == serialNumber.ToLower() &&  x.participantSerialNumber.ToLower() == participantSerialNo.ToLower());
+                allChatSessions.ChatSession.RemoveAll(x => x.callerSerialNumber.ToLower() == serialNumber.ToLower());// &&  x.participantSerialNumber.ToLower() == participantSerialNo.ToLower());
                
 
                 var filePath = Path.Combine(System.AppContext.BaseDirectory, filename);

@@ -20,11 +20,11 @@
     "IBCQC_NetCore": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "api/GetInfo",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:443;http://localhost:5000"
+      "applicationUrl": "https://localhost:443;http://testing.ironbridgeapi.com:5000"
     },
     "Docker": {
       "commandName": "Docker",
