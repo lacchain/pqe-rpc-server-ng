@@ -40,8 +40,8 @@ jobs:
         run: |
           openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout server.key -out server.crt -subj "/C=US/ST=CA/O=IADB/CN=server"
           openssl pkcs12 -export -in server.crt -inkey server.key -out server.pfx -passout pass:password
-          docker run -d -p 8443:443 -v `pwd`/server.pfx:/app/client.ironbridgeapi.com.pfx -e ASPNETCORE_URLS=https://+:443 -e ASPNETCORE_HTTPS_PORT=443 -e ASPNETCORE_Kestrel__Certificates__Default__Password="password" -e ASPNETCORE_Kestrel__Certificates__Default__Path="client.ironbridgeapi.com.pfx" --name $IMAGE_NAME $IMAGE_NAME:$VERSION
-          nc -z -v -w5 localhost 8443 && docker stop $IMAGE_NAME
+          docker run -d -p 8443:443 -v `pwd`/server.pfx:/app/client.ironbridgeapi.com.pfx -e ASPNETCORE_URLS=https://+:443 --name $IMAGE_NAME $IMAGE_NAME:$VERSION 443 client.ironbridgeapi.com.pfx password
+          sleep 1 && nc -z -v -w5 localhost 8443 && docker stop $IMAGE_NAME
 
       - name: Build test image
         run: docker build . --file Dockerfile.test --build-arg VERSION=$VERSION --tag $IMAGE_NAME-test:$VERSION

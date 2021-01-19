@@ -22,9 +22,6 @@ RUN jq -r '.Config.OutputDebugKeys |= "false"' tmp.json > appsettings.json
 RUN rm tmp.json
 
 ENV ASPNETCORE_URLS=https://+:443
-ENV ASPNETCORE_HTTPS_PORT=443 
-ENV ASPNETCORE_Kestrel__Certificates__Default__Password="password"
-ENV ASPNETCORE_Kestrel__Certificates__Default__Path="server.pfx"
 ENV SERVICE_NAME=localhost
 
 RUN echo '#!/bin/sh\n\
@@ -61,7 +58,7 @@ if [ ! -z ${SMTP_PASS+x} ]; then\n\
   jq '\''.Smtp.Password = "'\''$SMTP_PASS'\''"'\'' temp.json > mailconfig.json\n\
 fi\n\
 rm temp.json\n\
-dotnet IBCQC_NetCore.dll\n'\
+dotnet IBCQC_NetCore.dll 443 server.pfx password\n'\
 >> /run.sh
 RUN chmod +x /run.sh
 
