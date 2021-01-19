@@ -6,6 +6,7 @@ using IBCQC_NetCore.Functions;
 using IBCQC_NetCore.Models;
 using IBCQC_NetCore.OqsdotNet;
 using System.Text.Json;
+using System.Net;
 
 namespace IBCQC_NetCore.Controllers
 {
@@ -97,7 +98,11 @@ namespace IBCQC_NetCore.Controllers
                 // OK - now we need to know if the certificate is in use
                 // Test ensure read write to store is working
 
-               
+
+                //check serial for url encoding 
+
+                var deocdedURL =  WebUtility.UrlDecode(postedClientInfo.clientCertSerialNumber);
+                postedClientInfo.clientCertSerialNumber = deocdedURL;
 
                 if (postedClientInfo.clientCertSerialNumber.Length < 18)
                 {

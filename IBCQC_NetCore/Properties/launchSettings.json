@@ -19,12 +19,13 @@
     },
     "IBCQC_NetCore": {
       "commandName": "Project",
+      "commandLineArgs": "32770  testing.ironbridgeapi.com.pfx  $London123",
       "launchBrowser": true,
       "launchUrl": "api/GetInfo",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:443;http://testing.ironbridgeapi.com:5000"
+      "applicationUrl": "https://testing.ironbridgeapi.com"
     },
     "Docker": {
       "commandName": "Docker",

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using IBCQC_NetCore.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -72,7 +73,10 @@ namespace IBCQC_NetCore.Controllers
 
             try
             {
-                callerInfo = RegisterNodes.GetClientNode(certSerial, Startup.StaticConfig["Config:clientFileStore"]);
+                var decodedSerial = WebUtility.UrlDecode(removeCertSerial);
+               
+
+                callerInfo = RegisterNodes.GetClientNode(decodedSerial, Startup.StaticConfig["Config:clientFileStore"]);
 
                 // OK -is this a known serial certificate
                 if (string.IsNullOrEmpty(callerInfo.callerID))

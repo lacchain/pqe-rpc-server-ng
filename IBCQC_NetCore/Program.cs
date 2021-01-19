@@ -17,7 +17,13 @@ namespace IBCQC_NetCore
             // Have option to remove certificate auth if we want, but need the serial number
             // so for testing that would need injecting
 
-        
+            //to call we use the exe plus three arguments port certname and password 
+
+            if (args.Length != 3)
+            {
+                return;
+            
+            }
           
                 CreateHostBuilder(args).Build().Run();
           
@@ -31,6 +37,13 @@ namespace IBCQC_NetCore
                    .ConfigureHostConfiguration(webBuilder => { webBuilder.AddJsonFile($"RegisteredUsers.json", optional: true, reloadOnChange: true); })
                    .ConfigureWebHostDefaults(webBuilder =>
                    {
+                       int port = 443;
+                       if (args.Length > 0)
+                       {
+                           int.TryParse(args[0],out port);
+                       
+                       }
+
                        webBuilder.UseStartup<Startup>();
                        webBuilder.ConfigureKestrel(o =>
                        {
@@ -38,9 +51,9 @@ namespace IBCQC_NetCore
                                o.ClientCertificateMode = ClientCertificateMode.RequireCertificate
                            );
 
-                           //use to set to port 443 and apply a certificate
-                         //   o.ListenAnyIP(32770, ListenOptions => { ListenOptions.UseHttps("testing.ironbridgeapi.com.pfx", "$London123"); });      
-                         o.ListenAnyIP(443, ListenOptions => { ListenOptions.UseHttps("dev.ironbridgeapi.com.pfx", "$London123"); });
+                           
+                           o.ListenAnyIP(port, ListenOptions => { ListenOptions.UseHttps(args[1], args[2]); });
+                           
 
                        });
                    });
