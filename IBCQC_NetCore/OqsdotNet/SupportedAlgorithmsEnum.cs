@@ -121,8 +121,29 @@ SIKE_p610_compressed=263,
         /** Algorithm identifier for SIKE p751 KEM. */
 SIKE_p751=264,
         /** Algorithm identifier for SIKE p751 compressed KEM. */
-SIKE_p751_compressed=265
+SIKE_p751_compressed=265,
 
+
+            //signatures
+
+
+DILITHIUM_2=400,
+DILITHIUM_3=401,
+DILITHIUM_4=402,
+Falcon_512=403,  //falcon-512
+Falcon_1024=404,
+picnic_L1_FS=405,
+picnic_L1_UR=406,
+picnic_L1_full=407,
+picnic_L3_FS=408,
+picnic_L3_UR=409,
+picnic_L3_full=410,
+picnic_L5_FS=411,
+picnic_L5_UR=412,
+picnic_L5_full=413,
+picnic3_L1=414,
+picnic3_L3=415,
+picnic3_L5=416
 
     }
 }

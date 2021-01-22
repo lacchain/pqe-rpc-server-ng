@@ -149,7 +149,7 @@ namespace IBCQC_NetCore.Functions
             return returnformattedSegment;
         }
 
-        static string ByteToHexBitFiddle(byte[] bytes)
+      internal  static string ByteToHexBitFiddle(byte[] bytes)
         {
             char[] c = new char[bytes.Length * 2];
             int b;
@@ -163,7 +163,7 @@ namespace IBCQC_NetCore.Functions
             return new string(c);
         }       
 
-        static string ByteToHexBitFiddle(byte[] bytes, int len)
+    internal    static string ByteToHexBitFiddle(byte[] bytes, int len)
         {
             char[] c = new char[len * 2];
             int b;
